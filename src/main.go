@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	args := os.Args[1:]
+	args := getArguments(os.Args[1:])
 	fmt.Printf("%+v\n", args)
 }
