@@ -11,7 +11,25 @@ const (
 	versionArgShort string = "-v"
 	helpArg         string = "--help"
 	helpArgShort    string = "-h"
+	recordArg       string = "--record"
+	recordArgShort  string = "-r"
 )
+
+func listAllSingleArgs() []string {
+	return []string{
+		helpArg,
+		helpArgShort,
+		versionArg,
+		versionArgShort,
+	}
+}
+
+func listAllPairArgs() []string {
+	return []string{
+		recordArg,
+		recordArgShort,
+	}
+}
 
 func getArguments(rawArgs []string) map[string]string {
 	args, err := formatArguments(rawArgs)
@@ -29,22 +47,20 @@ func formatArguments(rawArgs []string) (map[string]string, error) {
 	if len(rawArgs) == 0 {
 		return emptyArgs, errors.New("at least one argument is required")
 	}
-	for _, element := range rawArgs {
-		if element == helpArg || element == helpArgShort {
-			fmt.Printf(help())
-			return emptyArgs, nil
-		}
-		if element == versionArg || element == versionArgShort {
-			fmt.Printf(Version)
-			return emptyArgs, nil
-		}
-	}
-	if len(rawArgs)%2 != 0 {
+	if isValidSingleArgument(rawArgs) {
+		return emptyArgs, nil
+	} else if len(rawArgs)%2 != 0 {
 		return emptyArgs, errors.New("each flag must have an argument")
 	}
+
 	for i := 0; i < len(rawArgs); i = i + 2 {
 		if rawArgs[i] == "" || rawArgs[i+1] == "" {
 			return emptyArgs, errors.New("arguments cannot be empty")
+		}
+
+		if !isValidPairArgument(rawArgs[i]) {
+			fmt.Printf(help())
+			return emptyArgs, nil
 		}
 		args[rawArgs[i]] = rawArgs[i+1]
 	}
@@ -52,9 +68,33 @@ func formatArguments(rawArgs []string) (map[string]string, error) {
 	return args, nil
 }
 
+func isValidSingleArgument(rawArgs []string) bool {
+	for _, element := range rawArgs {
+		if element == helpArg || element == helpArgShort {
+			fmt.Printf(help())
+			return true
+		}
+		if element == versionArg || element == versionArgShort {
+			fmt.Printf("%s\n", Version)
+			return true
+		}
+	}
+	return false
+}
+
+func isValidPairArgument(arg string) bool {
+	for _, element := range listAllPairArgs() {
+		if arg == element {
+			return true
+		}
+	}
+	return false
+}
+
 func help() string {
-	return `
-		-h --help    | Prints the help function\n
-		-v --version | Prints the version of the application\n
-	`
+	return " Argument     | Description\n" +
+		"----------------------------------------\n" +
+		"-h --help     | Prints the help function.\n" +
+		"-v --version  | Prints the version of the application.\n" +
+		"-r --record   | Makes a record of work done.\n"
 }

@@ -21,7 +21,7 @@ func TestFormatArguments(t *testing.T) {
 			emptyFormattedArgs,
 		}, {
 			"Single arg",
-			[]string{"a"},
+			[]string{"-r"},
 			errors.New("each flag must have an argument"),
 			emptyFormattedArgs,
 		}, {
@@ -61,19 +61,19 @@ func TestFormatArguments(t *testing.T) {
 			emptyFormattedArgs,
 		}, {
 			"One pair",
-			[]string{"a", "b"},
+			[]string{"-r", "b"},
 			nil,
-			map[string]string{"a": "b"},
+			map[string]string{"-r": "b"},
 		}, {
 			"Two pairs",
-			[]string{"a", "b", "c", "d"},
+			[]string{"-r", "b", "--record", "d"},
 			nil,
-			map[string]string{"a": "b", "c": "d"},
+			map[string]string{"-r": "b", "--record": "d"},
 		}, {
 			"Two unordered pairs",
-			[]string{"a", "b", "c", "d"},
+			[]string{"-r", "b", "--record", "d"},
 			nil,
-			map[string]string{"c": "d", "a": "b"},
+			map[string]string{"--record": "d", "-r": "b"},
 		},
 	}
 
