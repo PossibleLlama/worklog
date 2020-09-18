@@ -66,14 +66,14 @@ func TestFormatArguments(t *testing.T) {
 			map[string]string{"-r": "b"},
 		}, {
 			"Two pairs",
-			[]string{"-r", "b", "--record", "d"},
+			[]string{"-r", "b", "-p", "1d"},
 			nil,
-			map[string]string{"-r": "b", "--record": "d"},
+			map[string]string{"-r": "b", "-p": "1d"},
 		}, {
 			"Two unordered pairs",
-			[]string{"-r", "b", "--record", "d"},
+			[]string{"-r", "b", "-p", "1d"},
 			nil,
-			map[string]string{"--record": "d", "-r": "b"},
+			map[string]string{"-p": "1d", "-r": "b"},
 		}, {
 			"Duplicate is overridden",
 			[]string{"-r", "a", "-r", "b"},

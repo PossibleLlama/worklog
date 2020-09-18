@@ -11,6 +11,8 @@ const (
 	versionArgShort string = "-v"
 	helpArg         string = "--help"
 	helpArgShort    string = "-h"
+	printArg        string = "--print"
+	printArgShort   string = "-p"
 	recordArg       string = "--record"
 	recordArgShort  string = "-r"
 )
@@ -26,6 +28,8 @@ func listAllSingleArgs() []string {
 
 func listAllPairArgs() []string {
 	return []string{
+		printArg,
+		printArgShort,
 		recordArg,
 		recordArgShort,
 	}
