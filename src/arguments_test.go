@@ -39,6 +39,21 @@ func TestFormatArguments(t *testing.T) {
 			[]string{"a", ""},
 			errors.New("arguments cannot be empty"),
 			emptyFormattedArgs,
+		}, {
+			"One pair",
+			[]string{"a", "b"},
+			nil,
+			map[string]string{"a": "b"},
+		}, {
+			"Two pairs",
+			[]string{"a", "b", "c", "d"},
+			nil,
+			map[string]string{"a": "b", "c": "d"},
+		}, {
+			"Two unordered pairs",
+			[]string{"a", "b", "c", "d"},
+			nil,
+			map[string]string{"c": "d", "a": "b"},
 		},
 	}
 

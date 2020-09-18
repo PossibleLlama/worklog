@@ -37,6 +37,7 @@ func formatArguments(rawArgs []string) (map[string]string, error) {
 		if rawArgs[i] == "" || rawArgs[i+1] == "" {
 			return args, errors.New("arguments cannot be empty")
 		}
+		args[rawArgs[i]] = rawArgs[i+1]
 	}
 
 	// fmt.Printf("%s: %s\n", rawArgs[0], rawArgs[1])
