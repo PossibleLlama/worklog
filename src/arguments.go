@@ -29,6 +29,11 @@ func formatArguments(rawArgs []string) (map[string]string, error) {
 	if len(rawArgs) == 0 {
 		return emptyArgs, errors.New("at least one argument is required")
 	}
+	for _, element := range rawArgs {
+		if element == VersionArg {
+			fmt.Printf(Version)
+			return emptyArgs, nil
+		}
 	}
 	if len(rawArgs)%2 != 0 {
 		return emptyArgs, errors.New("each flag must have an argument")
