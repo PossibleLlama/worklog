@@ -40,8 +40,5 @@ func formatArguments(rawArgs []string) (map[string]string, error) {
 		args[rawArgs[i]] = rawArgs[i+1]
 	}
 
-	// fmt.Printf("%s: %s\n", rawArgs[0], rawArgs[1])
-	// fmt.Printf("%s: %s\n", rawArgs[2], rawArgs[3])
-
 	return args, nil
 }
