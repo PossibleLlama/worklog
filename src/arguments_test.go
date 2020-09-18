@@ -74,6 +74,11 @@ func TestFormatArguments(t *testing.T) {
 			[]string{"-r", "b", "--record", "d"},
 			nil,
 			map[string]string{"--record": "d", "-r": "b"},
+		}, {
+			"Duplicate is overridden",
+			[]string{"-r", "a", "-r", "b"},
+			nil,
+			map[string]string{"-r": "b"},
 		},
 	}
 
