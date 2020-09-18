@@ -11,6 +11,12 @@ const (
 )
 
 func main() {
+	metadataChan := make(chan MetadataFile)
+
+	go getMetadata(metadataChan)
 	args := getArguments(os.Args[1:])
-	fmt.Printf("%+v\n", args)
+
+	metadata := <-metadataChan
+
+	fmt.Printf("%+v\n%+v\n", args, metadata)
 }
