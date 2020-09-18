@@ -25,8 +25,18 @@ func TestFormatArguments(t *testing.T) {
 			errors.New("each argument must have a flag"),
 			emptyFormattedArgs,
 		}, {
-			"Empty arg",
+			"Both empty args",
 			[]string{"", ""},
+			errors.New("arguments cannot be empty"),
+			emptyFormattedArgs,
+		}, {
+			"First arg empty",
+			[]string{"", "b"},
+			errors.New("arguments cannot be empty"),
+			emptyFormattedArgs,
+		}, {
+			"Second arg empty",
+			[]string{"a", ""},
 			errors.New("arguments cannot be empty"),
 			emptyFormattedArgs,
 		},

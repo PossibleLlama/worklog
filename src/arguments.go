@@ -33,8 +33,8 @@ func formatArguments(rawArgs []string) (map[string]string, error) {
 	if len(rawArgs)%2 != 0 {
 		return args, errors.New("each argument must have a flag")
 	}
-	for _, element := range rawArgs {
-		if element == "" {
+	for i := 0; i < len(rawArgs); i = i + 2 {
+		if rawArgs[i] == "" || rawArgs[i+1] == "" {
 			return args, errors.New("arguments cannot be empty")
 		}
 	}
