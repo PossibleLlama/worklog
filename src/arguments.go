@@ -6,14 +6,11 @@ import (
 	"os"
 )
 
-// Argument is all the possible passed values that will mean something
-type Argument string
-
 const (
-	// Version to find the version of the app
-	Version Argument = "--version"
-	// Help argument to find out the options
-	Help Argument = "--help"
+	// VersionArg to find the version of the app
+	VersionArg string = "--version"
+	// HelpArg to find out the options
+	HelpArg string = "--help"
 )
 
 func getArguments(rawArgs []string) map[string]string {
