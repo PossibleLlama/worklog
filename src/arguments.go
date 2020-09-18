@@ -24,15 +24,18 @@ func getArguments(rawArgs []string) map[string]string {
 
 func formatArguments(rawArgs []string) (map[string]string, error) {
 	args := make(map[string]string)
+	emptyArgs := make(map[string]string)
+
 	if len(rawArgs) == 0 {
-		return args, errors.New("at least one argument is required")
+		return emptyArgs, errors.New("at least one argument is required")
+	}
 	}
 	if len(rawArgs)%2 != 0 {
-		return args, errors.New("each argument must have a flag")
+		return emptyArgs, errors.New("each flag must have an argument")
 	}
 	for i := 0; i < len(rawArgs); i = i + 2 {
 		if rawArgs[i] == "" || rawArgs[i+1] == "" {
-			return args, errors.New("arguments cannot be empty")
+			return emptyArgs, errors.New("arguments cannot be empty")
 		}
 		args[rawArgs[i]] = rawArgs[i+1]
 	}

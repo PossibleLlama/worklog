@@ -22,7 +22,7 @@ func TestFormatArguments(t *testing.T) {
 		}, {
 			"Single arg",
 			[]string{"a"},
-			errors.New("each argument must have a flag"),
+			errors.New("each flag must have an argument"),
 			emptyFormattedArgs,
 		}, {
 			"Both empty args",
