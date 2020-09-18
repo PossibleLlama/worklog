@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	versionArg      string = "--version"
-	versionArgShort string = "-v"
 	helpArg         string = "--help"
 	helpArgShort    string = "-h"
+	versionArg      string = "--version"
+	versionArgShort string = "-v"
 	printArg        string = "--print"
 	printArgShort   string = "-p"
 	recordArg       string = "--record"
@@ -100,5 +100,6 @@ func help() string {
 		"----------------------------------------\n" +
 		"-h --help     | Prints the help function.\n" +
 		"-v --version  | Prints the version of the application.\n" +
-		"-r --record   | Makes a record of work done.\n"
+		"-r --record   | Makes a record of work done.\n" +
+		"-p --print    | Prints the work done.\n"
 }
