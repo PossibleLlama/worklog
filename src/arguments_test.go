@@ -97,6 +97,11 @@ func TestFormatArguments(t *testing.T) {
 				t.Errorf("Actual and expected number of returned args are different. Actual: %d Expected: %d",
 					len(actualReturnedArgs), len(testItem.returnedArgs))
 			}
+			for key := range actualReturnedArgs {
+				if actualReturnedArgs[key] != testItem.returnedArgs[key] {
+					t.Errorf("Actual returned element is different to the expected returned element")
+				}
+			}
 		})
 	}
 }
