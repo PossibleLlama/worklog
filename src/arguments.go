@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	// VersionArg to find the version of the app
-	VersionArg string = "--version"
-	// HelpArg to find out the options
-	HelpArg string = "--help"
+	versionArg      string = "--version"
+	versionArgShort string = "-v"
+	helpArg         string = "--help"
+	helpArgShort    string = "-h"
 )
 
 func getArguments(rawArgs []string) map[string]string {
@@ -30,7 +30,11 @@ func formatArguments(rawArgs []string) (map[string]string, error) {
 		return emptyArgs, errors.New("at least one argument is required")
 	}
 	for _, element := range rawArgs {
-		if element == VersionArg {
+		if element == helpArg || element == helpArgShort {
+			fmt.Printf(help())
+			return emptyArgs, nil
+		}
+		if element == versionArg || element == versionArgShort {
 			fmt.Printf(Version)
 			return emptyArgs, nil
 		}
@@ -46,4 +50,11 @@ func formatArguments(rawArgs []string) (map[string]string, error) {
 	}
 
 	return args, nil
+}
+
+func help() string {
+	return `
+		-h --help    | Prints the help function\n
+		-v --version | Prints the version of the application\n
+	`
 }

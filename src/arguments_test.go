@@ -30,6 +30,21 @@ func TestFormatArguments(t *testing.T) {
 			nil,
 			emptyFormattedArgs,
 		}, {
+			"Single short version arg",
+			[]string{"-v"},
+			nil,
+			emptyFormattedArgs,
+		}, {
+			"Single help arg",
+			[]string{"--help"},
+			nil,
+			emptyFormattedArgs,
+		}, {
+			"Single short help arg",
+			[]string{"-h"},
+			nil,
+			emptyFormattedArgs,
+		}, {
 			"Both empty args",
 			[]string{"", ""},
 			errors.New("arguments cannot be empty"),
