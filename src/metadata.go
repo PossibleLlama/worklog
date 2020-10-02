@@ -9,12 +9,12 @@ import (
 )
 
 const (
-	fileName string = "/.worklog"
+	fileName string = "/.worklog.yml"
 )
 
 // MetadataFile information added to each worklog
 type MetadataFile struct {
-	Name string `yaml:"name"`
+	Author string `yaml:"author"`
 }
 
 func getMetadata(metadataChan chan<- MetadataFile) {
@@ -33,8 +33,8 @@ func getMetadata(metadataChan chan<- MetadataFile) {
 		metadataChan <- MetadataFile{}
 	}
 
-	if file.Name == "" {
-		fmt.Printf("unable to get 'name' property from ~/.worklog file")
+	if file.Author == "" {
+		fmt.Printf("unable to get 'author' property from ~%s file.\n", fileName)
 		os.Exit(1)
 	}
 
