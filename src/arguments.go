@@ -106,11 +106,10 @@ func help() string {
 		"-h --help     | Prints the help function.\n" +
 		"-v --version  | Prints the version of the application.\n" +
 		spacer +
-		"-r --record   | Makes a record of work done.\n" +
 		"--title       | Add title to record.\n" +
 		"--description | Add description to record.\n" +
 		"--where       | Add location to record.\n" +
-		"--when        | Add time to record.\n" +
+		"--when        | Add time to record. In format YYYY-MM-DD, can optionally take time HH:mm:SS\n" +
 		spacer +
 		"-p --print    | Prints the work done.\n"
 }

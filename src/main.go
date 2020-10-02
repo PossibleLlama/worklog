@@ -22,7 +22,6 @@ func main() {
 	if work != nil {
 		fmt.Printf("%s\n", *work)
 	}
-
 }
 
 func record(args map[string]string, metadata MetadataFile) *Work {
