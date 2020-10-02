@@ -50,6 +50,19 @@ func TestNewWork(t *testing.T) {
 				Where: "location",
 				When: validDate,
 			},
+		}, {
+			"No when",
+			"title",
+			"description",
+			"who",
+			"location",
+			"",
+			Work{
+				Title: "title",
+				Description: "description",
+				Author: "who",
+				Where: "location",
+			},
 		},
 	}
 
@@ -71,8 +84,14 @@ func TestNewWork(t *testing.T) {
 			if actual.Where != testItem.expected.Where {
 				t.Errorf("Should have where %s, instead has %s", testItem.expected.Where, actual.Where)
 			}
-			if actual.When != testItem.expected.When {
-				t.Errorf("Should have when %s, instead has %s", testItem.expected.When, actual.When)
+			if testItem.wWhen != "" {
+				if actual.When != testItem.expected.When {
+					t.Errorf("Should have when %s, instead has %s", testItem.expected.When, actual.When)
+				}
+			} else {
+				if actual.When.Equal(actual.Created) {
+					t.Error("When and created should be the same")
+				}
 			}
 			if time.Since(before) < time.Since(actual.Created) {
 				t.Error("Was not created after start of test")
