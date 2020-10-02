@@ -1,6 +1,7 @@
 package main
 
 import (
+	"time"
 	"gopkg.in/yaml.v2"
 	"fmt"
 	"os"
@@ -22,13 +23,15 @@ func main() {
 
 	work := record(args, metadata)
 	if work != nil {
-		fmt.Printf("%s\n", *work)
 		store(work, metadata.RecordLocation)
 	}
+
+	print(args, metadata.RecordLocation)
 }
 
 func record(args map[string]string, metadata MetadataFile) *Work {
 	if title, contained := args[titleArg]; contained {
+		fmt.Printf("Saving file...\n")
 		return New(title,
 			args[descriptionArg],
 			metadata.Author,
@@ -63,4 +66,34 @@ func store(work *Work, location string) {
 	}
 	file.Write(bytes)
 	file.Sync()
+}
+
+func print(args map[string]string, location string) {
+	fmt.Printf("Retrieving file...\n")
+	previousDate := getPrintArgumentAsDate(args)
+	// TODO search for files with names that are after
+	// the YYYY-MM-DD of this date
+	fmt.Println(previousDate)
+}
+
+func getPrintArgumentAsDate(args map[string]string) time.Time {
+	dateShort, containedShort := args[printArgShort]
+	dateLong, containedLong := args[printArg]
+	var dateString string
+	if containedShort || containedLong {
+		if containedShort {
+			dateString = dateShort
+		} else {
+			dateString = dateLong
+		}
+	}
+	if len(dateString) == 10 {
+		dateString = fmt.Sprintf("%sT00:00:00Z", dateString)
+	}
+	date, err := time.Parse(time.RFC3339, dateString)
+	if err != nil {
+		fmt.Printf("Date to print from is not a valid date. %s\n", err.Error())
+		os.Exit(1)
+	}
+	return date
 }
