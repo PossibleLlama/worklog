@@ -49,7 +49,7 @@ func store(work *Work, location string) {
 	
 	file, err := os.Create(location + fileName)
 	if err != nil {
-		fmt.Printf("Unable to create file %s. %s",
+		fmt.Printf("Unable to create file %s. %s\n",
 			location + work.When.String(),
 			err.Error())
 		os.Exit(1)
@@ -58,7 +58,7 @@ func store(work *Work, location string) {
 
 	bytes, err := yaml.Marshal(*work)
 	if err != nil {
-		fmt.Printf("Unable to encode record. %s", work)
+		fmt.Printf("Unable to encode record. %s\n", work)
 		os.Exit(1)
 	}
 	file.Write(bytes)
