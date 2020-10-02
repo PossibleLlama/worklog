@@ -18,5 +18,20 @@ func main() {
 
 	metadata := <-metadataChan
 
-	fmt.Printf("%+v\n%+v\n", args, metadata)
+	work := record(args, metadata)
+	if work != nil {
+		fmt.Printf("%+v\n", *work)
+	}
+
+}
+
+func record(args map[string]string, metadata MetadataFile) *Work {
+	if title, contained := args[titleArg]; contained {
+		return New(title,
+			args[descriptionArg],
+			metadata.Author,
+			args[whereArg],
+			args[whenArg])
+	}
+	return nil
 }
