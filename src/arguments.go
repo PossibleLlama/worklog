@@ -13,8 +13,10 @@ const (
 	versionArgShort string = "-v"
 	printArg        string = "--print"
 	printArgShort   string = "-p"
-	recordArg       string = "--record"
-	recordArgShort  string = "-r"
+	titleArg		string = "--title"
+	descriptionArg	string = "--description"
+	whereArg		string = "--where"
+	whenArg			string = "--when"
 )
 
 func listAllSingleArgs() []string {
@@ -30,8 +32,10 @@ func listAllPairArgs() []string {
 	return []string{
 		printArg,
 		printArgShort,
-		recordArg,
-		recordArgShort,
+		titleArg,
+		descriptionArg,
+		whereArg,
+		whenArg,
 	}
 }
 
@@ -76,11 +80,11 @@ func isValidSingleArgument(rawArgs []string) bool {
 	for _, element := range rawArgs {
 		if element == helpArg || element == helpArgShort {
 			fmt.Printf(help())
-			return true
+			os.Exit(0)
 		}
 		if element == versionArg || element == versionArgShort {
 			fmt.Printf("%s\n", Version)
-			return true
+			os.Exit(0)
 		}
 	}
 	return false
@@ -96,10 +100,16 @@ func isValidPairArgument(arg string) bool {
 }
 
 func help() string {
+	spacer := "----------------------------------------\n"
 	return " Argument     | Description\n" +
-		"----------------------------------------\n" +
+		spacer +
 		"-h --help     | Prints the help function.\n" +
 		"-v --version  | Prints the version of the application.\n" +
-		"-r --record   | Makes a record of work done.\n" +
+		spacer +
+		"--title       | Add title to record.\n" +
+		"--description | Add description to record.\n" +
+		"--where       | Add location to record.\n" +
+		"--when        | Add time to record. In format YYYY-MM-DD, can optionally take time HH:mm:SS\n" +
+		spacer +
 		"-p --print    | Prints the work done.\n"
 }
