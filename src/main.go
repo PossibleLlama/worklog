@@ -46,7 +46,7 @@ func store(work *Work, location string) {
 		work.When.Hour(),
 		work.When.Minute(),
 		strings.ReplaceAll(work.Title, " ", "_"))
-	
+
 	file, err := os.Create(location + fileName)
 	if err != nil {
 		fmt.Printf("Unable to create file %s. %s\n",

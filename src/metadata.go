@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strings"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -41,6 +42,10 @@ func getMetadata(metadataChan chan<- MetadataFile) {
 	}
 	if file.RecordLocation == "" {
 		file.RecordLocation = filePath
+	}
+
+	if file.RecordLocation[len(file.RecordLocation)-1:] != "/" {
+		file.RecordLocation += "/"
 	}
 
 	metadataChan <- file
