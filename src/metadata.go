@@ -40,6 +40,7 @@ func getMetadata(metadataChan chan<- MetadataFile) {
 		fmt.Printf("unable to get 'author' property from ~%s file.\n", configFileName)
 		os.Exit(1)
 	}
+	file.RecordLocation = strings.ReplaceAll(file.RecordLocation, "~", os.Getenv("HOME"))
 	if file.RecordLocation == "" {
 		file.RecordLocation = filePath
 	}
