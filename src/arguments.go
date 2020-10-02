@@ -76,11 +76,11 @@ func isValidSingleArgument(rawArgs []string) bool {
 	for _, element := range rawArgs {
 		if element == helpArg || element == helpArgShort {
 			fmt.Printf(help())
-			return true
+			os.Exit(0)
 		}
 		if element == versionArg || element == versionArgShort {
 			fmt.Printf("%s\n", Version)
-			return true
+			os.Exit(0)
 		}
 	}
 	return false
