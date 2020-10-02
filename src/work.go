@@ -20,9 +20,12 @@ type Work struct {
 
 // New is the generator for work.
 func New(title, description, author, where, when string) *Work {
+	if len(when) == 10 {
+		when = fmt.Sprintf("%sT00:00:00Z", when)
+	}
 	whenAsDate, err := time.Parse(time.RFC3339, when)
 	if err != nil {
-		fmt.Printf("when is not in a valid time format.")
+		fmt.Printf("when is not in a valid time format. %s\n", err.Error())
 		os.Exit(1)
 	}
 	return &Work{
