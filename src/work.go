@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -44,4 +45,27 @@ func New(title, description, author, where, when string) *Work {
 		When:        whenAsDate,
 		Created:     now,
 	}
+}
+
+func (w Work) String() string {
+	finalString := " "
+	if w.Title != "" {
+		finalString = fmt.Sprintf("%s Title: %s,", finalString, w.Title)
+	}
+	if w.Description != "" {
+		finalString = fmt.Sprintf("%s Description: %s,", finalString, w.Description)
+	}
+	if w.Author != "" {
+		finalString = fmt.Sprintf("%s Author: %s,", finalString, w.Author)
+	}
+	if w.Where != "" {
+		finalString = fmt.Sprintf("%s Where: %s,", finalString, w.Where)
+	}
+	if ! w.When.Equal(time.Time{}) {
+		finalString = fmt.Sprintf("%s When: %s,", finalString, w.When)
+	}
+	if ! w.Created.Equal(time.Time{}) {
+		finalString = fmt.Sprintf("%s Created: %s,", finalString, w.Created)
+	}
+	return strings.TrimSpace(finalString[:len(finalString)-1])
 }

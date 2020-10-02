@@ -20,7 +20,7 @@ func main() {
 
 	work := record(args, metadata)
 	if work != nil {
-		fmt.Printf("%+v\n", *work)
+		fmt.Printf("%s\n", *work)
 	}
 
 }
