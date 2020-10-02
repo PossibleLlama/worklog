@@ -21,7 +21,7 @@ func TestFormatArguments(t *testing.T) {
 			emptyFormattedArgs,
 		}, {
 			"Single arg",
-			[]string{"-r"},
+			[]string{"-q"},
 			errors.New("each flag must have an argument"),
 			emptyFormattedArgs,
 		}, {
@@ -61,24 +61,24 @@ func TestFormatArguments(t *testing.T) {
 			emptyFormattedArgs,
 		}, {
 			"One pair",
-			[]string{"-r", "b"},
+			[]string{"--title", "b"},
 			nil,
-			map[string]string{"-r": "b"},
+			map[string]string{"--title": "b"},
 		}, {
 			"Two pairs",
-			[]string{"-r", "b", "-p", "1d"},
+			[]string{"--title", "b", "-p", "1d"},
 			nil,
-			map[string]string{"-r": "b", "-p": "1d"},
+			map[string]string{"--title": "b", "-p": "1d"},
 		}, {
 			"Two unordered pairs",
-			[]string{"-r", "b", "-p", "1d"},
+			[]string{"--title", "b", "-p", "1d"},
 			nil,
-			map[string]string{"-p": "1d", "-r": "b"},
+			map[string]string{"-p": "1d", "--title": "b"},
 		}, {
 			"Duplicate is overridden",
-			[]string{"-r", "a", "-r", "b"},
+			[]string{"--title", "a", "--title", "b"},
 			nil,
-			map[string]string{"-r": "b"},
+			map[string]string{"--title": "b"},
 		},
 	}
 
