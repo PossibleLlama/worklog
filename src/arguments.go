@@ -13,10 +13,10 @@ const (
 	versionArgShort string = "-v"
 	printArg        string = "--print"
 	printArgShort   string = "-p"
-	titleArg		string = "--title"
-	descriptionArg	string = "--description"
-	whereArg		string = "--where"
-	whenArg			string = "--when"
+	titleArg        string = "--title"
+	descriptionArg  string = "--description"
+	whereArg        string = "--where"
+	whenArg         string = "--when"
 )
 
 func listAllSingleArgs() []string {
@@ -111,5 +111,5 @@ func help() string {
 		"--where       | Add location to record.\n" +
 		"--when        | Add time to record. In format YYYY-MM-DD, can optionally take time HH:mm:SS\n" +
 		spacer +
-		"-p --print    | Prints the work done.\n"
+		"-p --print    | Prints the work done since date.\n"
 }

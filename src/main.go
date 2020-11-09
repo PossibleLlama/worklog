@@ -1,10 +1,14 @@
 package main
 
 import (
-	"gopkg.in/yaml.v2"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
+	"time"
+
+	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -22,13 +26,15 @@ func main() {
 
 	work := record(args, metadata)
 	if work != nil {
-		fmt.Printf("%s\n", *work)
 		store(work, metadata.RecordLocation)
+	} else {
+		print(args, metadata.RecordLocation)
 	}
 }
 
 func record(args map[string]string, metadata MetadataFile) *Work {
 	if title, contained := args[titleArg]; contained {
+		fmt.Printf("Saving file...\n")
 		return New(title,
 			args[descriptionArg],
 			metadata.Author,
@@ -47,10 +53,10 @@ func store(work *Work, location string) {
 		work.When.Minute(),
 		strings.ReplaceAll(work.Title, " ", "_"))
 
-	file, err := os.Create(location + fileName)
+	file, err := os.Create(location + fileName + ".yml")
 	if err != nil {
 		fmt.Printf("Unable to create file %s. %s\n",
-			location + work.When.String(),
+			location+work.When.String(),
 			err.Error())
 		os.Exit(1)
 	}
@@ -63,4 +69,81 @@ func store(work *Work, location string) {
 	}
 	file.Write(bytes)
 	file.Sync()
+	fmt.Println("Saved file")
+}
+
+func print(args map[string]string, location string) {
+	fmt.Printf("Retrieving files...\n")
+	previousDate := getPrintArgumentAsDate(args)
+	files := getFilesWithNameSinceDate(previousDate, location)
+
+	for index, fileName := range files {
+		printWorklogFromFile(fileName)
+		if index != (len(files) - 1) {
+			fmt.Println()
+		}
+	}
+}
+
+func getPrintArgumentAsDate(args map[string]string) time.Time {
+	dateShort, containedShort := args[printArgShort]
+	dateLong, containedLong := args[printArg]
+	var dateString string
+	if containedShort || containedLong {
+		if containedShort {
+			dateString = dateShort
+		} else {
+			dateString = dateLong
+		}
+	}
+	return getStringAsDate(dateString)
+}
+
+func getStringAsDate(element string) time.Time {
+	var dateString string
+	if len(element) == 10 {
+		dateString = fmt.Sprintf("%sT00:00:00Z", element)
+	} else {
+		dateString = element
+	}
+	date, err := time.Parse(time.RFC3339, dateString)
+	if err != nil {
+		fmt.Printf("Date to print from is not a valid date. %s\n", err.Error())
+		os.Exit(1)
+	}
+	return date
+}
+
+func getFilesWithNameSinceDate(date time.Time, location string) []string {
+	var files []string
+	err := filepath.Walk(location, func(fullPath string, info os.FileInfo, err error) error {
+		path := filepath.Base(fullPath)
+		if strings.Count(path, "_") < 1 {
+			return nil
+		}
+
+		filesDateAsString := strings.Split(path, "_")[0]
+		filesDate := getStringAsDate(filesDateAsString)
+
+		if filesDate.After(date) {
+			files = append(files, fullPath)
+		}
+		return nil
+	})
+	if err != nil {
+		fmt.Printf("Error getting files from location %s. %e\n", location, err)
+		os.Exit(1)
+	}
+	return files
+}
+
+func printWorklogFromFile(filePath string) {
+	var worklog Work
+	yamlFile, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		fmt.Printf("Error reading file %s. %e\n", filePath, err)
+	}
+	yaml.Unmarshal(yamlFile, &worklog)
+
+	fmt.Printf("%+v \n", worklog)
 }
