@@ -69,6 +69,7 @@ func store(work *Work, location string) {
 	}
 	file.Write(bytes)
 	file.Sync()
+	fmt.Println("Saved file")
 }
 
 func print(args map[string]string, location string) {
