@@ -16,15 +16,15 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
 
-    - name: Switch directory
-      run: cd src
-
     - name: Get dependencies
       run: |
         go mod download
+      working-directory: src
 
     - name: Build
       run: go build -v .
+      working-directory: src
 
     - name: Test
       run: go test -v ./...
+      working-directory: src
