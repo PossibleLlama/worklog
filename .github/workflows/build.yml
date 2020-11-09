@@ -49,7 +49,7 @@ jobs:
     name: Store artifacts
     runs-on: ubuntu-latest
     needs: [build, unit_test]
-    if: github.ref == 'refs/heads/main'
+    #if: github.ref == 'refs/heads/main'
 
     steps:
     - name: Set up Go 1.x
@@ -65,7 +65,7 @@ jobs:
       working-directory: src
 
     - name: Build
-      run: go build -o dist/worklog -v .
+      run: "go build -ldflags='-w -s' -o dist/worklog -v ."
       working-directory: src
 
     - name: Archive production artifacts
