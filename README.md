@@ -1,6 +1,9 @@
 # Worklog
 
-Intented to be a quick CLI to track what you have done each day.
+![Go](https://github.com/PossibleLlama/worklog/workflows/Go/badge.svg)
+
+Intented to be a quick productivity CLI tool, to track what you
+have done each day.
 
 ## ~/.worklog/config.yml
 
