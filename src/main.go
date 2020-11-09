@@ -1,11 +1,14 @@
 package main
 
 import (
-	"time"
-	"gopkg.in/yaml.v2"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
+	"time"
+
+	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -73,7 +76,12 @@ func print(args map[string]string, location string) {
 	previousDate := getPrintArgumentAsDate(args)
 	// TODO search for files with names that are after
 	// the YYYY-MM-DD of this date
-	fmt.Println(previousDate)
+	files := getFilesWithNameSinceDate(previousDate, location)
+
+	for _, fileName := range files {
+		// fmt.Printf("%s\n", fileName)
+		printWorklogFromFile(fileName)
+	}
 }
 
 func getPrintArgumentAsDate(args map[string]string) time.Time {
@@ -103,4 +111,38 @@ func getStringAsDate(element string) time.Time {
 		os.Exit(1)
 	}
 	return date
+}
+
+func getFilesWithNameSinceDate(date time.Time, location string) []string {
+	var files []string
+	err := filepath.Walk(location, func(fullPath string, info os.FileInfo, err error) error {
+		path := filepath.Base(fullPath)
+		if strings.Count(path, "_") < 1 {
+			return nil
+		}
+
+		filesDateAsString := strings.Split(path, "_")[0]
+		filesDate := getStringAsDate(filesDateAsString)
+
+		if filesDate.After(date) {
+			files = append(files, fullPath)
+		}
+		return nil
+	})
+	if err != nil {
+		fmt.Printf("Error getting files from location %s. %e\n", location, err)
+		os.Exit(1)
+	}
+	return files
+}
+
+func printWorklogFromFile(filePath string) {
+	var worklog Work
+	yamlFile, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		fmt.Printf("Error reading file %s. %e\n", filePath, err)
+	}
+	yaml.Unmarshal(yamlFile, &worklog)
+
+	fmt.Printf("%+v \n", worklog)
 }
