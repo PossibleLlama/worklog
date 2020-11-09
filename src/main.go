@@ -50,10 +50,10 @@ func store(work *Work, location string) {
 		work.When.Minute(),
 		strings.ReplaceAll(work.Title, " ", "_"))
 
-	file, err := os.Create(location + fileName)
+	file, err := os.Create(location + fileName + ".yml")
 	if err != nil {
 		fmt.Printf("Unable to create file %s. %s\n",
-			location + work.When.String(),
+			location+work.When.String(),
 			err.Error())
 		os.Exit(1)
 	}
@@ -69,7 +69,7 @@ func store(work *Work, location string) {
 }
 
 func print(args map[string]string, location string) {
-	fmt.Printf("Retrieving file...\n")
+	fmt.Printf("Retrieving files...\n")
 	previousDate := getPrintArgumentAsDate(args)
 	// TODO search for files with names that are after
 	// the YYYY-MM-DD of this date
