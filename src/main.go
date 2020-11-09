@@ -87,8 +87,15 @@ func getPrintArgumentAsDate(args map[string]string) time.Time {
 			dateString = dateLong
 		}
 	}
-	if len(dateString) == 10 {
-		dateString = fmt.Sprintf("%sT00:00:00Z", dateString)
+	return getStringAsDate(dateString)
+}
+
+func getStringAsDate(element string) time.Time {
+	var dateString string
+	if len(element) == 10 {
+		dateString = fmt.Sprintf("%sT00:00:00Z", element)
+	} else {
+		dateString = element
 	}
 	date, err := time.Parse(time.RFC3339, dateString)
 	if err != nil {
