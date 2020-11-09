@@ -22,14 +22,14 @@ jobs:
       working-directory: src
 
     - name: Build
-      run: go build -o worklog -v .
+      run: go build -o dist/worklog -v .
       working-directory: src
 
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       with:
         name: workflow-binary
-        path: workflow
+        path: src/dist
 
   unit_test:
     name: Unit test
