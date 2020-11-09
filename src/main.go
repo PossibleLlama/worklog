@@ -75,13 +75,13 @@ func store(work *Work, location string) {
 func print(args map[string]string, location string) {
 	fmt.Printf("Retrieving files...\n")
 	previousDate := getPrintArgumentAsDate(args)
-	// TODO search for files with names that are after
-	// the YYYY-MM-DD of this date
 	files := getFilesWithNameSinceDate(previousDate, location)
 
-	for _, fileName := range files {
-		// fmt.Printf("%s\n", fileName)
+	for index, fileName := range files {
 		printWorklogFromFile(fileName)
+		if index != (len(files) - 1) {
+			fmt.Println()
+		}
 	}
 }
 
