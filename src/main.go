@@ -27,9 +27,9 @@ func main() {
 	work := record(args, metadata)
 	if work != nil {
 		store(work, metadata.RecordLocation)
+	} else {
+		print(args, metadata.RecordLocation)
 	}
-
-	print(args, metadata.RecordLocation)
 }
 
 func record(args map[string]string, metadata MetadataFile) *Work {
