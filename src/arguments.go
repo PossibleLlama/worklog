@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
+
+	"github.com/PossibleLlama/worklog/helpers"
 )
 
 const (
@@ -83,7 +85,7 @@ func isValidSingleArgument(rawArgs []string) bool {
 			os.Exit(0)
 		}
 		if element == versionArg || element == versionArgShort {
-			fmt.Printf("%s\n", Version)
+			fmt.Printf("%s\n", helpers.Version)
 			os.Exit(0)
 		}
 	}
