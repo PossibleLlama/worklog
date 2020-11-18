@@ -11,6 +11,7 @@ import (
 var title string
 var description string
 var when time.Time
+var whenString string
 
 // createCmd represents the create command
 var createCmd = &cobra.Command{
@@ -19,6 +20,7 @@ var createCmd = &cobra.Command{
 	Long: `Creating a new record of work that
 the user has created.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		when = helpers.GetStringAsDateTime(whenString)
 		fmt.Printf("create called with %s %s %s\n", title, description, helpers.TimeFormat(when))
 	},
 }
@@ -36,7 +38,8 @@ func init() {
 		"description",
 		"",
 		"A description of the work")
-	createCmd.Flags().String(
+	createCmd.Flags().StringVar(
+		&whenString,
 		"when",
 		helpers.TimeFormat(time.Now()),
 		"When the work was worked")
