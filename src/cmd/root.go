@@ -15,16 +15,13 @@ var cfgFile string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "worklog",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "A productivity tool to track previous work",
+	Long: `A CLI tool to let people track what work they
+have completed. You can record what work you do,
+and get a summary of what you've done each day.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
+For information on using the CLI, use worklog
+--help`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -43,7 +40,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.worklog.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.worklog/config.yml)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -64,8 +61,8 @@ func initConfig() {
 		}
 
 		// Search config in home directory with name ".worklog" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".worklog")
+		viper.AddConfigPath(home + ".worklog/")
+		viper.SetConfigName("config")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
