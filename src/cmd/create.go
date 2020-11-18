@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/spf13/cobra"
 )
 
@@ -18,7 +19,7 @@ var createCmd = &cobra.Command{
 	Long: `Creating a new record of work that
 the user has created.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("create called with %s %s %s\n", title, description, timeFormat(when))
+		fmt.Printf("create called with %s %s %s\n", title, description, helpers.TimeFormat(when))
 	},
 }
 
@@ -37,11 +38,7 @@ func init() {
 		"A description of the work")
 	createCmd.Flags().String(
 		"when",
-		timeFormat(time.Now()),
+		helpers.TimeFormat(time.Now()),
 		"When the work was worked")
 	createCmd.MarkFlagRequired("title")
-}
-
-func timeFormat(t time.Time) string {
-	return t.Format(time.RFC3339)
 }
