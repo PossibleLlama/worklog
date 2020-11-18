@@ -7,6 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var title string
+var description string
+var when time.Time
+
 // createCmd represents the create command
 var createCmd = &cobra.Command{
 	Use:   "create",
@@ -14,23 +18,30 @@ var createCmd = &cobra.Command{
 	Long: `Creating a new record of work that
 the user has created.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("create called")
+		fmt.Printf("create called with %s %s %s\n", title, description, timeFormat(when))
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(createCmd)
 
-	createCmd.Flags().String(
+	createCmd.Flags().StringVar(
+		&title,
 		"title",
 		"",
 		"A short description of the work done")
-	createCmd.Flags().String(
+	createCmd.Flags().StringVar(
+		&description,
 		"description",
 		"",
 		"A description of the work")
 	createCmd.Flags().String(
 		"when",
-		time.Now().Format(time.RFC3339),
+		timeFormat(time.Now()),
 		"When the work was worked")
+	createCmd.MarkFlagRequired("title")
+}
+
+func timeFormat(t time.Time) string {
+	return t.Format(time.RFC3339)
 }
