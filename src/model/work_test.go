@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"fmt"
@@ -13,14 +13,14 @@ func TestNewWork(t *testing.T) {
 		t.Error("Unable to parse initial date")
 	}
 
-	var tests = []struct{
-		name string
-		wTitle string
+	var tests = []struct {
+		name         string
+		wTitle       string
 		wDescription string
-		wAuthor string
-		wWhere string
-		wWhen string
-		expected Work
+		wAuthor      string
+		wWhere       string
+		wWhen        string
+		expected     Work
 	}{
 		{
 			"Short date",
@@ -30,11 +30,11 @@ func TestNewWork(t *testing.T) {
 			"location",
 			validStringDate,
 			Work{
-				Title: "title",
+				Title:       "title",
 				Description: "description",
-				Author: "who",
-				Where: "location",
-				When: validDate,
+				Author:      "who",
+				Where:       "location",
+				When:        validDate,
 			},
 		}, {
 			"Full date",
@@ -44,11 +44,11 @@ func TestNewWork(t *testing.T) {
 			"location",
 			fmt.Sprintf("%sT00:00:00Z", validStringDate),
 			Work{
-				Title: "title",
+				Title:       "title",
 				Description: "description",
-				Author: "who",
-				Where: "location",
-				When: validDate,
+				Author:      "who",
+				Where:       "location",
+				When:        validDate,
 			},
 		}, {
 			"No when",
@@ -58,10 +58,10 @@ func TestNewWork(t *testing.T) {
 			"location",
 			"",
 			Work{
-				Title: "title",
+				Title:       "title",
 				Description: "description",
-				Author: "who",
-				Where: "location",
+				Author:      "who",
+				Where:       "location",
 			},
 		},
 	}
@@ -69,7 +69,7 @@ func TestNewWork(t *testing.T) {
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
 			before := time.Now()
-			actual := New(testItem.wTitle, testItem.wDescription, testItem.wAuthor, testItem.wWhere, testItem.wWhen)
+			actual := NewWork(testItem.wTitle, testItem.wDescription, testItem.wAuthor, testItem.wWhere, testItem.wWhen)
 			after := time.Now()
 
 			if actual.Title != testItem.expected.Title {
@@ -89,11 +89,11 @@ func TestNewWork(t *testing.T) {
 					t.Errorf("Should have when %s, instead has %s", testItem.expected.When, actual.When)
 				}
 			} else {
-				if actual.When.Equal(actual.Created) {
-					t.Error("When and created should be the same")
+				if !actual.When.Equal(actual.Created) {
+					t.Errorf("When '%s' and created '%s' should be the same", actual.When, actual.Created)
 				}
 			}
-			if time.Since(before) < time.Since(actual.Created) {
+			if time.Since(actual.Created) < time.Since(before) {
 				t.Error("Was not created after start of test")
 			}
 			if time.Since(actual.Created) < time.Since(after) {
