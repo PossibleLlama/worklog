@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"fmt"
-	"os"
 	"time"
 )
 
@@ -24,8 +23,7 @@ func GetStringAsDateTime(element string) (time.Time, error) {
 	}
 	date, err := time.Parse(time.RFC3339, dateString)
 	if err != nil {
-		fmt.Printf("Date to print from is not a valid date. %s\n", err.Error())
-		os.Exit(1)
+		return time.Now(), fmt.Errorf("unable to parse string as date. '%s'", err)
 	}
 	return date, nil
 }
