@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/PossibleLlama/worklog/helpers"
@@ -20,7 +21,10 @@ var createCmd = &cobra.Command{
 	Long: `Creating a new record of work that
 the user has created.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		when = helpers.GetStringAsDateTime(whenString)
+		when, err := helpers.GetStringAsDateTime(whenString)
+		if err != nil {
+			os.Exit(1)
+		}
 		fmt.Printf("create called with %s %s %s\n", title, description, helpers.TimeFormat(when))
 	},
 }
