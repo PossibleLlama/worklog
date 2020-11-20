@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"errors"
+	"strings"
 	"testing"
 	"time"
 )
@@ -44,7 +45,7 @@ func Test(t *testing.T) {
 			name:             "Invalid string",
 			dateTimeString:   "err",
 			dateTimeExpected: time.Now(),
-			err:              errors.New("unable to parse string as date. '"),
+			err:              errors.New("unable to parse string as date"),
 		},
 	}
 
@@ -57,9 +58,9 @@ func Test(t *testing.T) {
 					t.Errorf("Produced error %s when none expected", err)
 				} else if err == nil {
 					t.Error("Expected error to be produced, but none returned")
-					// } else if err.Error() {
-					// Check whether the error string from expected is
-					// contained within actual error.
+				} else if !strings.Contains(err.Error(), testItem.err.Error()) {
+					t.Errorf("Expected error to contain '%s', but was '%s'",
+						testItem.err.Error(), err.Error())
 				}
 			} else {
 				if !actual.Equal(testItem.dateTimeExpected) {
