@@ -42,12 +42,7 @@ func (*yamlFileRepo) Save(wl *model.Work) error {
 func generateFileName(wl *model.Work) string {
 	filePath := viper.GetString("recordLocation")
 	if filePath == "" {
-		home, err := homedir.Dir()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		filePath = home + "/.worklog/"
+		filePath = getWorklogDir()
 	}
 
 	fileName := fmt.Sprintf("%d-%02d-%02d_%02d:%02d_%s",
@@ -59,6 +54,15 @@ func generateFileName(wl *model.Work) string {
 		strings.ReplaceAll(
 			strings.TrimSpace(wl.Title), " ", "_"))
 	return filePath + fileName + ".yml"
+}
+
+func getWorklogDir() string {
+	home, err := homedir.Dir()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	return home + "/.worklog/"
 }
 
 func createFile(fileName string) (*os.File, error) {
