@@ -7,6 +7,38 @@ import (
 	"time"
 )
 
+func TestTimeFormat(t *testing.T) {
+	parsedTime, err := time.Parse(time.RFC3339, "2000-01-02T01:23:45Z")
+	if err != nil {
+		t.Errorf("Initialization of test data failed with %s", err)
+	}
+
+	var tests = []struct {
+		name   string
+		input  time.Time
+		output string
+	}{
+		{
+			name:   "Valid RFC3339 date time is same",
+			input:  parsedTime,
+			output: "2000-01-02T01:23:45Z",
+		},
+	}
+
+	for _, testItem := range tests {
+		t.Run(testItem.name, func(t *testing.T) {
+			actual := TimeFormat(testItem.input)
+
+			if actual != testItem.output {
+				t.Errorf("Input '%s' was expected to be formated as '%s', but instead '%s'",
+					testItem.input,
+					testItem.output,
+					actual)
+			}
+		})
+	}
+}
+
 func TestGetStringAsDateTime(t *testing.T) {
 	expectedDateTimeMidnight, err := time.Parse(time.RFC3339, "2000-01-01T00:00:00Z")
 	if err != nil {
