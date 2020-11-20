@@ -11,7 +11,6 @@ func TimeFormat(t time.Time) string {
 }
 
 // GetStringAsDateTime ensures a string is a dateTime
-// TODO this should be changed to return an error
 func GetStringAsDateTime(element string) (time.Time, error) {
 	var dateString string
 	if len(element) == 10 {
