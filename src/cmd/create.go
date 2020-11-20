@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"fmt"
 	"time"
+
+	"github.com/PossibleLlama/worklog/model"
 
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/spf13/cobra"
@@ -24,8 +25,9 @@ the user has created.`,
 		if err != nil {
 			return err
 		}
-		fmt.Printf("create called with %s %s %s\n", title, description, helpers.TimeFormat(when))
-		return nil
+
+		work := model.NewWork(title, description, "", "", helpers.TimeFormat(when))
+		return wlService.CreateWorklog(work)
 	},
 }
 

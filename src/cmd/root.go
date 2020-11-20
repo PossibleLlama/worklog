@@ -6,10 +6,12 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/PossibleLlama/worklog/service"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
+var wlService service.WorklogService
 var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
@@ -35,6 +37,7 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+	wlService = service.NewWorklogService()
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.worklog/config.yml)")
 }
