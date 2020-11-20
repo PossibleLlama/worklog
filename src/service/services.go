@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/PossibleLlama/worklog/model"
+	"github.com/PossibleLlama/worklog/repository"
 )
 
 // WorklogService defines what a service for
@@ -13,15 +14,15 @@ type WorklogService interface {
 type service struct{}
 
 var (
-// repo   repository.WorklogRepository
+	repo repository.WorklogRepository
 )
 
 // NewWorklogService Generator for service while initialising the storage capability
-func NewWorklogService() WorklogService {
-	// repo = repository
+func NewWorklogService(repository repository.WorklogRepository) WorklogService {
+	repo = repository
 	return &service{}
 }
 
 func (*service) CreateWorklog(wl *model.Work) error {
-	return nil
+	return repo.Save(wl)
 }
