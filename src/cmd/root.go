@@ -60,8 +60,8 @@ func initConfig() {
 		}
 
 		// Search config in home directory with name ".worklog" (without extension).
-		viper.AddConfigPath(home + ".worklog/")
-		viper.SetConfigName("config")
+		viper.AddConfigPath(home)
+		viper.SetConfigName(".worklog/config")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match

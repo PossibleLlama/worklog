@@ -7,6 +7,7 @@ import (
 
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var title string
@@ -26,7 +27,7 @@ the user has created.`,
 			return err
 		}
 
-		work := model.NewWork(title, description, "", "", helpers.TimeFormat(when))
+		work := model.NewWork(title, description, viper.GetString("author"), "", helpers.TimeFormat(when))
 		_, err = wlService.CreateWorklog(work)
 		return err
 	},
