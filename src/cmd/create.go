@@ -27,7 +27,8 @@ the user has created.`,
 		}
 
 		work := model.NewWork(title, description, "", "", helpers.TimeFormat(when))
-		return wlService.CreateWorklog(work)
+		_, err = wlService.CreateWorklog(work)
+		return err
 	},
 }
 

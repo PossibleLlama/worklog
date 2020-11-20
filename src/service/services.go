@@ -1,6 +1,8 @@
 package service
 
 import (
+	"net/http"
+
 	"github.com/PossibleLlama/worklog/model"
 	"github.com/PossibleLlama/worklog/repository"
 )
@@ -8,7 +10,7 @@ import (
 // WorklogService defines what a service for
 // worklogs should be capable of doing
 type WorklogService interface {
-	CreateWorklog(wl *model.Work) error
+	CreateWorklog(wl *model.Work) (int, error)
 }
 
 type service struct{}
@@ -23,6 +25,9 @@ func NewWorklogService(repository repository.WorklogRepository) WorklogService {
 	return &service{}
 }
 
-func (*service) CreateWorklog(wl *model.Work) error {
-	return repo.Save(wl)
+func (*service) CreateWorklog(wl *model.Work) (int, error) {
+	if err := repo.Save(wl); err != nil {
+		return http.StatusInternalServerError, err
+	}
+	return http.StatusCreated, nil
 }
