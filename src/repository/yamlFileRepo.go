@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/PossibleLlama/worklog/model"
 	homedir "github.com/mitchellh/go-homedir"
@@ -72,4 +73,10 @@ func createFile(fileName string) (*os.File, error) {
 			fileName, err.Error())
 	}
 	return file, nil
+}
+
+func (*yamlFileRepo) GetAllSinceDate(startDate time.Time) ([]*model.Work, error) {
+	fmt.Println("Retrieving files...")
+	var worklogs []*model.Work
+	return worklogs, nil
 }

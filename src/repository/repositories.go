@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/PossibleLlama/worklog/model"
 )
 
@@ -8,4 +10,6 @@ import (
 // for worklogs should be capable of doing
 type WorklogRepository interface {
 	Save(wl *model.Work) error
+
+	GetAllSinceDate(startDate time.Time) ([]*model.Work, error)
 }
