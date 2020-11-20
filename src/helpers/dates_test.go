@@ -30,8 +30,26 @@ func Test(t *testing.T) {
 			err:              nil,
 		},
 		{
+			name:             "Valid date. / instead of -",
+			dateTimeString:   "2000/01/01",
+			dateTimeExpected: expectedDateTimeMidnight,
+			err:              nil,
+		},
+		{
+			name:             "Valid date. Space instead of -",
+			dateTimeString:   "2000 01 01",
+			dateTimeExpected: expectedDateTimeMidnight,
+			err:              nil,
+		},
+		{
 			name:             "Valid date and time",
 			dateTimeString:   "2000-01-01T09:35:54",
+			dateTimeExpected: expectedDateTimeMorning,
+			err:              nil,
+		},
+		{
+			name:             "Valid date and time. Space instead of T",
+			dateTimeString:   "2000-01-01 09:35:54",
 			dateTimeExpected: expectedDateTimeMorning,
 			err:              nil,
 		},

@@ -12,7 +12,6 @@ import (
 const dateRegex = `[0-9]{4}[-/ ][0-1][0-9][-/ ][0-3][0-9]`
 const timeRegex = `[0-2][0-9]:[0-5][0-9]:[0-5][0-9]`
 const dateTimeRegex = dateRegex + `[\sT]` + timeRegex
-const dateTimeRFC3339Regex = dateTimeRegex + `Z`
 
 // TimeFormat formats a time to string
 func TimeFormat(t time.Time) string {
@@ -23,20 +22,28 @@ func TimeFormat(t time.Time) string {
 func GetStringAsDateTime(element string) (time.Time, error) {
 	var dateString string
 
-	_, dateErr := regexp.MatchString(dateRegex, element)
+	isDate, dateErr := regexp.MatchString(dateRegex, element)
 	isDateTime, dateTimeErr := regexp.MatchString(dateTimeRegex, element)
-	isRFC339, rfc399Err := regexp.MatchString(dateTimeRFC3339Regex, element)
 
-	if dateErr != nil || dateTimeErr != nil || rfc399Err != nil {
+	if dateErr != nil || dateTimeErr != nil {
 		return time.Now(), fmt.Errorf("unable to parse string as date")
 	}
 
-	if isRFC339 {
-		dateString = element
-	} else if isDateTime {
-		dateString = fmt.Sprintf("%sZ", element)
+	if isDateTime {
+		dateString = fmt.Sprintf("%s-%s-%sT%s:%s:%sZ",
+			string(element[0:4]),
+			string(element[5:7]),
+			string(element[8:10]),
+			string(element[11:13]),
+			string(element[14:16]),
+			string(element[17:19]))
+	} else if isDate {
+		dateString = fmt.Sprintf("%s-%s-%sT00:00:00Z",
+			string(element[0:4]),
+			string(element[5:7]),
+			string(element[8:10]))
 	} else {
-		dateString = fmt.Sprintf("%sT00:00:00Z", element)
+		dateString = element
 	}
 	date, err := time.Parse(time.RFC3339, dateString)
 	if err != nil {
