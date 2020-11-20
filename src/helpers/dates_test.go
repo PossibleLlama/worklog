@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func Test(t *testing.T) {
+func TestGetStringAsDateTime(t *testing.T) {
 	expectedDateTimeMidnight, err := time.Parse(time.RFC3339, "2000-01-01T00:00:00Z")
 	if err != nil {
 		t.Errorf("Initialization of test data failed with %s", err)
