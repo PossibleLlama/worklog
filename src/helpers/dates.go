@@ -3,6 +3,7 @@ package helpers
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -11,7 +12,6 @@ import (
 // to be a date, and not a random string
 const dateRegex = `[0-9]{4}[-/ ][0-1][0-9][-/ ][0-3][0-9]`
 const timeRegex = `[0-2][0-9]:[0-5][0-9]:[0-5][0-9]`
-const dateTimeRegex = dateRegex + `[\sT]` + timeRegex
 
 // TimeFormat formats a time to string
 func TimeFormat(t time.Time) string {
@@ -19,11 +19,12 @@ func TimeFormat(t time.Time) string {
 }
 
 // GetStringAsDateTime ensures a string is a dateTime
-func GetStringAsDateTime(element string) (time.Time, error) {
+func GetStringAsDateTime(rawElement string) (time.Time, error) {
+	element := strings.TrimSpace(rawElement)
 	var dateString string
 
-	isDate, dateErr := regexp.MatchString(dateRegex, element)
-	isDateTime, dateTimeErr := regexp.MatchString(dateTimeRegex, element)
+	isDate, dateErr := regexp.MatchString(`^`+dateRegex+`$`, element)
+	isDateTime, dateTimeErr := regexp.MatchString(`^`+dateRegex+`[\sT]`+timeRegex+`Z?$`, element)
 
 	if dateErr != nil || dateTimeErr != nil {
 		return time.Now(), fmt.Errorf("unable to parse string as date")

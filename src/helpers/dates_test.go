@@ -60,10 +60,40 @@ func Test(t *testing.T) {
 			err:              nil,
 		},
 		{
+			name:             "Valid full date and time with whitespace front",
+			dateTimeString:   "\t2000-01-01T09:35:54Z",
+			dateTimeExpected: expectedDateTimeMorning,
+			err:              nil,
+		},
+		{
+			name:             "Valid full date and time with whitespace end",
+			dateTimeString:   "2000-01-01T09:35:54Z ",
+			dateTimeExpected: expectedDateTimeMorning,
+			err:              nil,
+		},
+		{
+			name:             "Valid full date and time with whitespace front and end",
+			dateTimeString:   " 2000-01-01T09:35:54Z\n",
+			dateTimeExpected: expectedDateTimeMorning,
+			err:              nil,
+		},
+		{
 			name:             "Invalid string",
 			dateTimeString:   "err",
 			dateTimeExpected: time.Now(),
 			err:              errors.New("unable to parse string as date"),
+		},
+		{
+			name:             "Valid date with invalid postfix",
+			dateTimeString:   "2000-01-01 foo",
+			dateTimeExpected: expectedDateTimeMidnight,
+			err:              errors.New("cannot parse \" foo\" as \"T\""),
+		},
+		{
+			name:             "Valid date with invalid prefix",
+			dateTimeString:   "bar 2000-01-01",
+			dateTimeExpected: expectedDateTimeMidnight,
+			err:              errors.New("cannot parse \"bar 2000-01-01\" as \"2006\""),
 		},
 	}
 
