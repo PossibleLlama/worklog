@@ -2,10 +2,13 @@ package repository
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
+	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
@@ -77,6 +80,61 @@ func createFile(fileName string) (*os.File, error) {
 
 func (*yamlFileRepo) GetAllSinceDate(startDate time.Time) ([]*model.Work, error) {
 	fmt.Println("Retrieving files...")
+
 	var worklogs []*model.Work
+	var errors []string
+
+	fileNames, err := getAllFileNamesFrom(startDate)
+	if err != nil {
+		return worklogs, err
+	}
+
+	for _, fileName := range fileNames {
+		readWorklog, err := parseFileToWork(fileName)
+		if err != nil {
+			errors = append(errors, err.Error())
+		} else {
+			worklogs = append(worklogs, readWorklog)
+		}
+	}
+	if len(errors) != 0 {
+		return worklogs, fmt.Errorf("unable to get all files. %s",
+			strings.Join(errors, ", "))
+	}
 	return worklogs, nil
+}
+
+func getAllFileNamesFrom(startDate time.Time) ([]string, error) {
+	var files []string
+
+	err := filepath.Walk(getWorklogDir(), func(fullPath string, info os.FileInfo, err error) error {
+		path := filepath.Base(fullPath)
+		if strings.Count(path, "_") < 1 {
+			return nil
+		}
+
+		splitFileName := strings.Split(path, "_")
+		filesDateAsString := fmt.Sprintf("%sT%s:00Z", splitFileName[0], splitFileName[1])
+		filesDate, err := helpers.GetStringAsDateTime(filesDateAsString)
+		if err != nil {
+			return err
+		}
+
+		if filesDate.After(startDate) {
+			files = append(files, fullPath)
+		}
+		return nil
+	})
+
+	return files, err
+}
+
+func parseFileToWork(filePath string) (*model.Work, error) {
+	var worklog model.Work
+	yamlFile, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("error reading file %s. %e", filePath, err)
+	}
+	err = yaml.Unmarshal(yamlFile, &worklog)
+	return &worklog, err
 }
