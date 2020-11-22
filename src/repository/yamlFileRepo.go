@@ -44,7 +44,7 @@ func (*yamlFileRepo) Save(wl *model.Work) error {
 }
 
 func generateFileName(wl *model.Work) string {
-	filePath := viper.GetString("recordLocation")
+	filePath := viper.GetString("default.recordLocation")
 	if filePath == "" {
 		filePath = getWorklogDir()
 	}
