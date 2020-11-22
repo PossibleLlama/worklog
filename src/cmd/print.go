@@ -20,7 +20,7 @@ var printCmd = &cobra.Command{
 	Short: "Print all worklogs since provided date",
 	Long: `Prints all worklogs to console that have
 been created since the start provided date.`,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	Args: func(cmd *cobra.Command, args []string) error {
 		if len(startDateString) != 0 {
 			startDateAnytime, err := helpers.GetStringAsDateTime(startDateString)
 			if err != nil {
@@ -32,9 +32,11 @@ been created since the start provided date.`,
 		} else if thisWeek {
 			startDate = helpers.Midnight(helpers.GetPreviousMonday(time.Now()))
 		} else {
-			return errors.New("require one flag to be provided")
+			return errors.New("one flag is required")
 		}
-
+		return nil
+	},
+	RunE: func(cmd *cobra.Command, args []string) error {
 		worklogs, _, err := wlService.GetWorklogsSince(startDate)
 		if err != nil {
 			return err
