@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"fmt"
@@ -19,8 +19,8 @@ type Work struct {
 	Created     time.Time
 }
 
-// New is the generator for work.
-func New(title, description, author, where, when string) *Work {
+// NewWork is the generator for work.
+func NewWork(title, description, author, where, when string) *Work {
 	nowString := time.Now().Format(time.RFC3339)
 	now, err := time.Parse(time.RFC3339, nowString)
 	if err != nil {
@@ -61,10 +61,10 @@ func (w Work) String() string {
 	if w.Where != "" {
 		finalString = fmt.Sprintf("%s Where: %s,", finalString, w.Where)
 	}
-	if ! w.When.Equal(time.Time{}) {
+	if !w.When.Equal(time.Time{}) {
 		finalString = fmt.Sprintf("%s When: %s,", finalString, w.When)
 	}
-	if ! w.Created.Equal(time.Time{}) {
+	if !w.Created.Equal(time.Time{}) {
 		finalString = fmt.Sprintf("%s Created: %s,", finalString, w.Created)
 	}
 	return strings.TrimSpace(finalString[:len(finalString)-1])
