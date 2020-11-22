@@ -12,4 +12,6 @@ Holds data provided to the worklog app.
 ``` yml
 author: "Alice"
 recordLocation: "~/my/new/location"
+default:
+  duration: 15
 ```
