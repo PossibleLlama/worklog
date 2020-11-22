@@ -15,12 +15,13 @@ type Work struct {
 	Description string
 	Author      string
 	Where       string
+	Duration    int
 	When        time.Time
 	Created     time.Time
 }
 
 // NewWork is the generator for work.
-func NewWork(title, description, author, where, when string) *Work {
+func NewWork(title, description, author string, duration int, when string) *Work {
 	nowString := time.Now().Format(time.RFC3339)
 	now, err := time.Parse(time.RFC3339, nowString)
 	if err != nil {
@@ -41,7 +42,8 @@ func NewWork(title, description, author, where, when string) *Work {
 		Title:       title,
 		Description: description,
 		Author:      author,
-		Where:       where,
+		Where:       "",
+		Duration:    duration,
 		When:        whenAsDate,
 		Created:     now,
 	}
@@ -60,6 +62,9 @@ func (w Work) String() string {
 	}
 	if w.Where != "" {
 		finalString = fmt.Sprintf("%s Where: %s,", finalString, w.Where)
+	}
+	if w.Duration != 0 {
+		finalString = fmt.Sprintf("%s Duration: %d,", finalString, w.Duration)
 	}
 	if !w.When.Equal(time.Time{}) {
 		finalString = fmt.Sprintf("%s When: %s,", finalString, w.When)
