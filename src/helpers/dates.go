@@ -58,3 +58,15 @@ func Midnight(t time.Time) time.Time {
 	year, month, day := t.Date()
 	return time.Date(year, month, day, 0, 0, 0, 0, t.Location())
 }
+
+// GetPreviousMonday getting the most recent Monday
+func GetPreviousMonday(originalTime time.Time) time.Time {
+	t := originalTime
+	for i := 0; i <= 6; i++ {
+		if t.Weekday() == time.Monday {
+			return t
+		}
+		t = t.AddDate(0, 0, -1)
+	}
+	return originalTime
+}
