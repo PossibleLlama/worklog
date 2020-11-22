@@ -67,6 +67,14 @@ jobs:
     - name: Build
       run: "go build -ldflags='-w -s' -o dist/worklog -v ."
       working-directory: src
+      env:
+        GOOS: linux
+
+    - name: Build
+      run: "go build -ldflags='-w -s' -o dist/worklog.exe -v ."
+      working-directory: src
+      env:
+        GOOS: windows
 
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
