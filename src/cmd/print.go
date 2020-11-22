@@ -29,7 +29,9 @@ been created since the start provided date.`,
 			return err
 		}
 
-		fmt.Printf("%+v\n", worklogs)
+		for _, work := range worklogs {
+			fmt.Printf("%+v\n", work)
+		}
 		return nil
 	},
 }
