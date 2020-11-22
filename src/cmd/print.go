@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -10,6 +11,8 @@ import (
 
 var startDate time.Time
 var startDateString string
+var today bool
+var thisWeek bool
 
 // printCmd represents the print command
 var printCmd = &cobra.Command{
@@ -18,10 +21,18 @@ var printCmd = &cobra.Command{
 	Long: `Prints all worklogs to console that have
 been created since the start provided date.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		startDateAnytime, err := helpers.GetStringAsDateTime(startDateString)
-		startDate = helpers.Midnight(startDateAnytime)
-		if err != nil {
-			return err
+		if len(startDateString) != 0 {
+			startDateAnytime, err := helpers.GetStringAsDateTime(startDateString)
+			if err != nil {
+				return err
+			}
+			startDate = helpers.Midnight(startDateAnytime)
+		} else if today {
+			startDate = helpers.Midnight(time.Now())
+		} else if thisWeek {
+			startDate = helpers.Midnight(helpers.GetPreviousMonday(time.Now()))
+		} else {
+			return errors.New("require one flag to be provided")
 		}
 
 		worklogs, _, err := wlService.GetWorklogsSince(startDate)
@@ -42,7 +53,18 @@ func init() {
 	printCmd.Flags().StringVar(
 		&startDateString,
 		"startDate",
-		helpers.TimeFormat(time.Now()),
+		"",
 		"Date from which to find worklogs")
-	printCmd.MarkFlagRequired("startDate")
+	printCmd.Flags().BoolVarP(
+		&today,
+		"today",
+		"",
+		false,
+		"Print today's work")
+	printCmd.Flags().BoolVarP(
+		&thisWeek,
+		"thisWeek",
+		"",
+		false,
+		"Prints this weeks work")
 }
