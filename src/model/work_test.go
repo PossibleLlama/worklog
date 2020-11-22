@@ -18,7 +18,7 @@ func TestNewWork(t *testing.T) {
 		wTitle       string
 		wDescription string
 		wAuthor      string
-		wWhere       string
+		wDuration    int
 		wWhen        string
 		expected     Work
 	}{
@@ -27,13 +27,13 @@ func TestNewWork(t *testing.T) {
 			"title",
 			"description",
 			"who",
-			"location",
+			15,
 			validStringDate,
 			Work{
 				Title:       "title",
 				Description: "description",
 				Author:      "who",
-				Where:       "location",
+				Duration:    15,
 				When:        validDate,
 			},
 		}, {
@@ -41,13 +41,13 @@ func TestNewWork(t *testing.T) {
 			"title",
 			"description",
 			"who",
-			"location",
+			15,
 			fmt.Sprintf("%sT00:00:00Z", validStringDate),
 			Work{
 				Title:       "title",
 				Description: "description",
 				Author:      "who",
-				Where:       "location",
+				Duration:    15,
 				When:        validDate,
 			},
 		}, {
@@ -55,13 +55,13 @@ func TestNewWork(t *testing.T) {
 			"title",
 			"description",
 			"who",
-			"location",
+			15,
 			"",
 			Work{
 				Title:       "title",
 				Description: "description",
 				Author:      "who",
-				Where:       "location",
+				Duration:    15,
 			},
 		},
 	}
@@ -69,7 +69,7 @@ func TestNewWork(t *testing.T) {
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
 			before := time.Now()
-			actual := NewWork(testItem.wTitle, testItem.wDescription, testItem.wAuthor, testItem.wWhere, testItem.wWhen)
+			actual := NewWork(testItem.wTitle, testItem.wDescription, testItem.wAuthor, testItem.wDuration, testItem.wWhen)
 			after := time.Now()
 
 			if actual.Title != testItem.expected.Title {
@@ -83,6 +83,9 @@ func TestNewWork(t *testing.T) {
 			}
 			if actual.Where != testItem.expected.Where {
 				t.Errorf("Should have where %s, instead has %s", testItem.expected.Where, actual.Where)
+			}
+			if actual.Duration != testItem.expected.Duration {
+				t.Errorf("Should have duration %d, instead has %d", testItem.expected.Duration, actual.Duration)
 			}
 			if testItem.wWhen != "" {
 				if actual.When != testItem.expected.When {
