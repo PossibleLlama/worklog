@@ -23,7 +23,38 @@ func NewYamlFileRepo() WorklogRepository {
 	return &yamlFileRepo{}
 }
 
+type defaults struct {
+	duration int `yaml:"duration"`
+}
+
+type config struct {
+	author   string   `yaml:"author"`
+	defaults defaults `yaml:"default"`
+}
+
 func (*yamlFileRepo) Configure(author string, duration int) error {
+	if err := createDirectory(getWorklogDir()); err != nil {
+		return fmt.Errorf("Unable to create directory %s. %s", getWorklogDir(), err.Error())
+	}
+	file, err := createFile(getWorklogDir() + "config.yml")
+	defer file.Close()
+	if err != nil {
+		return fmt.Errorf("Unable to create configuration file. %s", err.Error())
+	}
+
+	config := config{
+		author: author,
+		defaults: defaults{
+			duration: duration,
+		},
+	}
+	bytes, err := yaml.Marshal(config)
+	if err != nil {
+		return fmt.Errorf("unable to save config. %s", err.Error())
+	}
+	file.Write(bytes)
+	file.Sync()
+
 	return nil
 }
 
@@ -73,6 +104,17 @@ func getWorklogDir() string {
 		os.Exit(1)
 	}
 	return home + "/.worklog/"
+}
+
+func createDirectory(filePath string) error {
+	err := os.Mkdir(filePath, 0777)
+	if err != nil {
+		if os.IsExist(err) {
+			return nil
+		}
+		return fmt.Errorf("Unable to create directory '~/.worklog/'. %s", err.Error())
+	}
+	return nil
 }
 
 func createFile(fileName string) (*os.File, error) {
