@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"strings"
 	"time"
 
 	"github.com/PossibleLlama/worklog/model"
@@ -15,6 +16,7 @@ var description string
 var when time.Time
 var whenString string
 var duration int
+var tags string
 
 // createCmd represents the create command
 var createCmd = &cobra.Command{
@@ -34,7 +36,18 @@ the user has created.`,
 			return err
 		}
 
-		work := model.NewWork(title, description, viper.GetString("author"), duration, helpers.TimeFormat(when))
+		var tagsList []string
+		for _, tag := range strings.Split(tags, ",") {
+			tagsList = append(tagsList, strings.TrimSpace(tag))
+		}
+
+		work := model.NewWork(
+			title,
+			description,
+			viper.GetString("author"),
+			duration,
+			tagsList,
+			when)
 		_, err = wlService.CreateWorklog(work)
 		return err
 	},
@@ -64,5 +77,10 @@ func init() {
 		"",
 		-1,
 		"Length of time spent on the work")
+	createCmd.Flags().StringVar(
+		&tags,
+		"tags",
+		"",
+		"Comma seperated list of tags this work relates to")
 	createCmd.MarkFlagRequired("title")
 }
