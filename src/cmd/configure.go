@@ -7,10 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const defaultLocation = "~/.worklog/"
-
 var providedAuthor string
-var providedLocation string
 var providedDuration int
 
 // configureCmd represents the create command
@@ -21,7 +18,6 @@ var configureCmd = &cobra.Command{
 setting up the defaults and adding in passed arguments.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		providedAuthor = ""
-		providedLocation = defaultLocation
 		providedDuration = 0
 		return nil
 	},
@@ -36,11 +32,8 @@ var defaultsCmd = &cobra.Command{
 	Long: `Default variables to be used with the
 worklog application.`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		if providedAuthor == "" && providedLocation == "" && providedDuration < 0 {
+		if providedAuthor == "" && providedDuration < 0 {
 			return errors.New("defaults requires at least one argument")
-		}
-		if providedLocation == "" {
-			providedLocation = defaultLocation
 		}
 		return nil
 	},
@@ -58,11 +51,6 @@ func init() {
 		"author",
 		"",
 		"The authour for all work")
-	defaultsCmd.Flags().StringVar(
-		&providedLocation,
-		"location",
-		"",
-		"Location for saved worklog files")
 	defaultsCmd.Flags().IntVar(
 		&providedDuration,
 		"duration",
@@ -71,10 +59,9 @@ func init() {
 }
 
 func callService() error {
-	// Call service
-	// if err != nil {
-	// 	return err
-	// }
+	if err := wlService.Congfigure(providedAuthor, providedDuration); err != nil {
+		return err
+	}
 	fmt.Println("Successfully configured")
 	return nil
 }
