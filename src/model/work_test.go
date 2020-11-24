@@ -1,14 +1,13 @@
 package model
 
 import (
-	"fmt"
 	"testing"
 	"time"
 )
 
 func TestNewWork(t *testing.T) {
-	validStringDate := "1970-12-25"
 	validDate, err := time.Parse(time.RFC3339, "1970-12-25T00:00:00Z")
+	var validTags []string
 	if err != nil {
 		t.Error("Unable to parse initial date")
 	}
@@ -19,49 +18,26 @@ func TestNewWork(t *testing.T) {
 		wDescription string
 		wAuthor      string
 		wDuration    int
-		wWhen        string
+		wTags        []string
+		wWhen        time.Time
 		expected     Work
 	}{
 		{
-			"Short date",
+			"Full work",
 			"title",
 			"description",
 			"who",
 			15,
-			validStringDate,
+			append(validTags, "one", "two"),
+			validDate,
 			Work{
 				Title:       "title",
 				Description: "description",
 				Author:      "who",
+				Where:       "",
 				Duration:    15,
+				Tags:        append(validTags, "one", "two"),
 				When:        validDate,
-			},
-		}, {
-			"Full date",
-			"title",
-			"description",
-			"who",
-			15,
-			fmt.Sprintf("%sT00:00:00Z", validStringDate),
-			Work{
-				Title:       "title",
-				Description: "description",
-				Author:      "who",
-				Duration:    15,
-				When:        validDate,
-			},
-		}, {
-			"No when",
-			"title",
-			"description",
-			"who",
-			15,
-			"",
-			Work{
-				Title:       "title",
-				Description: "description",
-				Author:      "who",
-				Duration:    15,
 			},
 		},
 	}
@@ -69,7 +45,13 @@ func TestNewWork(t *testing.T) {
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
 			before := time.Now()
-			actual := NewWork(testItem.wTitle, testItem.wDescription, testItem.wAuthor, testItem.wDuration, testItem.wWhen)
+			actual := NewWork(
+				testItem.wTitle,
+				testItem.wDescription,
+				testItem.wAuthor,
+				testItem.wDuration,
+				testItem.wTags,
+				testItem.wWhen)
 			after := time.Now()
 
 			if actual.Title != testItem.expected.Title {
@@ -87,14 +69,23 @@ func TestNewWork(t *testing.T) {
 			if actual.Duration != testItem.expected.Duration {
 				t.Errorf("Should have duration %d, instead has %d", testItem.expected.Duration, actual.Duration)
 			}
-			if testItem.wWhen != "" {
-				if actual.When != testItem.expected.When {
-					t.Errorf("Should have when %s, instead has %s", testItem.expected.When, actual.When)
+			if len(actual.Tags) != len(testItem.expected.Tags) {
+				t.Errorf("Should have same number of tags %d, instead has %d", len(testItem.expected.Tags), len(actual.Tags))
+			}
+			for _, expectedTag := range testItem.expected.Tags {
+				hasTag := false
+				for _, actualTag := range actual.Tags {
+					if expectedTag == actualTag {
+						hasTag = true
+						break
+					}
 				}
-			} else {
-				if !actual.When.Equal(actual.Created) {
-					t.Errorf("When '%s' and created '%s' should be the same", actual.When, actual.Created)
+				if !hasTag {
+					t.Errorf("Missing item %s in %s", expectedTag, actual.Tags)
 				}
+			}
+			if !actual.When.Equal(testItem.expected.When) {
+				t.Errorf("Should have when '%s', instead has '%s'", actual.When, actual.Created)
 			}
 			if time.Since(actual.Created) < time.Since(before) {
 				t.Error("Was not created after start of test")

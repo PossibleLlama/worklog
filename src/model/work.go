@@ -16,26 +16,17 @@ type Work struct {
 	Author      string
 	Where       string
 	Duration    int
+	Tags        []string
 	When        time.Time
 	Created     time.Time
 }
 
 // NewWork is the generator for work.
-func NewWork(title, description, author string, duration int, when string) *Work {
+func NewWork(title, description, author string, duration int, tags []string, when time.Time) *Work {
 	nowString := time.Now().Format(time.RFC3339)
 	now, err := time.Parse(time.RFC3339, nowString)
 	if err != nil {
 		fmt.Println("now is not in a valid time format.")
-		os.Exit(1)
-	}
-	if len(when) == 0 {
-		when = nowString
-	} else if len(when) == 10 {
-		when = fmt.Sprintf("%sT00:00:00Z", when)
-	}
-	whenAsDate, err := time.Parse(time.RFC3339, when)
-	if err != nil {
-		fmt.Printf("when is not in a valid time format. %s\n", err.Error())
 		os.Exit(1)
 	}
 	return &Work{
@@ -44,7 +35,8 @@ func NewWork(title, description, author string, duration int, when string) *Work
 		Author:      author,
 		Where:       "",
 		Duration:    duration,
-		When:        whenAsDate,
+		Tags:        tags,
+		When:        when,
 		Created:     now,
 	}
 }
@@ -65,6 +57,9 @@ func (w Work) String() string {
 	}
 	if w.Duration != 0 {
 		finalString = fmt.Sprintf("%s Duration: %d,", finalString, w.Duration)
+	}
+	if len(w.Tags) > 0 {
+		finalString = fmt.Sprintf("%s Tags: %s,", finalString, strings.Join(w.Tags, ", "))
 	}
 	if !w.When.Equal(time.Time{}) {
 		finalString = fmt.Sprintf("%s When: %s,", finalString, w.When)
