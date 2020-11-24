@@ -16,7 +16,8 @@ var description string
 var when time.Time
 var whenString string
 var duration int
-var tags string
+var tags []string
+var tagsString string
 
 // createCmd represents the create command
 var createCmd = &cobra.Command{
@@ -30,28 +31,28 @@ the user has created.`,
 		}
 		title = strings.TrimSpace(title)
 		description = strings.TrimSpace(description)
-		whenString = strings.TrimSpace(whenString)
-		return nil
-	},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		when, err := helpers.GetStringAsDateTime(whenString)
+		whenDate, err := helpers.GetStringAsDateTime(
+			strings.TrimSpace(whenString))
 		if err != nil {
 			return err
 		}
+		when = whenDate
 
-		var tagsList []string
-		for _, tag := range strings.Split(tags, ",") {
-			tagsList = append(tagsList, strings.TrimSpace(tag))
+		for _, tag := range strings.Split(tagsString, ",") {
+			tags = append(tags, strings.TrimSpace(tag))
 		}
 
+		return nil
+	},
+	RunE: func(cmd *cobra.Command, args []string) error {
 		work := model.NewWork(
 			title,
 			description,
 			viper.GetString("author"),
 			duration,
-			tagsList,
+			tags,
 			when)
-		_, err = wlService.CreateWorklog(work)
+		_, err := wlService.CreateWorklog(work)
 		return err
 	},
 }
@@ -81,7 +82,7 @@ func init() {
 		-1,
 		"Length of time spent on the work")
 	createCmd.Flags().StringVar(
-		&tags,
+		&tagsString,
 		"tags",
 		"",
 		"Comma seperated list of tags this work relates to")
