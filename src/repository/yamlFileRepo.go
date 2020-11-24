@@ -23,6 +23,10 @@ func NewYamlFileRepo() WorklogRepository {
 	return &yamlFileRepo{}
 }
 
+func (*yamlFileRepo) Configure(author string, duration int) error {
+	return nil
+}
+
 func (*yamlFileRepo) Save(wl *model.Work) error {
 	fmt.Println("Saving file...")
 

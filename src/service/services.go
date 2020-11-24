@@ -11,6 +11,7 @@ import (
 // WorklogService defines what a service for
 // worklogs should be capable of doing
 type WorklogService interface {
+	Congfigure(author string, duration int) error
 	CreateWorklog(wl *model.Work) (int, error)
 	GetWorklogsSince(date time.Time) ([]*model.Work, int, error)
 }
@@ -25,6 +26,10 @@ var (
 func NewWorklogService(repository repository.WorklogRepository) WorklogService {
 	repo = repository
 	return &service{}
+}
+
+func (*service) Congfigure(author string, duration int) error {
+	return repo.Configure(author, duration)
 }
 
 func (*service) CreateWorklog(wl *model.Work) (int, error) {
