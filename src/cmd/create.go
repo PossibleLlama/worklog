@@ -28,6 +28,9 @@ the user has created.`,
 		if duration <= -1 {
 			duration = viper.GetInt("default.duration")
 		}
+		title = strings.TrimSpace(title)
+		description = strings.TrimSpace(description)
+		whenString = strings.TrimSpace(whenString)
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
