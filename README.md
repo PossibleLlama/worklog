@@ -25,6 +25,7 @@ curl -L -O https://github.com/PossibleLlama/worklog/releases/download/v0.2.0/wor
 unzip worklog-binary.zip
 mv worklog /usr/bin/worklog
 rm worklog-binary.zip
+rm worklog.exe
 ```
 
 [GithubReleases]: https://github.com/PossibleLlama/worklog/releases
