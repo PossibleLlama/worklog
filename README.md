@@ -9,9 +9,16 @@ have done each day.
 
 - v0.2.0
 
-## ~/.worklog/config.yml
+## Configuration
 
-Holds data provided to the worklog app.
+Configuration for the application.
+
+For basic setup you can run `worklog configure`.
+
+For more advanced setup, `worklog configure defaults <FLAGS>`
+will add provided flags into the configuration.
+
+### Example
 
 ``` yml
 author: "Alice"
