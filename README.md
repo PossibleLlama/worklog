@@ -9,6 +9,26 @@ have done each day.
 
 - v0.2.0
 
+## Installation
+
+To install worklog, you can download the latest version from
+[github][GithubReleases], choose version you want, unzip the
+folder, and add the approperiate binary for your machine, to
+a location on your machines PATH.
+
+There is both a windows executeable, as well as a linux binary.
+
+### Linux
+
+```bash
+curl -L -O https://github.com/PossibleLlama/worklog/releases/download/v0.2.0/worklog-binary.zip
+unzip worklog-binary.zip
+mv worklog /usr/bin/worklog
+rm worklog-binary.zip
+```
+
+[GithubReleases]: https://github.com/PossibleLlama/worklog/releases
+
 ## Configuration
 
 Configuration for the application.
