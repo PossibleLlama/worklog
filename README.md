@@ -53,6 +53,18 @@ You can specify further fields as you want to.
 
 [RFC3339]: https://tools.ietf.org/html/rfc3339
 
+## Reading worklogs
+
+Printing worklogs to the console. You can use `worklog print <FLAGS>`.
+One of the following must be provided within the flags.
+
+- `--startDate "2000/12/31"` Print all work completed after this
+  date.
+- `--today` Print all work complete since midnight. This is not the
+  last 24 hours.
+- `--thisWeek` Print all work completed since midnight on the last
+  Monday. This is not the last 168 hours.
+
 ## Configuration
 
 Configuration for the application.
