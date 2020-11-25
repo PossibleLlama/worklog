@@ -9,6 +9,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const defaultAuthor = ""
+const defaultDuration = 15
+
 var providedAuthor string
 var providedDuration int
 
@@ -19,8 +22,8 @@ var configureCmd = &cobra.Command{
 	Long: `Setup configuration file for the application,
 setting up the defaults and adding in passed arguments.`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		providedAuthor = ""
-		providedDuration = 0
+		providedAuthor = defaultAuthor
+		providedDuration = defaultDuration
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -36,6 +39,9 @@ worklog application.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if providedAuthor == "" && providedDuration < 0 {
 			return errors.New("defaults requires at least one argument")
+		}
+		if providedDuration < 0 {
+			providedDuration = defaultDuration
 		}
 		return nil
 	},
