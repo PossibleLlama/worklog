@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/PossibleLlama/worklog/model"
+
 	"github.com/spf13/cobra"
 )
 
@@ -59,7 +61,8 @@ func init() {
 }
 
 func callService() error {
-	if err := wlService.Congfigure(providedAuthor, providedDuration); err != nil {
+	config := model.NewConfig(providedAuthor, providedDuration)
+	if err := wlService.Congfigure(config); err != nil {
 		return err
 	}
 	fmt.Println("Successfully configured")

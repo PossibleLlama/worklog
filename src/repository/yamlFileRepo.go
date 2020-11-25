@@ -23,7 +23,7 @@ func NewYamlFileRepo() WorklogRepository {
 	return &yamlFileRepo{}
 }
 
-func (*yamlFileRepo) Configure(author string, duration int) error {
+func (*yamlFileRepo) Configure(cfg *model.Config) error {
 	if err := createDirectory(getWorklogDir()); err != nil {
 		return fmt.Errorf("Unable to create directory %s. %s", getWorklogDir(), err.Error())
 	}
@@ -33,8 +33,7 @@ func (*yamlFileRepo) Configure(author string, duration int) error {
 		return fmt.Errorf("unable to create configuration file. %s", err.Error())
 	}
 
-	config := model.NewConfig(author, duration)
-	bytes, err := yaml.Marshal(&config)
+	bytes, err := yaml.Marshal(&cfg)
 	if err != nil {
 		return fmt.Errorf("unable to save config. %s", err.Error())
 	}
