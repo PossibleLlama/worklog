@@ -5,6 +5,10 @@
 Intented to be a quick productivity CLI tool, to track what you
 have done each day.
 
+## Supported versions
+
+- v0.2.0
+
 ## ~/.worklog/config.yml
 
 Holds data provided to the worklog app.
