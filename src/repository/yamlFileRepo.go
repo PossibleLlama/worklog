@@ -23,15 +23,6 @@ func NewYamlFileRepo() WorklogRepository {
 	return &yamlFileRepo{}
 }
 
-type defaults struct {
-	duration int `yaml:"duration"`
-}
-
-type config struct {
-	author   string   `yaml:"author"`
-	defaults defaults `yaml:"default"`
-}
-
 func (*yamlFileRepo) Configure(author string, duration int) error {
 	if err := createDirectory(getWorklogDir()); err != nil {
 		return fmt.Errorf("Unable to create directory %s. %s", getWorklogDir(), err.Error())
@@ -39,16 +30,11 @@ func (*yamlFileRepo) Configure(author string, duration int) error {
 	file, err := createFile(getWorklogDir() + "config.yml")
 	defer file.Close()
 	if err != nil {
-		return fmt.Errorf("Unable to create configuration file. %s", err.Error())
+		return fmt.Errorf("unable to create configuration file. %s", err.Error())
 	}
 
-	config := config{
-		author: author,
-		defaults: defaults{
-			duration: duration,
-		},
-	}
-	bytes, err := yaml.Marshal(config)
+	config := model.NewConfig(author, duration)
+	bytes, err := yaml.Marshal(&config)
 	if err != nil {
 		return fmt.Errorf("unable to save config. %s", err.Error())
 	}
@@ -112,7 +98,7 @@ func createDirectory(filePath string) error {
 		if os.IsExist(err) {
 			return nil
 		}
-		return fmt.Errorf("Unable to create directory '~/.worklog/'. %s", err.Error())
+		return fmt.Errorf("unable to create directory '%s'. %s", filePath, err.Error())
 	}
 	return nil
 }
