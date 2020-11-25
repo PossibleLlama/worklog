@@ -29,6 +29,30 @@ rm worklog-binary.zip
 
 [GithubReleases]: https://github.com/PossibleLlama/worklog/releases
 
+## Creating worklogs
+
+To create a basic worklog, you can use `worklog create --title "foo"`.
+This will create an item of work, with the current timestamp, and the
+name `"foo"`.
+
+Author and duration will automatically be pulled from the
+configuration file if provided, and createdAt will be the current
+time.
+All other fields will be left blank.
+
+You can specify further fields as you want to.
+
+- `--description "bar"` A longer description of the work done. This
+  gives the details of the work done.
+- `--duration 30` How long the work took. This can be any unit of
+  measurement that suits you.
+- `--tags "buzz, bang"` A comma seperate list of tags to describe
+  the work.
+- `--when "2000/12/31"` Timestamp of when the work was done. This
+  should be in [RFC3339] format, either just the date, or datetime.
+
+[RFC3339]: https://tools.ietf.org/html/rfc3339
+
 ## Configuration
 
 Configuration for the application.
