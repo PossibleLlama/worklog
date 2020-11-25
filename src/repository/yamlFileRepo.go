@@ -11,7 +11,6 @@ import (
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
 	homedir "github.com/mitchellh/go-homedir"
-	"github.com/spf13/viper"
 	"gopkg.in/yaml.v2"
 )
 
@@ -78,11 +77,6 @@ func generateFileName(wl *model.Work) string {
 }
 
 func getWorklogDir() string {
-	configPath := viper.GetString("default.recordLocation")
-	if configPath != "" {
-		return configPath
-	}
-
 	home, err := homedir.Dir()
 	if err != nil {
 		fmt.Println(err)
