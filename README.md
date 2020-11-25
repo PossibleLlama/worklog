@@ -62,7 +62,10 @@ For basic setup you can run `worklog configure`.
 For more advanced setup, `worklog configure defaults <FLAGS>`
 will add provided flags into the configuration.
 
-### Example
+- `--author "Alice"` String of the author's name.
+- `--duration 15` Default duration that a task takes.
+
+### Example file
 
 ``` yml
 author: "Alice"
