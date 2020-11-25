@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/repository"
 
 	"github.com/spf13/cobra"
@@ -19,8 +20,9 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "worklog",
-	Short: "A productivity tool to track previous work",
+	Use:     "worklog",
+	Version: helpers.Version,
+	Short:   "A productivity tool to track previous work",
 	Long: `A CLI tool to let people track what work they
 have completed. You can record what work you do,
 and get a summary of what you've done each day.
@@ -43,7 +45,10 @@ func init() {
 	wlRepo = repository.NewYamlFileRepo()
 	wlService = service.NewWorklogService(wlRepo)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.worklog/config.yml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile,
+		"config",
+		"",
+		"config file (default is $HOME/.worklog/config.yml)")
 }
 
 // initConfig reads in config file and ENV variables if set.
