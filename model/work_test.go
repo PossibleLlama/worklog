@@ -47,7 +47,7 @@ func TestNewWork(t *testing.T) {
 			wDuration:    15,
 			wTags:        []string{"4", "2", "1", "3"},
 			wWhen:        validDate,
-			expected:     Work{
+			expected: Work{
 				Title:       "title",
 				Description: "description",
 				Author:      "who",
