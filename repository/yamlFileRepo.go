@@ -106,7 +106,7 @@ func createFile(fileName string) (*os.File, error) {
 	return file, nil
 }
 
-func (*yamlFileRepo) GetAllSinceDate(startDate time.Time) ([]*model.Work, error) {
+func (*yamlFileRepo) GetAllBetweenDates(startDate, endDate time.Time) ([]*model.Work, error) {
 	fmt.Println("Retrieving files...")
 
 	var worklogs []*model.Work
