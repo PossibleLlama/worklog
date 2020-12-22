@@ -106,13 +106,13 @@ func createFile(fileName string) (*os.File, error) {
 	return file, nil
 }
 
-func (*yamlFileRepo) GetAllSinceDate(startDate time.Time) ([]*model.Work, error) {
+func (*yamlFileRepo) GetAllBetweenDates(startDate, endDate time.Time) ([]*model.Work, error) {
 	fmt.Println("Retrieving files...")
 
 	var worklogs []*model.Work
 	var errors []string
 
-	fileNames, err := getAllFileNamesFrom(startDate)
+	fileNames, err := getAllFileNamesBetweenDates(startDate, endDate)
 	if err != nil {
 		return worklogs, err
 	}
@@ -132,7 +132,7 @@ func (*yamlFileRepo) GetAllSinceDate(startDate time.Time) ([]*model.Work, error)
 	return worklogs, nil
 }
 
-func getAllFileNamesFrom(startDate time.Time) ([]string, error) {
+func getAllFileNamesBetweenDates(startDate, endDate time.Time) ([]string, error) {
 	var files []string
 
 	err := filepath.Walk(getWorklogDir(), func(fullPath string, info os.FileInfo, err error) error {
@@ -148,7 +148,7 @@ func getAllFileNamesFrom(startDate time.Time) ([]string, error) {
 			return err
 		}
 
-		if filesDate.After(startDate) {
+		if filesDate.After(startDate) && filesDate.Before(endDate) {
 			files = append(files, fullPath)
 		}
 		return nil
