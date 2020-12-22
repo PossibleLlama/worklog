@@ -72,7 +72,7 @@ func init() {
 		&endDateString,
 		"endDate",
 		"",
-		"Date till which to find worklogs. Only functions in conjunction with startDate.")
+		"Date till which to find worklogs. Only functions in conjunction with startDate")
 	printCmd.Flags().BoolVarP(
 		&today,
 		"today",
