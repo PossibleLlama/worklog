@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 
@@ -163,5 +164,8 @@ func parseFileToWork(filePath string) (*model.Work, error) {
 		return nil, fmt.Errorf("error reading file %s. %e", filePath, err)
 	}
 	err = yaml.Unmarshal(yamlFile, &worklog)
+	if err == nil {
+		sort.Strings(worklog.Tags)
+	}
 	return &worklog, err
 }

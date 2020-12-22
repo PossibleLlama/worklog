@@ -7,7 +7,7 @@ have done each day.
 
 ## Supported versions
 
-- v0.3.0
+- v0.3.1
 
 ## Installation
 
