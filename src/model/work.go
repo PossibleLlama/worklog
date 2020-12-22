@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"time"
 )
@@ -29,6 +30,7 @@ func NewWork(title, description, author string, duration int, tags []string, whe
 		fmt.Println("now is not in a valid time format.")
 		os.Exit(1)
 	}
+	sort.Strings(tags)
 	return &Work{
 		Title:       title,
 		Description: description,
