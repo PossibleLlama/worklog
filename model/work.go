@@ -12,14 +12,23 @@ import (
 // stores information as to what
 // work was done by who and when.
 type Work struct {
-	Title       string
-	Description string
-	Author      string
-	Where       string
-	Duration    int
-	Tags        []string
-	When        time.Time
-	Created     time.Time
+	Title       string    `json:"title" yaml:"title"`
+	Description string    `json:"description,omitempty" yaml:"description,omitempty"`
+	Author      string    `json:"author,omitempty" yaml:"author,omitempty"`
+	Where       string    `json:"where,omitempty" yaml:"where,omitempty"`
+	Duration    int       `json:"duration" yaml:"duration"`
+	Tags        []string  `json:"tags,flow,omitempty" yaml:"tags,flow,omitempty"`
+	When        time.Time `json:"when" yaml:"when"`
+	CreatedAt   time.Time `json:"createdAt" yaml:"createdAt"`
+}
+
+type printWork struct {
+	Title       string    `json:"title" yaml:"title"`
+	Description string    `json:"description,omitempty" yaml:"description,omitempty"`
+	Author      string    `json:"author,omitempty" yaml:"author,omitempty"`
+	Duration    int       `json:"duration" yaml:"duration"`
+	Tags        []string  `json:"tags,flow,omitempty" yaml:"tags,flow,omitempty"`
+	When        time.Time `json:"when" yaml:"when"`
 }
 
 // NewWork is the generator for work.
@@ -39,26 +48,45 @@ func NewWork(title, description, author string, duration int, tags []string, whe
 		Duration:    duration,
 		Tags:        tags,
 		When:        when,
-		Created:     now,
+		CreatedAt:   now,
 	}
 }
 
+func workToPrintWork(w Work) printWork {
+	return printWork{
+		Title:       w.Title,
+		Description: w.Description,
+		Author:      w.Author,
+		Duration:    w.Duration,
+		Tags:        w.Tags,
+		When:        w.When,
+	}
+}
+
+// String generates a stringified version of the Work
 func (w Work) String() string {
+	pw := workToPrintWork(w)
 	finalString := " "
-	if w.Title != "" {
-		finalString = fmt.Sprintf("%s Title: %s,", finalString, w.Title)
+	if pw.Title != "" {
+		finalString = fmt.Sprintf("%s Title: %s,", finalString, pw.Title)
 	}
-	if w.Description != "" {
-		finalString = fmt.Sprintf("%s Description: %s,", finalString, w.Description)
+	if pw.Description != "" {
+		finalString = fmt.Sprintf("%s Description: %s,", finalString, pw.Description)
 	}
-	if w.Author != "" {
-		finalString = fmt.Sprintf("%s Author: %s,", finalString, w.Author)
+	if pw.Author != "" {
+		finalString = fmt.Sprintf("%s Author: %s,", finalString, pw.Author)
 	}
-	if w.Where != "" {
-		finalString = fmt.Sprintf("%s Where: %s,", finalString, w.Where)
+	if pw.Duration != 0 {
+		finalString = fmt.Sprintf("%s Duration: %d,", finalString, pw.Duration)
 	}
-	if w.Duration != 0 {
-		finalString = fmt.Sprintf("%s Duration: %d,", finalString, w.Duration)
+	if len(pw.Tags) > 0 {
+		finalString = fmt.Sprintf("%s Tags: [%s],", finalString, strings.Join(pw.Tags, ", "))
+	}
+	if !pw.When.Equal(time.Time{}) {
+		finalString = fmt.Sprintf("%s When: %s,", finalString, pw.When)
+	}
+	return strings.TrimSpace(finalString[:len(finalString)-1])
+}
 	}
 	if len(w.Tags) > 0 {
 		finalString = fmt.Sprintf("%s Tags: %s,", finalString, strings.Join(w.Tags, ", "))
