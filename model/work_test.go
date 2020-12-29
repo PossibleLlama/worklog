@@ -96,12 +96,12 @@ func TestNewWork(t *testing.T) {
 				}
 			}
 			if !actual.When.Equal(testItem.expected.When) {
-				t.Errorf("Should have when '%s', instead has '%s'", actual.When, actual.Created)
+				t.Errorf("Should have when '%s', instead has '%s'", actual.When, actual.CreatedAt)
 			}
-			if time.Since(actual.Created) < time.Since(before) {
+			if time.Since(actual.CreatedAt) < time.Since(before) {
 				t.Error("Was not created after start of test")
 			}
-			if time.Since(actual.Created) < time.Since(after) {
+			if time.Since(actual.CreatedAt) < time.Since(after) {
 				t.Error("Was not created before end of test")
 			}
 		})
