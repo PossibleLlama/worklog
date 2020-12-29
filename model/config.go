@@ -14,6 +14,12 @@ type Config struct {
 
 // NewConfig is the generator for configuration
 func NewConfig(author, format string, duration int) *Config {
+	if format != "pretty" &&
+		format != "json" &&
+		format != "yaml" &&
+		format != "yml" {
+		format = ""
+	}
 	return &Config{
 		Author: author,
 		Defaults: Defaults{

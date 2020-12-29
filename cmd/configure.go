@@ -46,6 +46,13 @@ worklog application.`,
 		if providedDuration < 0 {
 			providedDuration = defaultDuration
 		}
+		if providedFormat != "" &&
+			providedFormat != "pretty" &&
+			providedFormat != "json" &&
+			providedFormat != "yaml" &&
+			providedFormat != "yml" {
+			return errors.New("provided format is not valid")
+		}
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -71,7 +78,7 @@ func init() {
 		&providedFormat,
 		"format",
 		"",
-		"Format to print work in")
+		"Format to print work in. If provided, must be one of 'pretty', 'yaml', 'json'")
 }
 
 func callService() error {
