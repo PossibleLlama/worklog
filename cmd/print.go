@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
+	"os"
 	"time"
 
 	"github.com/PossibleLlama/worklog/helpers"
+	"github.com/PossibleLlama/worklog/model"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -38,8 +39,12 @@ been created between the dates provided.`,
 			return err
 		}
 
-		for _, work := range worklogs {
-			fmt.Printf("%+v\n", work)
+		if prettyOutput {
+			model.WriteAllWorkToText(os.Stdout, worklogs)
+		} else if yamlOutput {
+			model.WriteAllWorkToYAML(os.Stdout, worklogs)
+		} else {
+			model.WriteAllWorkToJSON(os.Stdout, worklogs)
 		}
 		return nil
 	},
@@ -119,7 +124,7 @@ func verifyDates() error {
 // verifySingleFormat ensures that there is only 1 output format used.
 func verifySingleFormat() {
 	if !prettyOutput && !yamlOutput && !jsonOutput {
-		defaultFormat := viper.GetString("format")
+		defaultFormat := viper.GetString("default.format")
 		if defaultFormat == "yaml" || defaultFormat == "yml" {
 			yamlOutput = true
 		} else if defaultFormat == "json" {
