@@ -7,14 +7,20 @@ import (
 
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var startDate time.Time
 var startDateString string
 var endDate time.Time
 var endDateString string
+
 var today bool
 var thisWeek bool
+
+var yamlOutput bool
+var jsonOutput bool
+var prettyOutput bool
 
 // printCmd represents the print command
 var printCmd = &cobra.Command{
@@ -24,8 +30,9 @@ var printCmd = &cobra.Command{
 been created between the dates provided.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if err := verifyDates(); err != nil {
-				return err
-			}
+			return err
+		}
+		verifySingleFormat()
 
 		return nil
 	},
@@ -67,6 +74,25 @@ func init() {
 		"",
 		false,
 		"Prints this weeks work")
+	printCmd.Flags().BoolVarP(
+		&prettyOutput,
+		"pretty",
+		"",
+		false,
+		"Output in a text format")
+	printCmd.Flags().BoolVarP(
+		&yamlOutput,
+		"yaml",
+		"",
+		false,
+		"Output in a yaml format")
+	printCmd.Flags().BoolVarP(
+		&jsonOutput,
+		"json",
+		"",
+		false,
+		"Output in a json format")
+}
 
 func verifyDates() error {
 	if len(startDateString) != 0 {
@@ -92,4 +118,25 @@ func verifyDates() error {
 		return errors.New("one flag is required")
 	}
 	return nil
+}
+
+// verifySingleFormat ensures that there is only 1 output format used.
+func verifySingleFormat() {
+	if !prettyOutput && !yamlOutput && !jsonOutput {
+		defaultFormat := viper.GetString("format")
+		if defaultFormat == "yaml" || defaultFormat == "yml" {
+			yamlOutput = true
+		} else if defaultFormat == "json" {
+			jsonOutput = true
+		} else {
+			prettyOutput = true
+		}
+	} else {
+		if prettyOutput {
+			yamlOutput = false
+			jsonOutput = false
+		} else if yamlOutput {
+			jsonOutput = false
+		}
+	}
 }
