@@ -149,6 +149,22 @@ func (w Work) WriteYAML(writer io.Writer) error {
 	return err
 }
 
+// WriteAllWorkToYAML takes a writer and list of work, and outputs a YAML representation of Work to the writer
+func WriteAllWorkToYAML(writer io.Writer, w []*Work) error {
+	pw := []printWork{}
+	for _, work := range w {
+		pw = append(pw, workToPrintWork(*work))
+	}
+
+	b, err := yaml.Marshal(pw)
+	if err != nil {
+		return err
+	}
+
+	_, err = writer.Write(b)
+	return err
+}
+
 // WriteJSON takes a writer and outputs a JSON representation of Work to it
 func (w Work) WriteJSON(writer io.Writer) error {
 	b, err := json.Marshal(workToPrintWork(w))
