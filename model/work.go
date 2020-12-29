@@ -92,10 +92,50 @@ func (w Work) String() string {
 	return strings.TrimSpace(finalString[:len(finalString)-1])
 }
 
+// PrettyString works like string, but with greater spacing and line breaks
+func (w Work) PrettyString() string {
+	pw := workToPrintWork(w)
+	finalString := " "
+	if pw.Title != "" {
+		finalString = fmt.Sprintf("%sTitle: %s\n", finalString, pw.Title)
+	}
+	if pw.Description != "" {
+		finalString = fmt.Sprintf("%sDescription: %s\n", finalString, pw.Description)
+	}
+	if pw.Author != "" {
+		finalString = fmt.Sprintf("%sAuthor: %s\n", finalString, pw.Author)
+	}
+	if pw.Duration != 0 {
+		finalString = fmt.Sprintf("%sDuration: %d\n", finalString, pw.Duration)
+	}
+	if len(pw.Tags) > 0 {
+		finalString = fmt.Sprintf("%sTags: [%s]\n", finalString, strings.Join(pw.Tags, ", "))
+	}
+	if !pw.When.Equal(time.Time{}) {
+		finalString = fmt.Sprintf("%sWhen: %s\n", finalString, pw.When)
+	}
+	return strings.TrimSpace(finalString[:len(finalString)-1])
+}
+
 // WriteText takes a writer and outputs a text representation of Work to it
 func (w Work) WriteText(writer io.Writer) error {
-	_, err := writer.Write([]byte(w.String()))
+	_, err := writer.Write([]byte(w.PrettyString()))
 	return err
+}
+
+// WriteAllWorkToText takes a writer and list of work, and outputs a text representation of Work to the writer
+func WriteAllWorkToText(writer io.Writer, w []*Work) error {
+	for index, work := range w {
+		err := work.WriteText(os.Stdout)
+		if err != nil {
+			return err
+		}
+		if index != len(w)-1 {
+			fmt.Println()
+		}
+		fmt.Println()
+	}
+	return nil
 }
 
 // WriteYAML takes a writer and outputs a YAML representation of Work to it
