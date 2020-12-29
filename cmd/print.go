@@ -23,28 +23,10 @@ var printCmd = &cobra.Command{
 	Long: `Prints all worklogs to console that have
 been created between the dates provided.`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		if len(startDateString) != 0 {
-			startDateAnytime, err := helpers.GetStringAsDateTime(startDateString)
-			if err != nil {
+		if err := verifyDates(); err != nil {
 				return err
 			}
-			startDate = helpers.Midnight(startDateAnytime)
-			if len(endDateString) != 0 {
-				endDateAnytime, err := helpers.GetStringAsDateTime(endDateString)
-				if err != nil {
-					return err
-				}
-				endDate = helpers.Midnight(endDateAnytime).AddDate(0, 0, 1)
-			}
-		} else if today {
-			startDate = helpers.Midnight(time.Now())
-			endDate = startDate.AddDate(0, 0, 1)
-		} else if thisWeek {
-			startDate = helpers.Midnight(helpers.GetPreviousMonday(time.Now()))
-			endDate = startDate.AddDate(0, 0, 7)
-		} else {
-			return errors.New("one flag is required")
-		}
+
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -85,4 +67,29 @@ func init() {
 		"",
 		false,
 		"Prints this weeks work")
+
+func verifyDates() error {
+	if len(startDateString) != 0 {
+		startDateAnytime, err := helpers.GetStringAsDateTime(startDateString)
+		if err != nil {
+			return err
+		}
+		startDate = helpers.Midnight(startDateAnytime)
+		if len(endDateString) != 0 {
+			endDateAnytime, err := helpers.GetStringAsDateTime(endDateString)
+			if err != nil {
+				return err
+			}
+			endDate = helpers.Midnight(endDateAnytime).AddDate(0, 0, 1)
+		}
+	} else if today {
+		startDate = helpers.Midnight(time.Now())
+		endDate = startDate.AddDate(0, 0, 1)
+	} else if thisWeek {
+		startDate = helpers.Midnight(helpers.GetPreviousMonday(time.Now()))
+		endDate = startDate.AddDate(0, 0, 7)
+	} else {
+		return errors.New("one flag is required")
+	}
+	return nil
 }
