@@ -29,12 +29,8 @@ var printCmd = &cobra.Command{
 	Long: `Prints all worklogs to console that have
 been created between the dates provided.`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		if err := verifyDates(); err != nil {
-			return err
-		}
 		verifySingleFormat()
-
-		return nil
+		return verifyDates()
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		worklogs, _, err := wlService.GetWorklogsBetween(startDate, endDate)
