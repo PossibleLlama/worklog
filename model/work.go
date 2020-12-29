@@ -1,11 +1,15 @@
 package model
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"sort"
 	"strings"
 	"time"
+
+	"gopkg.in/yaml.v2"
 )
 
 // Work data model.
@@ -87,15 +91,31 @@ func (w Work) String() string {
 	}
 	return strings.TrimSpace(finalString[:len(finalString)-1])
 }
+
+// WriteText takes a writer and outputs a text representation of Work to it
+func (w Work) WriteText(writer io.Writer) error {
+	_, err := writer.Write([]byte(w.String()))
+	return err
+}
+
+// WriteYAML takes a writer and outputs a YAML representation of Work to it
+func (w Work) WriteYAML(writer io.Writer) error {
+	b, err := yaml.Marshal(workToPrintWork(w))
+	if err != nil {
+		return err
 	}
-	if len(w.Tags) > 0 {
-		finalString = fmt.Sprintf("%s Tags: %s,", finalString, strings.Join(w.Tags, ", "))
+
+	_, err = writer.Write(b)
+	return err
+}
+
+// WriteJSON takes a writer and outputs a JSON representation of Work to it
+func (w Work) WriteJSON(writer io.Writer) error {
+	b, err := json.Marshal(workToPrintWork(w))
+	if err != nil {
+		return err
 	}
-	if !w.When.Equal(time.Time{}) {
-		finalString = fmt.Sprintf("%s When: %s,", finalString, w.When)
-	}
-	if !w.Created.Equal(time.Time{}) {
-		finalString = fmt.Sprintf("%s Created: %s,", finalString, w.Created)
-	}
-	return strings.TrimSpace(finalString[:len(finalString)-1])
+
+	_, err = writer.Write(b)
+	return err
 }
