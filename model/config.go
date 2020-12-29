@@ -2,7 +2,8 @@ package model
 
 // Defaults all options available as defaults in the configuration
 type Defaults struct {
-	Duration int
+	Duration int    `yaml:"duration"`
+	Format   string `yaml:"format,omitempty"`
 }
 
 // Config all options available in the configuration
@@ -12,11 +13,12 @@ type Config struct {
 }
 
 // NewConfig is the generator for configuration
-func NewConfig(author string, duration int) *Config {
+func NewConfig(author, format string, duration int) *Config {
 	return &Config{
 		Author: author,
 		Defaults: Defaults{
 			Duration: duration,
+			Format:   format,
 		},
 	}
 }

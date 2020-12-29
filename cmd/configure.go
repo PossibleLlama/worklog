@@ -14,6 +14,7 @@ const defaultDuration = 15
 
 var providedAuthor string
 var providedDuration int
+var providedFormat string
 
 // configureCmd represents the create command
 var configureCmd = &cobra.Command{
@@ -37,7 +38,9 @@ var defaultsCmd = &cobra.Command{
 	Long: `Default variables to be used with the
 worklog application.`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		if providedAuthor == "" && providedDuration < 0 {
+		if providedAuthor == "" &&
+			providedFormat == "" &&
+			providedDuration < 0 {
 			return errors.New("defaults requires at least one argument")
 		}
 		if providedDuration < 0 {
@@ -64,10 +67,15 @@ func init() {
 		"duration",
 		-1,
 		"Default duration that work takes")
+	defaultsCmd.Flags().StringVar(
+		&providedFormat,
+		"format",
+		"",
+		"Format to print work in")
 }
 
 func callService() error {
-	config := model.NewConfig(providedAuthor, providedDuration)
+	config := model.NewConfig(providedAuthor, providedFormat, providedDuration)
 	if err := wlService.Congfigure(config); err != nil {
 		return err
 	}
