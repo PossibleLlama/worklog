@@ -159,3 +159,19 @@ func (w Work) WriteJSON(writer io.Writer) error {
 	_, err = writer.Write(b)
 	return err
 }
+
+// WriteAllWorkToJSON takes a writer and list of work, and outputs a JSON representation of Work to the writer
+func WriteAllWorkToJSON(writer io.Writer, w []*Work) error {
+	pw := []printWork{}
+	for _, work := range w {
+		pw = append(pw, workToPrintWork(*work))
+	}
+
+	b, err := json.Marshal(pw)
+	if err != nil {
+		return err
+	}
+
+	_, err = writer.Write(b)
+	return err
+}
