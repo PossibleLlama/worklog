@@ -19,9 +19,9 @@ var endDateString string
 var today bool
 var thisWeek bool
 
+var prettyOutput bool
 var yamlOutput bool
 var jsonOutput bool
-var prettyOutput bool
 
 // printCmd represents the print command
 var printCmd = &cobra.Command{
