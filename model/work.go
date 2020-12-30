@@ -122,14 +122,20 @@ func (w Work) PrettyString() string {
 
 // WriteText takes a writer and outputs a text representation of Work to it
 func (w Work) WriteText(writer io.Writer) error {
+	_, err := writer.Write([]byte(w.String()))
+	return err
+}
+
+// WritePrettyText takes a writer and outputs a text representation of Work to it
+func (w Work) WritePrettyText(writer io.Writer) error {
 	_, err := writer.Write([]byte(w.PrettyString()))
 	return err
 }
 
-// WriteAllWorkToText takes a writer and list of work, and outputs a text representation of Work to the writer
-func WriteAllWorkToText(writer io.Writer, w []*Work) error {
+// WriteAllWorkToPrettyText takes a writer and list of work, and outputs a text representation of Work to the writer
+func WriteAllWorkToPrettyText(writer io.Writer, w []*Work) error {
 	for index, work := range w {
-		err := work.WriteText(os.Stdout)
+		err := work.WritePrettyText(os.Stdout)
 		if err != nil {
 			return err
 		}

@@ -40,7 +40,7 @@ been created between the dates provided.`,
 		}
 
 		if prettyOutput {
-			model.WriteAllWorkToText(os.Stdout, worklogs)
+			model.WriteAllWorkToPrettyText(os.Stdout, worklogs)
 		} else if yamlOutput {
 			model.WriteAllWorkToYAML(os.Stdout, worklogs)
 		} else {
