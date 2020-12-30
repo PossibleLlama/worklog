@@ -158,6 +158,12 @@ func (w Work) WriteYAML(writer io.Writer) error {
 	return err
 }
 
+// ReadYAML takes a string and parses into Work
+func ReadYAML(input []byte) (*Work, error) {
+	var w Work
+	return &w, yaml.Unmarshal(input, &w)
+}
+
 // WritePrettyYAML takes a writer and outputs a YAML representation of Work to it
 func (w Work) WritePrettyYAML(writer io.Writer) error {
 	b, err := yaml.Marshal(workToPrintWork(w))

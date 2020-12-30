@@ -154,14 +154,13 @@ func getAllFileNamesBetweenDates(startDate, endDate time.Time) ([]string, error)
 }
 
 func parseFileToWork(filePath string) (*model.Work, error) {
-	var worklog model.Work
 	yamlFile, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("error reading file %s. %e", filePath, err)
 	}
-	err = yaml.Unmarshal(yamlFile, &worklog)
+	worklog, err := model.ReadYAML(yamlFile)
 	if err == nil {
 		sort.Strings(worklog.Tags)
 	}
-	return &worklog, err
+	return worklog, err
 }
