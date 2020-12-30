@@ -55,8 +55,9 @@ been created between the dates provided.`,
 			return err
 		}
 
-		if len(worklogs) == 0 {
-			fmt.Printf("No work found between %s and %s\n", startDate, endDate.Add(time.Second*-1))
+		if len(worklogs) == 0 && !jsonOutput {
+			fmt.Printf("No work found between %s and %s with the given filter\n",
+				startDate, endDate.Add(time.Second*-1))
 		} else if prettyOutput {
 			model.WriteAllWorkToPrettyText(os.Stdout, worklogs)
 		} else if yamlOutput {
