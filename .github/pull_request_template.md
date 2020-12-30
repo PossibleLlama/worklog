@@ -9,5 +9,5 @@ Issue #(number)
 
 ## Updated
 
-- [x] Readme
-- [x] Version
+- [ ] Readme
+- [ ] Version
