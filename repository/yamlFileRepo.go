@@ -12,7 +12,6 @@ import (
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
 	homedir "github.com/mitchellh/go-homedir"
-	"gopkg.in/yaml.v2"
 )
 
 type yamlFileRepo struct{}
@@ -33,11 +32,9 @@ func (*yamlFileRepo) Configure(cfg *model.Config) error {
 		return fmt.Errorf("unable to create configuration file. %s", err.Error())
 	}
 
-	bytes, err := yaml.Marshal(&cfg)
-	if err != nil {
+	if err := cfg.WriteYAML(file); err != nil {
 		return fmt.Errorf("unable to save config. %s", err.Error())
 	}
-	file.Write(bytes)
 	file.Sync()
 
 	return nil
