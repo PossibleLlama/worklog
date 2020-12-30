@@ -7,7 +7,7 @@ have done each day.
 
 ## Supported versions
 
-- v0.3.2
+- v0.3.4
 
 ## Installation
 
@@ -61,10 +61,19 @@ One of the following must be provided within the flags.
 
 - `--startDate "2000/12/31"` Print all work completed after this
   date.
+- `--endDate "2001/01/01"` Print all work between `startDate` and
+  `endDate`. Must be used in conjunction with `--startDate`.
 - `--today` Print all work complete since midnight. This is not the
   last 24 hours.
 - `--thisWeek` Print all work completed since midnight on the last
   Monday. This is not the last 168 hours.
+
+In addition to the flags above, you can provide 1 of the following
+which will change how the output is formatted.
+
+- `--pretty` Output format is text. (Default)
+- `--yaml` Output format is yaml.
+- `--json` Output format is json.
 
 ## Configuration
 
@@ -77,6 +86,8 @@ will add provided flags into the configuration.
 
 - `--author "Alice"` String of the author's name.
 - `--duration 15` Default duration that a task takes.
+- `--format "json"` Default format to print output.
+  Accepts pretty, yaml or json.
 
 ### Example file
 
