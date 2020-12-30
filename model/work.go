@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/PossibleLlama/worklog/helpers"
 	"gopkg.in/yaml.v2"
 )
 
@@ -69,25 +70,27 @@ func workToPrintWork(w Work) printWork {
 
 // String generates a stringified version of the Work
 func (w Work) String() string {
-	pw := workToPrintWork(w)
 	finalString := " "
-	if pw.Title != "" {
-		finalString = fmt.Sprintf("%s Title: %s,", finalString, pw.Title)
+	if w.Title != "" {
+		finalString = fmt.Sprintf("%s Title: %s,", finalString, w.Title)
 	}
-	if pw.Description != "" {
-		finalString = fmt.Sprintf("%s Description: %s,", finalString, pw.Description)
+	if w.Description != "" {
+		finalString = fmt.Sprintf("%s Description: %s,", finalString, w.Description)
 	}
-	if pw.Author != "" {
-		finalString = fmt.Sprintf("%s Author: %s,", finalString, pw.Author)
+	if w.Author != "" {
+		finalString = fmt.Sprintf("%s Author: %s,", finalString, w.Author)
 	}
-	if pw.Duration != 0 {
-		finalString = fmt.Sprintf("%s Duration: %d,", finalString, pw.Duration)
+	if w.Duration != 0 {
+		finalString = fmt.Sprintf("%s Duration: %d,", finalString, w.Duration)
 	}
-	if len(pw.Tags) > 0 {
-		finalString = fmt.Sprintf("%s Tags: [%s],", finalString, strings.Join(pw.Tags, ", "))
+	if len(w.Tags) > 0 {
+		finalString = fmt.Sprintf("%s Tags: [%s],", finalString, strings.Join(w.Tags, ", "))
 	}
-	if !pw.When.Equal(time.Time{}) {
-		finalString = fmt.Sprintf("%s When: %s,", finalString, pw.When)
+	if !w.When.Equal(time.Time{}) {
+		finalString = fmt.Sprintf("%s When: %s,", finalString, helpers.TimeFormat(w.When))
+	}
+	if !w.CreatedAt.Equal(time.Time{}) {
+		finalString = fmt.Sprintf("%s CreatedAt: %s", finalString, helpers.TimeFormat(w.CreatedAt))
 	}
 	return strings.TrimSpace(finalString[:len(finalString)-1])
 }
@@ -112,7 +115,7 @@ func (w Work) PrettyString() string {
 		finalString = fmt.Sprintf("%sTags: [%s]\n", finalString, strings.Join(pw.Tags, ", "))
 	}
 	if !pw.When.Equal(time.Time{}) {
-		finalString = fmt.Sprintf("%sWhen: %s\n", finalString, pw.When)
+		finalString = fmt.Sprintf("%sWhen: %s\n", finalString, helpers.TimeFormat(pw.When))
 	}
 	return strings.TrimSpace(finalString[:len(finalString)-1])
 }
