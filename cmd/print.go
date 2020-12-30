@@ -42,9 +42,9 @@ been created between the dates provided.`,
 		if prettyOutput {
 			model.WriteAllWorkToPrettyText(os.Stdout, worklogs)
 		} else if yamlOutput {
-			model.WriteAllWorkToYAML(os.Stdout, worklogs)
+			model.WriteAllWorkToPrettyYAML(os.Stdout, worklogs)
 		} else {
-			model.WriteAllWorkToJSON(os.Stdout, worklogs)
+			model.WriteAllWorkToPrettyJSON(os.Stdout, worklogs)
 		}
 		return nil
 	},

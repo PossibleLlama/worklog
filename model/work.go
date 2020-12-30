@@ -149,6 +149,17 @@ func WriteAllWorkToPrettyText(writer io.Writer, w []*Work) error {
 
 // WriteYAML takes a writer and outputs a YAML representation of Work to it
 func (w Work) WriteYAML(writer io.Writer) error {
+	b, err := yaml.Marshal(w)
+	if err != nil {
+		return err
+	}
+
+	_, err = writer.Write(b)
+	return err
+}
+
+// WritePrettyYAML takes a writer and outputs a YAML representation of Work to it
+func (w Work) WritePrettyYAML(writer io.Writer) error {
 	b, err := yaml.Marshal(workToPrintWork(w))
 	if err != nil {
 		return err
@@ -158,8 +169,8 @@ func (w Work) WriteYAML(writer io.Writer) error {
 	return err
 }
 
-// WriteAllWorkToYAML takes a writer and list of work, and outputs a YAML representation of Work to the writer
-func WriteAllWorkToYAML(writer io.Writer, w []*Work) error {
+// WriteAllWorkToPrettyYAML takes a writer and list of work, and outputs a YAML representation of Work to the writer
+func WriteAllWorkToPrettyYAML(writer io.Writer, w []*Work) error {
 	pw := []printWork{}
 	for _, work := range w {
 		pw = append(pw, workToPrintWork(*work))
@@ -176,6 +187,17 @@ func WriteAllWorkToYAML(writer io.Writer, w []*Work) error {
 
 // WriteJSON takes a writer and outputs a JSON representation of Work to it
 func (w Work) WriteJSON(writer io.Writer) error {
+	b, err := json.Marshal(w)
+	if err != nil {
+		return err
+	}
+
+	_, err = writer.Write(b)
+	return err
+}
+
+// WritePrettyJSON takes a writer and outputs a JSON representation of Work to it
+func (w Work) WritePrettyJSON(writer io.Writer) error {
 	b, err := json.Marshal(workToPrintWork(w))
 	if err != nil {
 		return err
@@ -185,8 +207,8 @@ func (w Work) WriteJSON(writer io.Writer) error {
 	return err
 }
 
-// WriteAllWorkToJSON takes a writer and list of work, and outputs a JSON representation of Work to the writer
-func WriteAllWorkToJSON(writer io.Writer, w []*Work) error {
+// WriteAllWorkToPrettyJSON takes a writer and list of work, and outputs a JSON representation of Work to the writer
+func WriteAllWorkToPrettyJSON(writer io.Writer, w []*Work) error {
 	pw := []printWork{}
 	for _, work := range w {
 		pw = append(pw, workToPrintWork(*work))
