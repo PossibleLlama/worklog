@@ -169,10 +169,10 @@ func verifyFilters() {
 	titleFilter = strings.TrimSpace(titleFilter)
 	descriptionFilter = strings.TrimSpace(descriptionFilter)
 	authorFilter = strings.TrimSpace(authorFilter)
-	tagsFilter = strings.Split(rawTagsFilter, ",")
+	rawTagsList := strings.Split(rawTagsFilter, ",")
 
-	for _, tag := range tagsFilter {
-		tag = strings.TrimSpace(tag)
+	for _, tag := range rawTagsList {
+		tagsFilter = append(tagsFilter, strings.TrimSpace(tag))
 	}
 }
 
