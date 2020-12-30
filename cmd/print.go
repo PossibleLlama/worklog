@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/PossibleLlama/worklog/helpers"
@@ -20,6 +21,12 @@ var endDateString string
 var today bool
 var thisWeek bool
 
+var titleFilter string
+var descriptionFilter string
+var authorFilter string
+var rawTagsFilter string
+var tagsFilter []string
+
 var prettyOutput bool
 var yamlOutput bool
 var jsonOutput bool
@@ -32,10 +39,18 @@ var printCmd = &cobra.Command{
 been created between the dates provided.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		verifySingleFormat()
+		verifyFilters()
 		return verifyDates()
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		worklogs, _, err := wlService.GetWorklogsBetween(startDate, endDate)
+		filter := model.NewWork(
+			titleFilter,
+			descriptionFilter,
+			authorFilter,
+			-1,
+			tagsFilter,
+			time.Time{})
+		worklogs, _, err := wlService.GetWorklogsBetween(startDate, endDate, filter)
 		if err != nil {
 			return err
 		}
@@ -56,6 +71,7 @@ been created between the dates provided.`,
 func init() {
 	rootCmd.AddCommand(printCmd)
 
+	// Dates
 	printCmd.Flags().StringVar(
 		&startDateString,
 		"startDate",
@@ -78,6 +94,30 @@ func init() {
 		"",
 		false,
 		"Prints this weeks work")
+
+	// Filters
+	printCmd.Flags().StringVar(
+		&titleFilter,
+		"title",
+		"",
+		"Filter by work including title")
+	printCmd.Flags().StringVar(
+		&descriptionFilter,
+		"description",
+		"",
+		"Filter by work including description")
+	printCmd.Flags().StringVar(
+		&authorFilter,
+		"author",
+		"",
+		"Filter by work including author")
+	printCmd.Flags().StringVar(
+		&rawTagsFilter,
+		"tags",
+		"",
+		"Filter by work including all tags")
+
+	// Format
 	printCmd.Flags().BoolVarP(
 		&prettyOutput,
 		"pretty",
@@ -122,6 +162,18 @@ func verifyDates() error {
 		return errors.New("one flag is required")
 	}
 	return nil
+}
+
+// verifyFilters ensures that the filters make sense
+func verifyFilters() {
+	titleFilter = strings.TrimSpace(titleFilter)
+	descriptionFilter = strings.TrimSpace(descriptionFilter)
+	authorFilter = strings.TrimSpace(authorFilter)
+	tagsFilter = strings.Split(rawTagsFilter, ",")
+
+	for _, tag := range tagsFilter {
+		tag = strings.TrimSpace(tag)
+	}
 }
 
 // verifySingleFormat ensures that there is only 1 output format used.
