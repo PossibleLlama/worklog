@@ -114,7 +114,7 @@ func (*yamlFileRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *mo
 		readWorklog, err := parseFileToWork(fileName)
 		if err != nil {
 			errors = append(errors, err.Error())
-		} else {
+		} else if workMatchesFilter(filter, readWorklog) {
 			worklogs = append(worklogs, readWorklog)
 		}
 	}
@@ -160,4 +160,31 @@ func parseFileToWork(filePath string) (*model.Work, error) {
 		sort.Strings(worklog.Tags)
 	}
 	return worklog, err
+}
+
+func workMatchesFilter(filter, w *model.Work) bool {
+	if !aInB(filter.Title, w.Title) {
+		return false
+	}
+	if !aInB(filter.Description, w.Description) {
+		return false
+	}
+	if !aInB(filter.Author, w.Author) {
+		return false
+	}
+	for _, filtersTag := range filter.Tags {
+		if filtersTag == "" {
+			continue
+		}
+		if !aInB(filtersTag, strings.Join(w.Tags, " ")) {
+			return false
+		}
+	}
+	return true
+}
+
+func aInB(a, b string) bool {
+	return a == "" || strings.Contains(
+		strings.ToLower(b),
+		strings.ToLower(a))
 }
