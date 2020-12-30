@@ -52,11 +52,9 @@ func (*yamlFileRepo) Save(wl *model.Work) error {
 		return fmt.Errorf("unable to save worklog. %s", err.Error())
 	}
 
-	bytes, err := yaml.Marshal(*wl)
-	if err != nil {
+	if err := wl.WriteYAML(file); err != nil {
 		return fmt.Errorf("unable to save worklog. %s", err.Error())
 	}
-	file.Write(bytes)
 	file.Sync()
 
 	fmt.Println("Saved file")
