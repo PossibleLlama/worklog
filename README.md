@@ -32,6 +32,10 @@ rm worklog.exe
 
 ## Creating worklogs
 
+``` bash
+worklog create <FLAGS>
+```
+
 To create a basic worklog, you can use `worklog create --title "foo"`.
 This will create an item of work, with the current timestamp, and the
 name `"foo"`.
@@ -54,9 +58,26 @@ You can specify further fields as you want to.
 
 [RFC3339]: https://tools.ietf.org/html/rfc3339
 
+### Example create
+
+``` bash
+worklog create \
+--title "Wake up" \
+--description "A detailed description of my morning routine."
+--duration 60
+--tags "morning"
+```
+
 ## Reading worklogs
 
-Printing worklogs to the console. You can use `worklog print <FLAGS>`.
+``` bash
+worklog print <DATE> <FILTERS> <FORMAT>
+```
+
+Printing all worklogs to the console that match your criteria.
+
+### Date
+
 One of the following must be provided within the flags.
 
 - `--startDate "2000/12/31"` Print all work completed after this
@@ -68,18 +89,53 @@ One of the following must be provided within the flags.
 - `--thisWeek` Print all work completed since midnight on the last
   Monday. This is not the last 168 hours.
 
-In addition to the flags above, you can provide 1 of the following
-which will change how the output is formatted.
+### Filters
+
+You can specify as many of these as you need to search for the correct
+worklogs.
+
+All filters:
+
+- Are case insensitive.
+- Will include partial matches (`--title "a"` will return all titles
+  that include an "a" anywhere within the title.)
+- Any returned Work must satisfy all filters.
+
+Arguments match the names used when creating a worklog.
+
+Valid arguments are:
+
+- `--title`
+- `--description`
+- `--author`
+- `--tags`
+
+### Format
+
+Optionally, you can provide 1 of the following which will change how
+the output is formatted.
 
 - `--pretty` Output format is text. (Default)
 - `--yaml` Output format is yaml.
 - `--json` Output format is json.
 
+### Example print
+
+``` bash
+worklog print --today --json --tags "morning"
+```
+
 ## Configuration
+
+``` bash
+worklog configure
+```
 
 Configuration for the application.
 
 For basic setup you can run `worklog configure`.
+This will provide an empty string for the author, and a
+duration of 15.
 
 For more advanced setup, `worklog configure defaults <FLAGS>`
 will add provided flags into the configuration.
@@ -87,7 +143,13 @@ will add provided flags into the configuration.
 - `--author "Alice"` String of the author's name.
 - `--duration 15` Default duration that a task takes.
 - `--format "json"` Default format to print output.
-  Accepts pretty, yaml or json.
+  Accepts `"pretty"`, `"yaml"` or `"json"`.
+
+### Example configure
+
+``` bash
+worklog configure defaults --author "Alice" --duration 30 --format "pretty"
+```
 
 ### Example file
 
