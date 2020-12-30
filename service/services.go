@@ -13,7 +13,7 @@ import (
 type WorklogService interface {
 	Congfigure(cfg *model.Config) error
 	CreateWorklog(wl *model.Work) (int, error)
-	GetWorklogsBetween(start, end time.Time) ([]*model.Work, int, error)
+	GetWorklogsBetween(start, end time.Time, filter *model.Work) ([]*model.Work, int, error)
 }
 
 type service struct{}
@@ -39,8 +39,8 @@ func (*service) CreateWorklog(wl *model.Work) (int, error) {
 	return http.StatusCreated, nil
 }
 
-func (*service) GetWorklogsBetween(start, end time.Time) ([]*model.Work, int, error) {
-	worklogs, err := repo.GetAllBetweenDates(start, end)
+func (*service) GetWorklogsBetween(start, end time.Time, filter *model.Work) ([]*model.Work, int, error) {
+	worklogs, err := repo.GetAllBetweenDates(start, end, filter)
 	if err != nil {
 		return worklogs, http.StatusInternalServerError, err
 	}
