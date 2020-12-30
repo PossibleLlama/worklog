@@ -173,10 +173,8 @@ func workMatchesFilter(filter, w *model.Work) bool {
 		return false
 	}
 	for _, filtersTag := range filter.Tags {
-		if filtersTag == "" {
-			continue
-		}
-		if !aInB(filtersTag, strings.Join(w.Tags, " ")) {
+		if filtersTag != "" &&
+			!aInB(filtersTag, strings.Join(w.Tags, " ")) {
 			return false
 		}
 	}
