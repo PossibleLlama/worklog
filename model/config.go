@@ -1,5 +1,11 @@
 package model
 
+import (
+	"io"
+
+	"gopkg.in/yaml.v2"
+)
+
 // Defaults all options available as defaults in the configuration
 type Defaults struct {
 	Duration int    `yaml:"duration"`
@@ -27,4 +33,15 @@ func NewConfig(author, format string, duration int) *Config {
 			Format:   format,
 		},
 	}
+}
+
+// WriteYAML takes a writer and outputs a YAML representation of Config to it
+func (c Config) WriteYAML(writer io.Writer) error {
+	b, err := yaml.Marshal(&c)
+	if err != nil {
+		return err
+	}
+
+	_, err = writer.Write(b)
+	return err
 }

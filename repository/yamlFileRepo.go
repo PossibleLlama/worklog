@@ -12,7 +12,6 @@ import (
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
 	homedir "github.com/mitchellh/go-homedir"
-	"gopkg.in/yaml.v2"
 )
 
 type yamlFileRepo struct{}
@@ -33,11 +32,9 @@ func (*yamlFileRepo) Configure(cfg *model.Config) error {
 		return fmt.Errorf("unable to create configuration file. %s", err.Error())
 	}
 
-	bytes, err := yaml.Marshal(&cfg)
-	if err != nil {
+	if err := cfg.WriteYAML(file); err != nil {
 		return fmt.Errorf("unable to save config. %s", err.Error())
 	}
-	file.Write(bytes)
 	file.Sync()
 
 	return nil
@@ -52,11 +49,9 @@ func (*yamlFileRepo) Save(wl *model.Work) error {
 		return fmt.Errorf("unable to save worklog. %s", err.Error())
 	}
 
-	bytes, err := yaml.Marshal(*wl)
-	if err != nil {
+	if err := wl.WriteYAML(file); err != nil {
 		return fmt.Errorf("unable to save worklog. %s", err.Error())
 	}
-	file.Write(bytes)
 	file.Sync()
 
 	fmt.Println("Saved file")
@@ -156,14 +151,13 @@ func getAllFileNamesBetweenDates(startDate, endDate time.Time) ([]string, error)
 }
 
 func parseFileToWork(filePath string) (*model.Work, error) {
-	var worklog model.Work
 	yamlFile, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("error reading file %s. %e", filePath, err)
 	}
-	err = yaml.Unmarshal(yamlFile, &worklog)
+	worklog, err := model.ReadYAML(yamlFile)
 	if err == nil {
 		sort.Strings(worklog.Tags)
 	}
-	return &worklog, err
+	return worklog, err
 }

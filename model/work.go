@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/PossibleLlama/worklog/helpers"
 	"gopkg.in/yaml.v2"
 )
 
@@ -69,25 +70,27 @@ func workToPrintWork(w Work) printWork {
 
 // String generates a stringified version of the Work
 func (w Work) String() string {
-	pw := workToPrintWork(w)
 	finalString := " "
-	if pw.Title != "" {
-		finalString = fmt.Sprintf("%s Title: %s,", finalString, pw.Title)
+	if w.Title != "" {
+		finalString = fmt.Sprintf("%s Title: %s,", finalString, w.Title)
 	}
-	if pw.Description != "" {
-		finalString = fmt.Sprintf("%s Description: %s,", finalString, pw.Description)
+	if w.Description != "" {
+		finalString = fmt.Sprintf("%s Description: %s,", finalString, w.Description)
 	}
-	if pw.Author != "" {
-		finalString = fmt.Sprintf("%s Author: %s,", finalString, pw.Author)
+	if w.Author != "" {
+		finalString = fmt.Sprintf("%s Author: %s,", finalString, w.Author)
 	}
-	if pw.Duration != 0 {
-		finalString = fmt.Sprintf("%s Duration: %d,", finalString, pw.Duration)
+	if w.Duration != 0 {
+		finalString = fmt.Sprintf("%s Duration: %d,", finalString, w.Duration)
 	}
-	if len(pw.Tags) > 0 {
-		finalString = fmt.Sprintf("%s Tags: [%s],", finalString, strings.Join(pw.Tags, ", "))
+	if len(w.Tags) > 0 {
+		finalString = fmt.Sprintf("%s Tags: [%s],", finalString, strings.Join(w.Tags, ", "))
 	}
-	if !pw.When.Equal(time.Time{}) {
-		finalString = fmt.Sprintf("%s When: %s,", finalString, pw.When)
+	if !w.When.Equal(time.Time{}) {
+		finalString = fmt.Sprintf("%s When: %s,", finalString, helpers.TimeFormat(w.When))
+	}
+	if !w.CreatedAt.Equal(time.Time{}) {
+		finalString = fmt.Sprintf("%s CreatedAt: %s", finalString, helpers.TimeFormat(w.CreatedAt))
 	}
 	return strings.TrimSpace(finalString[:len(finalString)-1])
 }
@@ -112,21 +115,27 @@ func (w Work) PrettyString() string {
 		finalString = fmt.Sprintf("%sTags: [%s]\n", finalString, strings.Join(pw.Tags, ", "))
 	}
 	if !pw.When.Equal(time.Time{}) {
-		finalString = fmt.Sprintf("%sWhen: %s\n", finalString, pw.When)
+		finalString = fmt.Sprintf("%sWhen: %s\n", finalString, helpers.TimeFormat(pw.When))
 	}
 	return strings.TrimSpace(finalString[:len(finalString)-1])
 }
 
 // WriteText takes a writer and outputs a text representation of Work to it
 func (w Work) WriteText(writer io.Writer) error {
+	_, err := writer.Write([]byte(w.String()))
+	return err
+}
+
+// WritePrettyText takes a writer and outputs a text representation of Work to it
+func (w Work) WritePrettyText(writer io.Writer) error {
 	_, err := writer.Write([]byte(w.PrettyString()))
 	return err
 }
 
-// WriteAllWorkToText takes a writer and list of work, and outputs a text representation of Work to the writer
-func WriteAllWorkToText(writer io.Writer, w []*Work) error {
+// WriteAllWorkToPrettyText takes a writer and list of work, and outputs a text representation of Work to the writer
+func WriteAllWorkToPrettyText(writer io.Writer, w []*Work) error {
 	for index, work := range w {
-		err := work.WriteText(os.Stdout)
+		err := work.WritePrettyText(os.Stdout)
 		if err != nil {
 			return err
 		}
@@ -140,6 +149,23 @@ func WriteAllWorkToText(writer io.Writer, w []*Work) error {
 
 // WriteYAML takes a writer and outputs a YAML representation of Work to it
 func (w Work) WriteYAML(writer io.Writer) error {
+	b, err := yaml.Marshal(w)
+	if err != nil {
+		return err
+	}
+
+	_, err = writer.Write(b)
+	return err
+}
+
+// ReadYAML takes a string and parses into Work
+func ReadYAML(input []byte) (*Work, error) {
+	var w Work
+	return &w, yaml.Unmarshal(input, &w)
+}
+
+// WritePrettyYAML takes a writer and outputs a YAML representation of Work to it
+func (w Work) WritePrettyYAML(writer io.Writer) error {
 	b, err := yaml.Marshal(workToPrintWork(w))
 	if err != nil {
 		return err
@@ -149,8 +175,8 @@ func (w Work) WriteYAML(writer io.Writer) error {
 	return err
 }
 
-// WriteAllWorkToYAML takes a writer and list of work, and outputs a YAML representation of Work to the writer
-func WriteAllWorkToYAML(writer io.Writer, w []*Work) error {
+// WriteAllWorkToPrettyYAML takes a writer and list of work, and outputs a YAML representation of Work to the writer
+func WriteAllWorkToPrettyYAML(writer io.Writer, w []*Work) error {
 	pw := []printWork{}
 	for _, work := range w {
 		pw = append(pw, workToPrintWork(*work))
@@ -167,6 +193,17 @@ func WriteAllWorkToYAML(writer io.Writer, w []*Work) error {
 
 // WriteJSON takes a writer and outputs a JSON representation of Work to it
 func (w Work) WriteJSON(writer io.Writer) error {
+	b, err := json.Marshal(w)
+	if err != nil {
+		return err
+	}
+
+	_, err = writer.Write(b)
+	return err
+}
+
+// WritePrettyJSON takes a writer and outputs a JSON representation of Work to it
+func (w Work) WritePrettyJSON(writer io.Writer) error {
 	b, err := json.Marshal(workToPrintWork(w))
 	if err != nil {
 		return err
@@ -176,8 +213,8 @@ func (w Work) WriteJSON(writer io.Writer) error {
 	return err
 }
 
-// WriteAllWorkToJSON takes a writer and list of work, and outputs a JSON representation of Work to the writer
-func WriteAllWorkToJSON(writer io.Writer, w []*Work) error {
+// WriteAllWorkToPrettyJSON takes a writer and list of work, and outputs a JSON representation of Work to the writer
+func WriteAllWorkToPrettyJSON(writer io.Writer, w []*Work) error {
 	pw := []printWork{}
 	for _, work := range w {
 		pw = append(pw, workToPrintWork(*work))
