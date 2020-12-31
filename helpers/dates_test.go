@@ -12,7 +12,7 @@ const (
 	outputTime = "2000-01-02T01:23:00Z"
 )
 
-func initilizeTime(t *testing.T, layout, value string) time.Time {
+func initializeTime(t *testing.T, layout, value string) time.Time {
 	tm, err := time.Parse(layout, value)
 	if err != nil {
 		t.Errorf("Initialization of test data failed with %s", err)
@@ -28,31 +28,31 @@ func TestTimeFormat(t *testing.T) {
 	}{
 		{
 			name:   "Valid RFC1123 date time updates",
-			input:  initilizeTime(t, time.RFC1123, "Sun, 02 Jan 2000 01:23:00 GMT"),
+			input:  initializeTime(t, time.RFC1123, "Sun, 02 Jan 2000 01:23:00 GMT"),
 			output: outputTime,
 		}, {
 			name:   "Valid RFC1123Z date time updates",
-			input:  initilizeTime(t, time.RFC1123Z, "Sun, 02 Jan 2000 01:23:00 +0000"),
+			input:  initializeTime(t, time.RFC1123Z, "Sun, 02 Jan 2000 01:23:00 +0000"),
 			output: outputTime,
 		}, {
 			name:   "Valid RFC3339 date time is same",
-			input:  initilizeTime(t, time.RFC3339, "2000-01-02T01:23:00Z"),
+			input:  initializeTime(t, time.RFC3339, "2000-01-02T01:23:00Z"),
 			output: outputTime,
 		}, {
 			name:   "Valid RFC3339 nano date time updates",
-			input:  initilizeTime(t, time.RFC3339Nano, "2000-01-02T01:23:00.000000000Z"),
+			input:  initializeTime(t, time.RFC3339Nano, "2000-01-02T01:23:00.000000000Z"),
 			output: outputTime,
 		}, {
 			name:   "Valid RFC850 date time updates",
-			input:  initilizeTime(t, time.RFC850, "Sunday, 02-Jan-00 01:23:00 GMT"),
+			input:  initializeTime(t, time.RFC850, "Sunday, 02-Jan-00 01:23:00 GMT"),
 			output: outputTime,
 		}, {
 			name:   "Valid RFC882 date time updates",
-			input:  initilizeTime(t, time.RFC822, "02 Jan 00 01:23 GMT"),
+			input:  initializeTime(t, time.RFC822, "02 Jan 00 01:23 GMT"),
 			output: outputTime,
 		}, {
 			name:   "Valid RFC882Z date time updates",
-			input:  initilizeTime(t, time.RFC822Z, "02 Jan 00 01:23 +0000"),
+			input:  initializeTime(t, time.RFC822Z, "02 Jan 00 01:23 +0000"),
 			output: outputTime,
 		},
 	}
@@ -65,8 +65,8 @@ func TestTimeFormat(t *testing.T) {
 }
 
 func TestGetStringAsDateTime(t *testing.T) {
-	expectedDateTimeMidnight := initilizeTime(t, time.RFC3339, "2000-01-01T00:00:00Z")
-	expectedDateTimeMorning := initilizeTime(t, time.RFC3339, outputTime)
+	expectedDateTimeMidnight := initializeTime(t, time.RFC3339, "2000-01-01T00:00:00Z")
+	expectedDateTimeMorning := initializeTime(t, time.RFC3339, outputTime)
 
 	var tests = []struct {
 		name             string
@@ -207,7 +207,7 @@ func BenchmarkGetStringAsDateTime(b *testing.B) {
 }
 
 func TestMidnight(t *testing.T) {
-	midnight := initilizeTime(t, time.RFC3339, "2000-01-02T00:00:00Z")
+	midnight := initializeTime(t, time.RFC3339, "2000-01-02T00:00:00Z")
 
 	var tests = []struct {
 		name       string
@@ -216,39 +216,39 @@ func TestMidnight(t *testing.T) {
 	}{
 		{
 			name:       "Second before midnight day",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-01T23:59:59Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-01T23:59:59Z"),
 			is20000102: false,
 		}, {
 			name:       "Midnight stays same",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-02T00:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-02T00:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Second into day",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-02T00:00:01Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-02T00:00:01Z"),
 			is20000102: true,
 		}, {
 			name:       "Minute into day",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-02T00:01:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-02T00:01:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Hour into day",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-02T01:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-02T01:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Second before midday into day",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-02T11:59:59Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-02T11:59:59Z"),
 			is20000102: true,
 		}, {
 			name:       "Midday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-02T12:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-02T12:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Second before midnight next day",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-02T23:59:59Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-02T23:59:59Z"),
 			is20000102: true,
 		}, {
 			name:       "Midnight next day",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-03T00:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-03T00:00:00Z"),
 			is20000102: false,
 		},
 	}
@@ -265,7 +265,7 @@ func TestMidnight(t *testing.T) {
 }
 
 func TestGetPreviousMonday(t *testing.T) {
-	monday := initilizeTime(t, time.RFC3339, "2000-01-03T00:00:00Z")
+	monday := initializeTime(t, time.RFC3339, "2000-01-03T00:00:00Z")
 
 	var tests = []struct {
 		name       string
@@ -274,91 +274,91 @@ func TestGetPreviousMonday(t *testing.T) {
 	}{
 		{
 			name:       "Second before Monday day",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-02T23:59:59Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-02T23:59:59Z"),
 			is20000102: false,
 		}, {
 			name:       "Midnight Monday stays same",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-03T00:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-03T00:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Second into Monday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-03T00:00:01Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-03T00:00:01Z"),
 			is20000102: true,
 		}, {
 			name:       "Minute into Monday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-03T00:01:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-03T00:01:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Hour into Monday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-03T01:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-03T01:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Second before midday into Monday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-03T11:59:59Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-03T11:59:59Z"),
 			is20000102: true,
 		}, {
 			name:       "Midday Monday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-03T12:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-03T12:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Second before midnight Tuesday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-03T23:59:59Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-03T23:59:59Z"),
 			is20000102: true,
 		}, {
 			name:       "Midnight Tuesday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-04T00:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-04T00:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Midday Tuesday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-04T12:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-04T12:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Midnight Wednesday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-05T00:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-05T00:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Midday Wednesday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-05T12:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-05T12:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Midnight Thursday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-06T00:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-06T00:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Midday Thursday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-06T12:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-06T12:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Midnight Friday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-07T00:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-07T00:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Midday Friday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-07T12:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-07T12:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Midnight Saturday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-08T00:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-08T00:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Midday Sunday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-08T12:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-08T12:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Midnight Sunday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-09T00:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-09T00:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Midday Sunday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-09T12:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-09T12:00:00Z"),
 			is20000102: true,
 		}, {
 			name:       "Second before midnight next Monday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-09T23:59:59Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-09T23:59:59Z"),
 			is20000102: true,
 		}, {
 			name:       "Midnight next Monday",
-			input:      initilizeTime(t, time.RFC3339, "2000-01-10T00:00:00Z"),
+			input:      initializeTime(t, time.RFC3339, "2000-01-10T00:00:00Z"),
 			is20000102: false,
 		},
 	}
