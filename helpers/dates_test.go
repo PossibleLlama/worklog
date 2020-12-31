@@ -172,11 +172,6 @@ func TestGetStringAsDateTime(t *testing.T) {
 }
 
 func BenchmarkGetStringAsDateTime(b *testing.B) {
-	_, err := time.Parse(time.RFC3339, "2000-01-01T00:00:00Z")
-	if err != nil {
-		b.Errorf("Error initialising expected time. '%s'", err)
-	}
-
 	var tests = []struct {
 		name  string
 		input string
@@ -267,6 +262,38 @@ func TestMidnight(t *testing.T) {
 				assert.Equal(t, midnight, Midnight(testItem.input))
 			} else {
 				assert.NotEqual(t, midnight, Midnight(testItem.input))
+			}
+		})
+	}
+}
+
+func BenchmarkMidnight(b *testing.B) {
+	var tests = []struct {
+		name  string
+		input time.Time
+	}{
+		{
+			name:  "Midnight",
+			input: initializeTimeBench(b, time.RFC3339, "2000-01-01T00:00:00Z"),
+		}, {
+			name:  "Second after",
+			input: initializeTimeBench(b, time.RFC3339, "2000-01-01T00:00:01Z"),
+		}, {
+			name:  "Minute after",
+			input: initializeTimeBench(b, time.RFC3339, "2000-01-01T00:01:00Z"),
+		}, {
+			name:  "Hour after",
+			input: initializeTimeBench(b, time.RFC3339, "2000-01-01T01:00:00Z"),
+		}, {
+			name:  "Second before next day",
+			input: initializeTimeBench(b, time.RFC3339, "2000-01-01T23:59:59Z"),
+		},
+	}
+
+	for _, testItem := range tests {
+		b.Run(testItem.name, func(b *testing.B) {
+			for n := 0; n < b.N; n++ {
+				Midnight(testItem.input)
 			}
 		})
 	}
