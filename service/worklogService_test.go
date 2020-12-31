@@ -64,7 +64,7 @@ func TestConfigure(t *testing.T) {
 		{
 			name: "Errored",
 			cfg:  genCfg(),
-			err:  errors.New("Errored"),
+			err:  errors.New(helpers.RandString(strLength)),
 		},
 	}
 
@@ -105,7 +105,7 @@ func TestCreateWorklog(t *testing.T) {
 			name:   "Errored",
 			wl:     genWl(),
 			exCode: http.StatusInternalServerError,
-			err:    errors.New("Errored"),
+			err:    errors.New(helpers.RandString(strLength)),
 		},
 	}
 
@@ -169,7 +169,7 @@ func TestGetWorklogsBetween(t *testing.T) {
 			filter: filterWl,
 			retWl:  []*model.Work{},
 			exCode: http.StatusInternalServerError,
-			err:    errors.New("Errored"),
+			err:    errors.New(helpers.RandString(strLength)),
 		},
 	}
 
