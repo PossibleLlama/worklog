@@ -124,3 +124,80 @@ func TestCreateWorklog(t *testing.T) {
 		})
 	}
 }
+
+func TestGetWorklogsBetween(t *testing.T) {
+	sTime := time.Now()
+	eTime := sTime.Add(time.Hour)
+	filterWl := genWl()
+
+	var tests = []struct {
+		name   string
+		sTime  time.Time
+		eTime  time.Time
+		filter *model.Work
+		retWl  []*model.Work
+		exCode int
+		err    error
+	}{
+		{
+			name:   "Success found 1",
+			sTime:  sTime,
+			eTime:  eTime,
+			filter: filterWl,
+			retWl:  []*model.Work{filterWl},
+			exCode: http.StatusOK,
+			err:    nil,
+		},
+		{
+			name:   "Success found 0",
+			sTime:  sTime,
+			eTime:  eTime,
+			filter: filterWl,
+			retWl:  []*model.Work{},
+			exCode: http.StatusNotFound,
+			err:    nil,
+		},
+		{
+			name:   "Errored",
+			sTime:  sTime,
+			eTime:  eTime,
+			filter: filterWl,
+			retWl:  []*model.Work{},
+			exCode: http.StatusInternalServerError,
+			err:    errors.New("Errored"),
+		},
+	}
+
+	for _, testItem := range tests {
+		mockRepo := new(repository.MockRepo)
+		mockRepo.On(
+			"GetAllBetweenDates",
+			testItem.sTime,
+			testItem.eTime,
+			testItem.filter).
+			Return(testItem.retWl, testItem.err)
+		svc := NewWorklogService(mockRepo)
+
+		t.Run(testItem.name, func(t *testing.T) {
+			returnedWls, returnedCode, returnedErr := svc.GetWorklogsBetween(
+				testItem.sTime,
+				testItem.eTime,
+				testItem.filter)
+
+			if returnedErr != nil {
+				assert.EqualError(t, testItem.err, returnedErr.Error())
+			} else {
+				assert.Nil(t, returnedErr)
+			}
+			assert.Equal(t, testItem.exCode, returnedCode)
+			assert.Equal(t, len(testItem.retWl), len(returnedWls))
+			assert.Equal(t, testItem.retWl, returnedWls)
+			mockRepo.AssertExpectations(t)
+			mockRepo.AssertCalled(t,
+				"GetAllBetweenDates",
+				testItem.sTime,
+				testItem.eTime,
+				testItem.filter)
+		})
+	}
+}

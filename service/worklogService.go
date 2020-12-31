@@ -36,5 +36,8 @@ func (*service) GetWorklogsBetween(start, end time.Time, filter *model.Work) ([]
 	if err != nil {
 		return worklogs, http.StatusInternalServerError, err
 	}
+	if len(worklogs) == 0 {
+		return worklogs, http.StatusNotFound, err
+	}
 	return worklogs, http.StatusOK, nil
 }
