@@ -20,6 +20,14 @@ func initializeTime(t *testing.T, layout, value string) time.Time {
 	return tm
 }
 
+func initializeTimeBench(b *testing.B, layout, value string) time.Time {
+	tm, err := time.Parse(layout, value)
+	if err != nil {
+		b.Errorf("Initialization of test data failed with %s", err)
+	}
+	return tm
+}
+
 func TestTimeFormat(t *testing.T) {
 	var tests = []struct {
 		name   string
