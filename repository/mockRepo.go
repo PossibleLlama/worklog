@@ -27,5 +27,5 @@ func (m *MockRepo) Save(wl *model.Work) error {
 // GetAllBetweenDates WorklogRepository method for testing
 func (m *MockRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *model.Work) ([]*model.Work, error) {
 	args := m.Called(startDate, endDate, filter)
-	return []*model.Work{}, args.Error(0)
+	return args.Get(0).([]*model.Work), args.Error(1)
 }
