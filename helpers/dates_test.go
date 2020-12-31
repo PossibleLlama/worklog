@@ -163,6 +163,49 @@ func TestGetStringAsDateTime(t *testing.T) {
 	}
 }
 
+func BenchmarkGetStringAsDateTime(b *testing.B) {
+	_, err := time.Parse(time.RFC3339, "2000-01-01T00:00:00Z")
+	if err != nil {
+		b.Errorf("Error initialising expected time. '%s'", err)
+	}
+
+	var tests = []struct {
+		name  string
+		input string
+	}{
+		{
+			name:  "YYYY-MM-DD",
+			input: "2000-01-02",
+		}, {
+			name:  "YYYY/MM/DD",
+			input: "2000/01/02",
+		}, {
+			name:  "YYYY MM DD",
+			input: "2000 01 02",
+		}, {
+			name:  "YYYY-MM-DDTHH:mm:SS",
+			input: "2000-01-02T01:23:00",
+		}, {
+			name:  "YYYY-MM-DDTHH:mm:SSZ whitespace start",
+			input: "\t2000-01-02T01:23:00Z",
+		}, {
+			name:  "YYYY-MM-DDTHH:mm:SSZ whitespace end",
+			input: "2000-01-02T01:23:00Z\t",
+		}, {
+			name:  "YYYY-MM-DDTHH:mm:SSZ whitespace both ends",
+			input: "\t2000-01-02T01:23:00Z\t",
+		},
+	}
+
+	for _, testItem := range tests {
+		b.Run(testItem.name, func(b *testing.B) {
+			for n := 0; n < b.N; n++ {
+				GetStringAsDateTime(testItem.input)
+			}
+		})
+	}
+}
+
 func TestMidnight(t *testing.T) {
 	midnight := initilizeTime(t, time.RFC3339, "2000-01-02T00:00:00Z")
 
