@@ -22,23 +22,28 @@ var (
 	}
 )
 
+const (
+	strLength = 30
+	arrLength = 128
+)
+
 func genCfg() *model.Config {
 	return model.NewConfig(
-		helpers.RandString(30),
+		helpers.RandString(strLength),
 		formats[rand.Intn(len(formats))],
 		int(src.Int63()))
 }
 
 func genWl() *model.Work {
-	tags := make([]string, src.Intn(128))
+	tags := make([]string, src.Intn(arrLength))
 	for index := range tags {
-		tags[index] = helpers.RandString(src.Intn(30))
+		tags[index] = helpers.RandString(src.Intn(strLength))
 	}
 
 	return model.NewWork(
-		helpers.RandString(30),
-		helpers.RandString(30),
-		helpers.RandString(30),
+		helpers.RandString(strLength),
+		helpers.RandString(strLength),
+		helpers.RandString(strLength),
 		int(src.Int63()),
 		tags,
 		time.Now(),
