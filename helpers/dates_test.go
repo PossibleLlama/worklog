@@ -162,3 +162,61 @@ func TestGetStringAsDateTime(t *testing.T) {
 		})
 	}
 }
+
+func TestMidnight(t *testing.T) {
+	midnight := initilizeTime(t, time.RFC3339, "2000-01-02T00:00:00Z")
+
+	var tests = []struct {
+		name       string
+		input      time.Time
+		is20000102 bool
+	}{
+		{
+			name:       "Second before midnight day",
+			input:      initilizeTime(t, time.RFC3339, "2000-01-01T23:59:59Z"),
+			is20000102: false,
+		}, {
+			name:       "Midnight stays same",
+			input:      initilizeTime(t, time.RFC3339, "2000-01-02T00:00:00Z"),
+			is20000102: true,
+		}, {
+			name:       "Second into day",
+			input:      initilizeTime(t, time.RFC3339, "2000-01-02T00:00:01Z"),
+			is20000102: true,
+		}, {
+			name:       "Minute into day",
+			input:      initilizeTime(t, time.RFC3339, "2000-01-02T00:01:00Z"),
+			is20000102: true,
+		}, {
+			name:       "Hour into day",
+			input:      initilizeTime(t, time.RFC3339, "2000-01-02T01:00:00Z"),
+			is20000102: true,
+		}, {
+			name:       "Second before midday into day",
+			input:      initilizeTime(t, time.RFC3339, "2000-01-02T11:59:59Z"),
+			is20000102: true,
+		}, {
+			name:       "Midday",
+			input:      initilizeTime(t, time.RFC3339, "2000-01-02T12:00:00Z"),
+			is20000102: true,
+		}, {
+			name:       "Second before midnight next day",
+			input:      initilizeTime(t, time.RFC3339, "2000-01-02T23:59:59Z"),
+			is20000102: true,
+		}, {
+			name:       "Midnight next day",
+			input:      initilizeTime(t, time.RFC3339, "2000-01-03T00:00:00Z"),
+			is20000102: false,
+		},
+	}
+
+	for _, testItem := range tests {
+		t.Run(testItem.name, func(t *testing.T) {
+			if testItem.is20000102 {
+				assert.Equal(t, midnight, Midnight(testItem.input))
+			} else {
+				assert.NotEqual(t, midnight, Midnight(testItem.input))
+			}
+		})
+	}
+}
