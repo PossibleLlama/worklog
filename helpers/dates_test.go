@@ -408,3 +408,41 @@ func TestGetPreviousMonday(t *testing.T) {
 		})
 	}
 }
+
+func BenchmarkGetPreviousMonday(b *testing.B) {
+	var tests = []struct {
+		name  string
+		input time.Time
+	}{
+		{
+			name:  "Midnight Monday",
+			input: initializeTimeBench(b, time.RFC3339, "2000-01-03T00:00:00Z"),
+		}, {
+			name:  "Midnight Tuesday",
+			input: initializeTimeBench(b, time.RFC3339, "2000-01-04T00:00:00Z"),
+		}, {
+			name:  "Midnight Wednesday",
+			input: initializeTimeBench(b, time.RFC3339, "2000-01-05T00:00:00Z"),
+		}, {
+			name:  "Midnight Thurday",
+			input: initializeTimeBench(b, time.RFC3339, "2000-01-06T00:00:00Z"),
+		}, {
+			name:  "Midnight Friday",
+			input: initializeTimeBench(b, time.RFC3339, "2000-01-07T00:00:00Z"),
+		}, {
+			name:  "Midnight Saturday",
+			input: initializeTimeBench(b, time.RFC3339, "2000-01-08T00:00:00Z"),
+		}, {
+			name:  "Midnight Sunday",
+			input: initializeTimeBench(b, time.RFC3339, "2000-01-09T00:00:00Z"),
+		},
+	}
+
+	for _, testItem := range tests {
+		b.Run(testItem.name, func(b *testing.B) {
+			for n := 0; n < b.N; n++ {
+				GetPreviousMonday(testItem.input)
+			}
+		})
+	}
+}
