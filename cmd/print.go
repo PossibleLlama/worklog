@@ -158,7 +158,7 @@ func verifyDates() error {
 		startDate = helpers.Midnight(time.Now())
 		endDate = startDate.AddDate(0, 0, 1)
 	} else if thisWeek {
-		startDate = helpers.Midnight(helpers.GetPreviousMonday(time.Now()))
+		startDate = helpers.GetPreviousMonday(time.Now())
 		endDate = startDate.AddDate(0, 0, 7)
 	} else {
 		return errors.New("one flag is required")
