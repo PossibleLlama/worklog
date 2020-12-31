@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -50,12 +51,12 @@ been created between the dates provided.`,
 			-1,
 			tagsFilter,
 			time.Time{})
-		worklogs, _, err := wlService.GetWorklogsBetween(startDate, endDate, filter)
+		worklogs, code, err := wlService.GetWorklogsBetween(startDate, endDate, filter)
 		if err != nil {
 			return err
 		}
 
-		if len(worklogs) == 0 && !jsonOutput {
+		if code == http.StatusNotFound && !jsonOutput {
 			fmt.Printf("No work found between %s and %s with the given filter\n",
 				startDate, endDate.Add(time.Second*-1))
 		} else if prettyOutput {
