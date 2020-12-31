@@ -61,7 +61,7 @@ func Midnight(t time.Time) time.Time {
 
 // GetPreviousMonday getting the most recent Monday
 func GetPreviousMonday(originalTime time.Time) time.Time {
-	t := originalTime
+	t := Midnight(originalTime)
 	for i := 0; i <= 6; i++ {
 		if t.Weekday() == time.Monday {
 			return t
