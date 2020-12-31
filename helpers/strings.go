@@ -18,6 +18,9 @@ const (
 // RandString Generator function of a random series of characters
 // From https://stackoverflow.com/a/31832326
 func RandString(n int) string {
+	if n <= 0 {
+		return ""
+	}
 	b := make([]byte, n)
 
 	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
