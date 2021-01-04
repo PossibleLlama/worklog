@@ -105,6 +105,79 @@ func TestNewWork(t *testing.T) {
 	}
 }
 
+func TestWorkToPrintWork(t *testing.T) {
+	tm := time.Now()
+	var tests = []struct {
+		name string
+		w    Work
+		pw   printWork
+	}{
+		{
+			name: "Full work",
+			w: Work{
+				Title:       "Title",
+				Description: "Description",
+				Author:      "Author",
+				Where:       "Where",
+				Duration:    60,
+				Tags:        []string{"1", "2"},
+				When:        tm,
+				CreatedAt:   time.Now(),
+			},
+			pw: printWork{
+				Title:       "Title",
+				Description: "Description",
+				Author:      "Author",
+				Duration:    60,
+				Tags:        []string{"1", "2"},
+				When:        tm,
+			},
+		}, {
+			name: "Work missing unneeded fields",
+			w: Work{
+				Title:       "Title",
+				Description: "Description",
+				Author:      "Author",
+				Duration:    60,
+				Tags:        []string{"1", "2"},
+				When:        tm,
+			},
+			pw: printWork{
+				Title:       "Title",
+				Description: "Description",
+				Author:      "Author",
+				Duration:    60,
+				Tags:        []string{"1", "2"},
+				When:        tm,
+			},
+		}, {
+			name: "Partial work",
+			w: Work{
+				Title:       "Title",
+				Description: "Description",
+				Where:       "Where",
+				Duration:    60,
+				When:        tm,
+				CreatedAt:   time.Now(),
+			},
+			pw: printWork{
+				Title:       "Title",
+				Description: "Description",
+				Duration:    60,
+				When:        tm,
+			},
+		},
+	}
+
+	for _, testItem := range tests {
+		t.Run(testItem.name, func(t *testing.T) {
+			actual := workToPrintWork(testItem.w)
+
+			assert.Equal(t, testItem.pw, actual)
+		})
+	}
+}
+
 func TestString(t *testing.T) {
 	date, _ := helpers.GetStringAsDateTime(dateString)
 	var tests = []struct {
