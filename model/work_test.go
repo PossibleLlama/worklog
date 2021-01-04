@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 	"time"
@@ -14,6 +15,19 @@ const (
 	longLength  = 256
 	dateString  = "2000-01-30T0000:00:00Z"
 )
+
+func genRandWork() *Work {
+	return NewWork(
+		helpers.RandString(shortLength),
+		helpers.RandString(longLength),
+		helpers.RandString(shortLength),
+		shortLength,
+		[]string{
+			helpers.RandString(longLength),
+			helpers.RandString(longLength),
+		},
+		time.Now())
+}
 
 func TestNewWork(t *testing.T) {
 	validDate, err := time.Parse(time.RFC3339, "1970-12-25T00:00:00Z")
@@ -508,6 +522,42 @@ func TestPrettyString(t *testing.T) {
 		t.Run(testItem.name, func(t *testing.T) {
 			actual := testItem.work.PrettyString()
 			assert.Equal(t, testItem.exp, actual)
+		})
+	}
+}
+
+func TestWriteText(t *testing.T) {
+	var tests = []struct {
+		name   string
+		work   *Work
+		retErr error
+	}{
+		{
+			name:   "No error",
+			work:   genRandWork(),
+			retErr: nil,
+		}, {
+			name:   "Erroring",
+			work:   genRandWork(),
+			retErr: errors.New(helpers.RandString(shortLength)),
+		},
+	}
+
+	for _, testItem := range tests {
+		t.Run(testItem.name, func(t *testing.T) {
+			writer := new(MockWriter)
+			writer.
+				On("Write", []byte(testItem.work.String())).
+				Return(1, testItem.retErr)
+
+			actualErr := testItem.work.WriteText(writer)
+
+			writer.AssertExpectations(t)
+			writer.AssertCalled(t,
+				"Write",
+				[]byte(testItem.work.String()),
+			)
+			assert.Equal(t, testItem.retErr, actualErr)
 		})
 	}
 }
