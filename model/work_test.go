@@ -893,3 +893,48 @@ func TestWritePrettyJson(t *testing.T) {
 		})
 	}
 }
+
+func TestWriteAllToPrettyJson(t *testing.T) {
+	var tests = []struct {
+		name   string
+		work   []*Work
+		retErr error
+	}{
+		{
+			name:   "No error single",
+			work:   []*Work{genRandWork()},
+			retErr: nil,
+		}, {
+			name:   "No error double",
+			work:   []*Work{genRandWork(), genRandWork()},
+			retErr: nil,
+		}, {
+			name:   "No error quad",
+			work:   []*Work{genRandWork(), genRandWork(), genRandWork(), genRandWork()},
+			retErr: nil,
+		}, {
+			name:   "Erroring",
+			work:   []*Work{genRandWork()},
+			retErr: errors.New(helpers.RandString(shortLength)),
+		},
+	}
+
+	for _, testItem := range tests {
+		t.Run(testItem.name, func(t *testing.T) {
+			wlList := []printWork{}
+			writer := new(MockWriter)
+
+			for _, element := range testItem.work {
+				wlList = append(wlList, workToPrintWork(*element))
+			}
+			bytes, _ := json.Marshal(wlList)
+			writer.On("Write", bytes).Return(1, testItem.retErr)
+
+			actualErr := WriteAllWorkToPrettyJSON(writer, testItem.work)
+
+			writer.AssertExpectations(t)
+			writer.AssertNumberOfCalls(t, "Write", 1)
+			assert.Equal(t, testItem.retErr, actualErr)
+		})
+	}
+}
