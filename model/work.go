@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"os"
 	"sort"
 	"strings"
 	"time"
@@ -130,14 +129,14 @@ func (w Work) WritePrettyText(writer io.Writer) error {
 // WriteAllWorkToPrettyText takes a writer and list of work, and outputs a text representation of Work to the writer
 func WriteAllWorkToPrettyText(writer io.Writer, w []*Work) error {
 	for index, work := range w {
-		err := work.WritePrettyText(os.Stdout)
+		err := work.WritePrettyText(writer)
 		if err != nil {
 			return err
 		}
 		if index != len(w)-1 {
-			fmt.Println()
+			writer.Write([]byte("\n"))
 		}
-		fmt.Println()
+		writer.Write([]byte("\n"))
 	}
 	return nil
 }
