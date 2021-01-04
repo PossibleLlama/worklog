@@ -688,6 +688,42 @@ func TestWriteYaml(t *testing.T) {
 	}
 }
 
+func TestReadYaml(t *testing.T) {
+	// The wonders of .Equals with time's
+	date, _ := helpers.GetStringAsDateTime(dateString)
+	date, _ = helpers.GetStringAsDateTime(helpers.TimeFormat(date))
+	var tests = []struct {
+		name    string
+		input   string
+		expWork *Work
+		expErr  error
+	}{
+		{
+			name:  "Full input",
+			input: fmt.Sprintf("title: Foo\ndescription: bar\nauthor: possiblellama\nduration: 60\ntags: [1, 2]\nwhen: %s\ncreatedAt: %s", helpers.TimeFormat(date), helpers.TimeFormat(date)),
+			expWork: &Work{
+				Title:       "Foo",
+				Description: "bar",
+				Author:      "possiblellama",
+				Duration:    60,
+				Tags:        []string{"1", "2"},
+				When:        date,
+				CreatedAt:   date,
+			},
+			expErr: nil,
+		},
+	}
+
+	for _, testItem := range tests {
+		t.Run(testItem.name, func(t *testing.T) {
+			actualWork, actualErr := ReadYAML([]byte(testItem.input))
+
+			assert.Equal(t, testItem.expErr, actualErr)
+			assert.Equal(t, testItem.expWork, actualWork)
+		})
+	}
+}
+
 func TestWriteJson(t *testing.T) {
 	var tests = []struct {
 		name   string
