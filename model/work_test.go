@@ -1,6 +1,7 @@
 package model
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"testing"
@@ -8,6 +9,7 @@ import (
 
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/stretchr/testify/assert"
+	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -647,6 +649,74 @@ func TestWriteAllToPrettyText(t *testing.T) {
 
 			writer.AssertExpectations(t)
 			writer.AssertNumberOfCalls(t, "Write", expectedCalled)
+			assert.Equal(t, testItem.retErr, actualErr)
+		})
+	}
+}
+
+func TestWriteYaml(t *testing.T) {
+	var tests = []struct {
+		name   string
+		work   *Work
+		retErr error
+	}{
+		{
+			name:   "No error",
+			work:   genRandWork(),
+			retErr: nil,
+		}, {
+			name:   "Erroring",
+			work:   genRandWork(),
+			retErr: errors.New(helpers.RandString(shortLength)),
+		},
+	}
+
+	for _, testItem := range tests {
+		t.Run(testItem.name, func(t *testing.T) {
+			bytes, _ := yaml.Marshal(testItem.work)
+			writer := new(MockWriter)
+			writer.
+				On("Write", bytes).
+				Return(1, testItem.retErr)
+
+			actualErr := testItem.work.WriteYAML(writer)
+
+			writer.AssertExpectations(t)
+			writer.AssertCalled(t, "Write", bytes)
+			assert.Equal(t, testItem.retErr, actualErr)
+		})
+	}
+}
+
+func TestWriteJson(t *testing.T) {
+	var tests = []struct {
+		name   string
+		work   *Work
+		retErr error
+	}{
+		{
+			name:   "No error",
+			work:   genRandWork(),
+			retErr: nil,
+		}, {
+			name:   "Erroring",
+			work:   genRandWork(),
+			retErr: errors.New(helpers.RandString(shortLength)),
+		},
+	}
+
+	for _, testItem := range tests {
+		t.Run(testItem.name, func(t *testing.T) {
+			bytes, _ := json.Marshal(testItem.work)
+			writer := new(MockWriter)
+			writer.
+				On("Write", bytes).
+				Return(1, testItem.retErr)
+
+			actualErr := testItem.work.WriteJSON(writer)
+
+			writer.AssertExpectations(t)
+			writer.AssertCalled(t, "Write", bytes)
 			assert.Equal(t, testItem.retErr, actualErr)
 		})
 	}
