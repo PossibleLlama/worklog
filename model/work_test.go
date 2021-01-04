@@ -561,3 +561,39 @@ func TestWriteText(t *testing.T) {
 		})
 	}
 }
+
+func TestWritePrettyText(t *testing.T) {
+	var tests = []struct {
+		name   string
+		work   *Work
+		retErr error
+	}{
+		{
+			name:   "No error",
+			work:   genRandWork(),
+			retErr: nil,
+		}, {
+			name:   "Erroring",
+			work:   genRandWork(),
+			retErr: errors.New(helpers.RandString(shortLength)),
+		},
+	}
+
+	for _, testItem := range tests {
+		t.Run(testItem.name, func(t *testing.T) {
+			writer := new(MockWriter)
+			writer.
+				On("Write", []byte(testItem.work.PrettyString())).
+				Return(1, testItem.retErr)
+
+			actualErr := testItem.work.WritePrettyText(writer)
+
+			writer.AssertExpectations(t)
+			writer.AssertCalled(t,
+				"Write",
+				[]byte(testItem.work.PrettyString()),
+			)
+			assert.Equal(t, testItem.retErr, actualErr)
+		})
+	}
+}
