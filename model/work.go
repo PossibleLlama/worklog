@@ -26,7 +26,7 @@ type Work struct {
 	CreatedAt   time.Time `json:"createdAt" yaml:"createdAt"`
 }
 
-type printWork struct {
+type prettyWork struct {
 	Title       string    `json:"title" yaml:"title"`
 	Description string    `json:"description,omitempty" yaml:"description,omitempty"`
 	Author      string    `json:"author,omitempty" yaml:"author,omitempty"`
@@ -51,8 +51,8 @@ func NewWork(title, description, author string, duration int, tags []string, whe
 	}
 }
 
-func workToPrintWork(w Work) printWork {
-	return printWork{
+func workToPrettyWork(w Work) prettyWork {
+	return prettyWork{
 		Title:       w.Title,
 		Description: w.Description,
 		Author:      w.Author,
@@ -91,7 +91,7 @@ func (w Work) String() string {
 
 // PrettyString works like string, but with greater spacing and line breaks
 func (w Work) PrettyString() string {
-	pw := workToPrintWork(w)
+	pw := workToPrettyWork(w)
 	finalString := " "
 	if pw.Title != "" {
 		finalString = fmt.Sprintf("%sTitle: %s\n", finalString, pw.Title)
@@ -160,7 +160,7 @@ func ReadYAML(input []byte) (*Work, error) {
 
 // WritePrettyYAML takes a writer and outputs a YAML representation of Work to it
 func (w Work) WritePrettyYAML(writer io.Writer) error {
-	b, err := yaml.Marshal(workToPrintWork(w))
+	b, err := yaml.Marshal(workToPrettyWork(w))
 	if err != nil {
 		return err
 	}
@@ -171,9 +171,9 @@ func (w Work) WritePrettyYAML(writer io.Writer) error {
 
 // WriteAllWorkToPrettyYAML takes a writer and list of work, and outputs a YAML representation of Work to the writer
 func WriteAllWorkToPrettyYAML(writer io.Writer, w []*Work) error {
-	pw := []printWork{}
+	pw := []prettyWork{}
 	for _, work := range w {
-		pw = append(pw, workToPrintWork(*work))
+		pw = append(pw, workToPrettyWork(*work))
 	}
 
 	b, err := yaml.Marshal(pw)
@@ -198,7 +198,7 @@ func (w Work) WriteJSON(writer io.Writer) error {
 
 // WritePrettyJSON takes a writer and outputs a JSON representation of Work to it
 func (w Work) WritePrettyJSON(writer io.Writer) error {
-	b, err := json.Marshal(workToPrintWork(w))
+	b, err := json.Marshal(workToPrettyWork(w))
 	if err != nil {
 		return err
 	}
@@ -209,9 +209,9 @@ func (w Work) WritePrettyJSON(writer io.Writer) error {
 
 // WriteAllWorkToPrettyJSON takes a writer and list of work, and outputs a JSON representation of Work to the writer
 func WriteAllWorkToPrettyJSON(writer io.Writer, w []*Work) error {
-	pw := []printWork{}
+	pw := []prettyWork{}
 	for _, work := range w {
-		pw = append(pw, workToPrintWork(*work))
+		pw = append(pw, workToPrettyWork(*work))
 	}
 
 	b, err := json.Marshal(pw)
