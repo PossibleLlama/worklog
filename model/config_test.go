@@ -3,7 +3,9 @@ package model
 import (
 	"testing"
 
+	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/stretchr/testify/assert"
+	"gopkg.in/yaml.v2"
 )
 
 func TestNewConfig(t *testing.T) {
@@ -154,6 +156,51 @@ func TestNewConfig(t *testing.T) {
 			actual := NewConfig(testItem.author, testItem.format, testItem.duration)
 
 			assert.Equal(t, testItem.expected, actual)
+		})
+	}
+}
+
+func TestConfigWriteYaml(t *testing.T) {
+	var tests = []struct {
+		name   string
+		cfg    *Config
+		retErr error
+	}{
+		{
+			name: "Full config",
+			cfg: &Config{
+				Author: helpers.RandString(shortLength),
+				Defaults: Defaults{
+					Format:   helpers.RandString(shortLength),
+					Duration: shortLength,
+				},
+			},
+			retErr: nil,
+		}, {
+			name: "Partial config",
+			cfg: &Config{
+				Author: helpers.RandString(shortLength),
+				Defaults: Defaults{
+					Format: helpers.RandString(shortLength),
+				},
+			},
+			retErr: nil,
+		},
+	}
+
+	for _, testItem := range tests {
+		t.Run(testItem.name, func(t *testing.T) {
+			bytes, _ := yaml.Marshal(testItem.cfg)
+			writer := new(MockWriter)
+			writer.
+				On("Write", bytes).
+				Return(1, testItem.retErr)
+
+			actualErr := testItem.cfg.WriteYAML(writer)
+
+			writer.AssertExpectations(t)
+			writer.AssertCalled(t, "Write", bytes)
+			assert.Equal(t, testItem.retErr, actualErr)
 		})
 	}
 }
