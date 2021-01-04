@@ -597,3 +597,57 @@ func TestWritePrettyText(t *testing.T) {
 		})
 	}
 }
+
+func TestWriteAllToPrettyText(t *testing.T) {
+	var tests = []struct {
+		name   string
+		work   []*Work
+		retErr error
+	}{
+		{
+			name:   "No error single",
+			work:   []*Work{genRandWork()},
+			retErr: nil,
+		}, {
+			name:   "No error double",
+			work:   []*Work{genRandWork(), genRandWork()},
+			retErr: nil,
+		}, {
+			name:   "No error quad",
+			work:   []*Work{genRandWork(), genRandWork(), genRandWork(), genRandWork()},
+			retErr: nil,
+		}, {
+			name:   "Erroring",
+			work:   []*Work{genRandWork()},
+			retErr: errors.New(helpers.RandString(shortLength)),
+		},
+	}
+
+	for _, testItem := range tests {
+		t.Run(testItem.name, func(t *testing.T) {
+			writer := new(MockWriter)
+
+			if testItem.retErr == nil {
+				writer.On("Write", []byte("\n")).Return(1, nil)
+			}
+			for _, element := range testItem.work {
+				writer.
+					On("Write", []byte(element.PrettyString())).
+					Return(1, testItem.retErr)
+			}
+
+			actualErr := WriteAllWorkToPrettyText(writer, testItem.work)
+
+			expectedCalled := 1
+			if testItem.retErr == nil {
+				// for each round, called three more times,
+				// except for last round which is only two calls
+				expectedCalled = len(testItem.work)*3 - 1
+			}
+
+			writer.AssertExpectations(t)
+			writer.AssertNumberOfCalls(t, "Write", expectedCalled)
+			assert.Equal(t, testItem.retErr, actualErr)
+		})
+	}
+}
