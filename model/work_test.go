@@ -859,3 +859,37 @@ func TestWriteJson(t *testing.T) {
 		})
 	}
 }
+
+func TestWritePrettyJson(t *testing.T) {
+	var tests = []struct {
+		name   string
+		work   *Work
+		retErr error
+	}{
+		{
+			name:   "No error",
+			work:   genRandWork(),
+			retErr: nil,
+		}, {
+			name:   "Erroring",
+			work:   genRandWork(),
+			retErr: errors.New(helpers.RandString(shortLength)),
+		},
+	}
+
+	for _, testItem := range tests {
+		t.Run(testItem.name, func(t *testing.T) {
+			bytes, _ := json.Marshal(workToPrintWork(*testItem.work))
+			writer := new(MockWriter)
+			writer.
+				On("Write", bytes).
+				Return(1, testItem.retErr)
+
+			actualErr := testItem.work.WritePrettyJSON(writer)
+
+			writer.AssertExpectations(t)
+			writer.AssertCalled(t, "Write", bytes)
+			assert.Equal(t, testItem.retErr, actualErr)
+		})
+	}
+}
