@@ -1,10 +1,18 @@
 package model
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
+	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/stretchr/testify/assert"
+)
+
+const (
+	shortLength = 30
+	longLength  = 256
+	dateString  = "2000-01-30T0000:00:00Z"
 )
 
 func TestNewWork(t *testing.T) {
@@ -77,6 +85,46 @@ func TestNewWork(t *testing.T) {
 
 			assert.Equal(t, testItem.expected, actual)
 			assert.True(t, finished.Add(time.Second*-1).Before(actual.CreatedAt))
+		})
+	}
+}
+
+func TestString(t *testing.T) {
+	date, _ := helpers.GetStringAsDateTime(dateString)
+	var tests = []struct {
+		name string
+		work *Work
+		exp  string
+	}{
+		{
+			name: "Full work",
+			work: &Work{
+				Title:       "title",
+				Description: "description",
+				Author:      "author",
+				Duration:    15,
+				Tags: []string{
+					"alpha",
+					"beta",
+				},
+				When:      date,
+				CreatedAt: date,
+			},
+			exp: fmt.Sprintf("Title: %s, Description: %s, Author: %s, Duration: %d, Tags: [%s], When: %s, CreatedAt: %s",
+				"title",
+				"description",
+				"author",
+				15,
+				"alpha, beta",
+				helpers.TimeFormat(date),
+				helpers.TimeFormat(date)),
+		},
+	}
+
+	for _, testItem := range tests {
+		t.Run(testItem.name, func(t *testing.T) {
+			actual := testItem.work.String()
+			assert.Equal(t, testItem.exp, actual)
 		})
 	}
 }

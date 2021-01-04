@@ -85,7 +85,7 @@ func (w Work) String() string {
 		finalString = fmt.Sprintf("%s When: %s,", finalString, helpers.TimeFormat(w.When))
 	}
 	if !w.CreatedAt.Equal(time.Time{}) {
-		finalString = fmt.Sprintf("%s CreatedAt: %s", finalString, helpers.TimeFormat(w.CreatedAt))
+		finalString = fmt.Sprintf("%s CreatedAt: %s,", finalString, helpers.TimeFormat(w.CreatedAt))
 	}
 	return strings.TrimSpace(finalString[:len(finalString)-1])
 }
