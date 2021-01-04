@@ -19,17 +19,17 @@ func TestNewWork(t *testing.T) {
 		wDuration    int
 		wTags        []string
 		wWhen        time.Time
-		expected     Work
+		expected     *Work
 	}{
 		{
-			"Full work",
-			"title",
-			"description",
-			"who",
-			15,
-			[]string{"alpha", "beta"},
-			validDate,
-			Work{
+			name:         "Full work",
+			wTitle:       "title",
+			wDescription: "description",
+			wAuthor:      "who",
+			wDuration:    15,
+			wTags:        []string{"alpha", "beta"},
+			wWhen:        validDate,
+			expected: &Work{
 				Title:       "title",
 				Description: "description",
 				Author:      "who",
@@ -47,7 +47,7 @@ func TestNewWork(t *testing.T) {
 			wDuration:    15,
 			wTags:        []string{"4", "2", "1", "3"},
 			wWhen:        validDate,
-			expected: Work{
+			expected: &Work{
 				Title:       "title",
 				Description: "description",
 				Author:      "who",
