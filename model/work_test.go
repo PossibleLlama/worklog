@@ -711,6 +711,29 @@ func TestReadYaml(t *testing.T) {
 				CreatedAt:   date,
 			},
 			expErr: nil,
+		}, {
+			name:  "Partial input",
+			input: "title: Foo\ndescription: bar\nauthor: possiblellama\nduration: 60",
+			expWork: &Work{
+				Title:       "Foo",
+				Description: "bar",
+				Author:      "possiblellama",
+				Duration:    60,
+				Tags:        []string(nil),
+				When:        time.Time{},
+				CreatedAt:   time.Time{},
+			},
+			expErr: nil,
+		}, {
+			name:    "Invalid fields",
+			input:   "foo: bar",
+			expWork: &Work{},
+			expErr:  nil,
+		}, {
+			name:    "Invalid format",
+			input:   "{\"foo\": \"bar\"}",
+			expWork: &Work{},
+			expErr:  nil,
 		},
 	}
 
