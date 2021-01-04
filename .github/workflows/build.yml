@@ -38,8 +38,11 @@ jobs:
     - name: Get dependencies
       run: make deps
 
-    - name: Test
+    - name: Test once
       run: make test
+
+    - name: Test multiple
+      run: make test-repeat
 
   store:
     name: Store artifacts
