@@ -329,3 +329,185 @@ func TestString(t *testing.T) {
 		})
 	}
 }
+
+func TestPrettyString(t *testing.T) {
+	date, _ := helpers.GetStringAsDateTime(dateString)
+	var tests = []struct {
+		name string
+		work *Work
+		exp  string
+	}{
+		{
+			name: "Full work",
+			work: &Work{
+				Title:       "title",
+				Description: "description",
+				Author:      "author",
+				Duration:    15,
+				Tags: []string{
+					"alpha",
+					"beta",
+				},
+				When: date,
+			},
+			exp: fmt.Sprintf("Title: %s\nDescription: %s\nAuthor: %s\nDuration: %d\nTags: [%s]\nWhen: %s",
+				"title",
+				"description",
+				"author",
+				15,
+				"alpha, beta",
+				helpers.TimeFormat(date)),
+		}, {
+			name: "Missing title",
+			work: &Work{
+				Description: "description",
+				Author:      "author",
+				Duration:    15,
+				Tags: []string{
+					"alpha",
+					"beta",
+				},
+				When: date,
+			},
+			exp: fmt.Sprintf("Description: %s\nAuthor: %s\nDuration: %d\nTags: [%s]\nWhen: %s",
+				"description",
+				"author",
+				15,
+				"alpha, beta",
+				helpers.TimeFormat(date)),
+		}, {
+			name: "Missing description",
+			work: &Work{
+				Title:    "title",
+				Author:   "author",
+				Duration: 15,
+				Tags: []string{
+					"alpha",
+					"beta",
+				},
+				When: date,
+			},
+			exp: fmt.Sprintf("Title: %s\nAuthor: %s\nDuration: %d\nTags: [%s]\nWhen: %s",
+				"title",
+				"author",
+				15,
+				"alpha, beta",
+				helpers.TimeFormat(date)),
+		}, {
+			name: "Missing author",
+			work: &Work{
+				Title:       "title",
+				Description: "description",
+				Duration:    15,
+				Tags: []string{
+					"alpha",
+					"beta",
+				},
+				When: date,
+			},
+			exp: fmt.Sprintf("Title: %s\nDescription: %s\nDuration: %d\nTags: [%s]\nWhen: %s",
+				"title",
+				"description",
+				15,
+				"alpha, beta",
+				helpers.TimeFormat(date)),
+		}, {
+			name: "Missing duration",
+			work: &Work{
+				Title:       "title",
+				Description: "description",
+				Author:      "author",
+				Tags: []string{
+					"alpha",
+					"beta",
+				},
+				When: date,
+			},
+			exp: fmt.Sprintf("Title: %s\nDescription: %s\nAuthor: %s\nTags: [%s]\nWhen: %s",
+				"title",
+				"description",
+				"author",
+				"alpha, beta",
+				helpers.TimeFormat(date)),
+		}, {
+			name: "Missing tags",
+			work: &Work{
+				Title:       "title",
+				Description: "description",
+				Author:      "author",
+				Duration:    15,
+				When:        date,
+			},
+			exp: fmt.Sprintf("Title: %s\nDescription: %s\nAuthor: %s\nDuration: %d\nWhen: %s",
+				"title",
+				"description",
+				"author",
+				15,
+				helpers.TimeFormat(date)),
+		}, {
+			name: "Empty tags",
+			work: &Work{
+				Title:       "title",
+				Description: "description",
+				Author:      "author",
+				Duration:    15,
+				Tags:        []string{},
+				When:        date,
+			},
+			exp: fmt.Sprintf("Title: %s\nDescription: %s\nAuthor: %s\nDuration: %d\nWhen: %s",
+				"title",
+				"description",
+				"author",
+				15,
+				helpers.TimeFormat(date)),
+		}, {
+			name: "Missing when",
+			work: &Work{
+				Title:       "title",
+				Description: "description",
+				Author:      "author",
+				Duration:    15,
+				Tags: []string{
+					"alpha",
+					"beta",
+				},
+			},
+			exp: fmt.Sprintf("Title: %s\nDescription: %s\nAuthor: %s\nDuration: %d\nTags: [%s]",
+				"title",
+				"description",
+				"author",
+				15,
+				"alpha, beta"),
+		}, {
+			name: "Basic when",
+			work: &Work{
+				Title:       "title",
+				Description: "description",
+				Author:      "author",
+				Duration:    15,
+				Tags: []string{
+					"alpha",
+					"beta",
+				},
+				When: time.Time{},
+			},
+			exp: fmt.Sprintf("Title: %s\nDescription: %s\nAuthor: %s\nDuration: %d\nTags: [%s]",
+				"title",
+				"description",
+				"author",
+				15,
+				"alpha, beta"),
+		}, {
+			name: "No fields",
+			work: &Work{},
+			exp:  "",
+		},
+	}
+
+	for _, testItem := range tests {
+		t.Run(testItem.name, func(t *testing.T) {
+			actual := testItem.work.PrettyString()
+			assert.Equal(t, testItem.exp, actual)
+		})
+	}
+}
