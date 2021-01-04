@@ -620,7 +620,7 @@ func TestWriteText(t *testing.T) {
 
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
-			writer := new(MockWriter)
+			writer := new(mockWriter)
 			writer.
 				On("Write", []byte(testItem.work.String())).
 				Return(1, testItem.retErr)
@@ -656,7 +656,7 @@ func TestWritePrettyText(t *testing.T) {
 
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
-			writer := new(MockWriter)
+			writer := new(mockWriter)
 			writer.
 				On("Write", []byte(testItem.work.PrettyString())).
 				Return(1, testItem.retErr)
@@ -700,7 +700,7 @@ func TestWriteAllToPrettyText(t *testing.T) {
 
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
-			writer := new(MockWriter)
+			writer := new(mockWriter)
 
 			if testItem.retErr == nil {
 				writer.On("Write", []byte("\n")).Return(1, nil)
@@ -747,7 +747,7 @@ func TestWriteYaml(t *testing.T) {
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
 			bytes, _ := yaml.Marshal(testItem.work)
-			writer := new(MockWriter)
+			writer := new(mockWriter)
 			writer.
 				On("Write", bytes).
 				Return(1, testItem.retErr)
@@ -840,7 +840,7 @@ func TestWritePrettyYaml(t *testing.T) {
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
 			bytes, _ := yaml.Marshal(workToPrettyWork(*testItem.work))
-			writer := new(MockWriter)
+			writer := new(mockWriter)
 			writer.
 				On("Write", bytes).
 				Return(1, testItem.retErr)
@@ -882,7 +882,7 @@ func TestWriteAllToPrettyYaml(t *testing.T) {
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
 			wlList := []prettyWork{}
-			writer := new(MockWriter)
+			writer := new(mockWriter)
 
 			for _, element := range testItem.work {
 				wlList = append(wlList, workToPrettyWork(*element))
@@ -919,7 +919,7 @@ func TestWriteJson(t *testing.T) {
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
 			bytes, _ := json.Marshal(testItem.work)
-			writer := new(MockWriter)
+			writer := new(mockWriter)
 			writer.
 				On("Write", bytes).
 				Return(1, testItem.retErr)
@@ -953,7 +953,7 @@ func TestWritePrettyJson(t *testing.T) {
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
 			bytes, _ := json.Marshal(workToPrettyWork(*testItem.work))
-			writer := new(MockWriter)
+			writer := new(mockWriter)
 			writer.
 				On("Write", bytes).
 				Return(1, testItem.retErr)
@@ -995,7 +995,7 @@ func TestWriteAllToPrettyJson(t *testing.T) {
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
 			wlList := []prettyWork{}
-			writer := new(MockWriter)
+			writer := new(mockWriter)
 
 			for _, element := range testItem.work {
 				wlList = append(wlList, workToPrettyWork(*element))

@@ -191,7 +191,7 @@ func TestConfigWriteYaml(t *testing.T) {
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
 			bytes, _ := yaml.Marshal(testItem.cfg)
-			writer := new(MockWriter)
+			writer := new(mockWriter)
 			writer.
 				On("Write", bytes).
 				Return(1, testItem.retErr)
