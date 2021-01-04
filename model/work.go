@@ -38,12 +38,7 @@ type printWork struct {
 
 // NewWork is the generator for work.
 func NewWork(title, description, author string, duration int, tags []string, when time.Time) *Work {
-	nowString := time.Now().Format(time.RFC3339)
-	now, err := time.Parse(time.RFC3339, nowString)
-	if err != nil {
-		fmt.Println("now is not in a valid time format.")
-		os.Exit(1)
-	}
+	now, _ := helpers.GetStringAsDateTime(helpers.TimeFormat(time.Now()))
 	sort.Strings(tags)
 	return &Work{
 		Title:       title,
