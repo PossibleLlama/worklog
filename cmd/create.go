@@ -25,36 +25,49 @@ var createCmd = &cobra.Command{
 	Short: "Create a new record of work",
 	Long: `Creating a new record of work that
 the user has created.`,
-	Args: func(cmd *cobra.Command, args []string) error {
-		if duration <= -1 {
-			duration = viper.GetInt("default.duration")
-		}
-		title = strings.TrimSpace(title)
-		description = strings.TrimSpace(description)
-		whenDate, err := helpers.GetStringAsDateTime(
-			strings.TrimSpace(whenString))
-		if err != nil {
-			return err
-		}
-		when = whenDate
+	Args: CreateArgs,
+	RunE: CreateRun,
+}
 
-		for _, tag := range strings.Split(tagsString, ",") {
-			tags = append(tags, strings.TrimSpace(tag))
-		}
+// CreateArgs public method to validate arguments
+func CreateArgs(cmd *cobra.Command, args []string) error {
+	return createArgs(args...)
+}
 
-		return nil
-	},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		work := model.NewWork(
-			title,
-			description,
-			viper.GetString("author"),
-			duration,
-			tags,
-			when)
-		_, err := wlService.CreateWorklog(work)
+func createArgs(args ...string) error {
+	if duration <= -1 {
+		duration = viper.GetInt("default.duration")
+	}
+	title = strings.TrimSpace(title)
+	description = strings.TrimSpace(description)
+	whenDate, err := helpers.GetStringAsDateTime(
+		strings.TrimSpace(whenString))
+	if err != nil {
 		return err
-	},
+	}
+	when = whenDate
+
+	for _, tag := range strings.Split(tagsString, ",") {
+		tags = append(tags, strings.TrimSpace(tag))
+	}
+
+	return nil
+}
+
+// CreateRun public method to run create
+func CreateRun(cmd *cobra.Command, args []string) error {
+	return createRun(args...)
+}
+
+func createRun(args ...string) error {
+	_, err := wlService.CreateWorklog(model.NewWork(
+		title,
+		description,
+		viper.GetString("author"),
+		duration,
+		tags,
+		when))
+	return err
 }
 
 func init() {
