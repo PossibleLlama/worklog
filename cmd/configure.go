@@ -9,12 +9,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const defaultAuthor = ""
-const defaultDuration = 15
+const configDefaultAuthor = ""
+const configDefaultDuration = 15
 
-var providedAuthor string
-var providedDuration int
-var providedFormat string
+var configProvidedAuthor string
+var configProvidedDuration int
+var configProvidedFormat string
 
 // configureCmd represents the create command
 var configureCmd = &cobra.Command{
@@ -32,8 +32,8 @@ func ConfigArgs(cmd *cobra.Command, args []string) error {
 }
 
 func configArgs() error {
-	providedAuthor = defaultAuthor
-	providedDuration = defaultDuration
+	configProvidedAuthor = configDefaultAuthor
+	configProvidedDuration = configDefaultDuration
 	return nil
 }
 
@@ -43,7 +43,7 @@ func ConfigRun(cmd *cobra.Command, args []string) error {
 }
 
 func configRun() error {
-	cfg := model.NewConfig(providedAuthor, providedFormat, providedDuration)
+	cfg := model.NewConfig(configProvidedAuthor, configProvidedFormat, configProvidedDuration)
 	if err := wlService.Congfigure(cfg); err != nil {
 		return err
 	}
@@ -66,19 +66,19 @@ func DefaultArgs(cmd *cobra.Command, args []string) error {
 }
 
 func defaultArgs() error {
-	if providedAuthor == "" &&
-		providedFormat == "" &&
-		providedDuration < 0 {
+	if configProvidedAuthor == "" &&
+		configProvidedFormat == "" &&
+		configProvidedDuration < 0 {
 		return errors.New("defaults requires at least one argument")
 	}
-	if providedDuration < 0 {
-		providedDuration = defaultDuration
+	if configProvidedDuration < 0 {
+		configProvidedDuration = configDefaultDuration
 	}
-	if providedFormat != "" &&
-		providedFormat != "pretty" &&
-		providedFormat != "json" &&
-		providedFormat != "yaml" &&
-		providedFormat != "yml" {
+	if configProvidedFormat != "" &&
+		configProvidedFormat != "pretty" &&
+		configProvidedFormat != "json" &&
+		configProvidedFormat != "yaml" &&
+		configProvidedFormat != "yml" {
 		return errors.New("provided format is not valid")
 	}
 	return nil
@@ -89,17 +89,17 @@ func init() {
 	configureCmd.AddCommand(defaultsCmd)
 
 	defaultsCmd.Flags().StringVar(
-		&providedAuthor,
+		&configProvidedAuthor,
 		"author",
 		"",
 		"The authour for all work")
 	defaultsCmd.Flags().IntVar(
-		&providedDuration,
+		&configProvidedDuration,
 		"duration",
 		-1,
 		"Default duration that work takes")
 	defaultsCmd.Flags().StringVar(
-		&providedFormat,
+		&configProvidedFormat,
 		"format",
 		"",
 		"Format to print work in. If provided, must be one of 'pretty', 'yaml', 'json'")

@@ -11,13 +11,13 @@ import (
 	"github.com/spf13/viper"
 )
 
-var title string
-var description string
-var when time.Time
-var whenString string
-var duration int
-var tags []string
-var tagsString string
+var createTitle string
+var createDescription string
+var createWhen time.Time
+var createWhenString string
+var createDuration int
+var createTags []string
+var createTagsString string
 
 // createCmd represents the create command
 var createCmd = &cobra.Command{
@@ -35,20 +35,20 @@ func CreateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func createArgs() error {
-	if duration <= -1 {
-		duration = viper.GetInt("default.duration")
+	if createDuration <= -1 {
+		createDuration = viper.GetInt("default.duration")
 	}
-	title = strings.TrimSpace(title)
-	description = strings.TrimSpace(description)
+	createTitle = strings.TrimSpace(createTitle)
+	createDescription = strings.TrimSpace(createDescription)
 	whenDate, err := helpers.GetStringAsDateTime(
-		strings.TrimSpace(whenString))
+		strings.TrimSpace(createWhenString))
 	if err != nil {
 		return err
 	}
-	when = whenDate
+	createWhen = whenDate
 
-	for _, tag := range strings.Split(tagsString, ",") {
-		tags = append(tags, strings.TrimSpace(tag))
+	for _, tag := range strings.Split(createTagsString, ",") {
+		createTags = append(createTags, strings.TrimSpace(tag))
 	}
 
 	return nil
@@ -61,12 +61,12 @@ func CreateRun(cmd *cobra.Command, args []string) error {
 
 func createRun() error {
 	_, err := wlService.CreateWorklog(model.NewWork(
-		title,
-		description,
+		createTitle,
+		createDescription,
 		viper.GetString("author"),
-		duration,
-		tags,
-		when))
+		createDuration,
+		createTags,
+		createWhen))
 	return err
 }
 
@@ -74,28 +74,28 @@ func init() {
 	rootCmd.AddCommand(createCmd)
 
 	createCmd.Flags().StringVar(
-		&title,
+		&createTitle,
 		"title",
 		"",
 		"A short description of the work done")
 	createCmd.Flags().StringVar(
-		&description,
+		&createDescription,
 		"description",
 		"",
 		"A description of the work")
 	createCmd.Flags().StringVar(
-		&whenString,
+		&createWhenString,
 		"when",
 		helpers.TimeFormat(time.Now()),
 		"When the work was worked in RFC3339 format")
 	createCmd.Flags().IntVarP(
-		&duration,
+		&createDuration,
 		"duration",
 		"",
 		-1,
 		"Length of time spent on the work")
 	createCmd.Flags().StringVar(
-		&tagsString,
+		&createTagsString,
 		"tags",
 		"",
 		"Comma seperated list of tags this work relates to")

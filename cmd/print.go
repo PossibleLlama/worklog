@@ -14,23 +14,23 @@ import (
 	"github.com/spf13/viper"
 )
 
-var startDate time.Time
-var startDateString string
-var endDate time.Time
-var endDateString string
+var printStartDate time.Time
+var printStartDateString string
+var printEndDate time.Time
+var printEndDateString string
 
-var today bool
-var thisWeek bool
+var printToday bool
+var printThisWeek bool
 
-var titleFilter string
-var descriptionFilter string
-var authorFilter string
-var rawTagsFilter string
-var tagsFilter []string
+var printFilterTitle string
+var printFilterDescription string
+var printFilterAuthor string
+var printFilterTags []string
+var printFilterTagsString string
 
-var prettyOutput bool
-var yamlOutput bool
-var jsonOutput bool
+var printOutputPretty bool
+var printOutputYAML bool
+var printOutputJSON bool
 
 // printCmd represents the print command
 var printCmd = &cobra.Command{
@@ -61,23 +61,23 @@ func PrintRun(cmd *cobra.Command, args []string) error {
 func printRun(args ...string) error {
 	// Passing args through to allow for specifying ID's
 	filter := model.NewWork(
-		titleFilter,
-		descriptionFilter,
-		authorFilter,
+		printFilterTitle,
+		printFilterDescription,
+		printFilterAuthor,
 		-1,
-		tagsFilter,
+		printFilterTags,
 		time.Time{})
-	worklogs, code, err := wlService.GetWorklogsBetween(startDate, endDate, filter)
+	worklogs, code, err := wlService.GetWorklogsBetween(printStartDate, printEndDate, filter)
 	if err != nil {
 		return err
 	}
 
-	if code == http.StatusNotFound && !jsonOutput {
+	if code == http.StatusNotFound && !printOutputJSON {
 		fmt.Printf("No work found between %s and %s with the given filter\n",
-			startDate, endDate.Add(time.Second*-1))
-	} else if prettyOutput {
+			printStartDate, printEndDate.Add(time.Second*-1))
+	} else if printOutputPretty {
 		model.WriteAllWorkToPrettyText(os.Stdout, worklogs)
-	} else if yamlOutput {
+	} else if printOutputYAML {
 		model.WriteAllWorkToPrettyYAML(os.Stdout, worklogs)
 	} else {
 		model.WriteAllWorkToPrettyJSON(os.Stdout, worklogs)
@@ -90,23 +90,23 @@ func init() {
 
 	// Dates
 	printCmd.Flags().StringVar(
-		&startDateString,
+		&printStartDateString,
 		"startDate",
 		"",
 		"Date from which to find worklogs")
 	printCmd.Flags().StringVar(
-		&endDateString,
+		&printEndDateString,
 		"endDate",
 		"",
 		"Date till which to find worklogs. Only functions in conjunction with startDate")
 	printCmd.Flags().BoolVarP(
-		&today,
+		&printToday,
 		"today",
 		"",
 		false,
 		"Print today's work")
 	printCmd.Flags().BoolVarP(
-		&thisWeek,
+		&printThisWeek,
 		"thisWeek",
 		"",
 		false,
@@ -114,41 +114,41 @@ func init() {
 
 	// Filters
 	printCmd.Flags().StringVar(
-		&titleFilter,
+		&printFilterTitle,
 		"title",
 		"",
 		"Filter by work including title")
 	printCmd.Flags().StringVar(
-		&descriptionFilter,
+		&printFilterDescription,
 		"description",
 		"",
 		"Filter by work including description")
 	printCmd.Flags().StringVar(
-		&authorFilter,
+		&printFilterAuthor,
 		"author",
 		"",
 		"Filter by work including author")
 	printCmd.Flags().StringVar(
-		&rawTagsFilter,
+		&printFilterTagsString,
 		"tags",
 		"",
 		"Filter by work including all tags")
 
 	// Format
 	printCmd.Flags().BoolVarP(
-		&prettyOutput,
+		&printOutputPretty,
 		"pretty",
 		"",
 		false,
 		"Output in a text format")
 	printCmd.Flags().BoolVarP(
-		&yamlOutput,
+		&printOutputYAML,
 		"yaml",
 		"",
 		false,
 		"Output in a yaml format")
 	printCmd.Flags().BoolVarP(
-		&jsonOutput,
+		&printOutputJSON,
 		"json",
 		"",
 		false,
@@ -156,25 +156,25 @@ func init() {
 }
 
 func verifyDates() error {
-	if len(startDateString) != 0 {
-		startDateAnytime, err := helpers.GetStringAsDateTime(startDateString)
+	if len(printStartDateString) != 0 {
+		startDateAnytime, err := helpers.GetStringAsDateTime(printStartDateString)
 		if err != nil {
 			return err
 		}
-		startDate = helpers.Midnight(startDateAnytime)
-		if len(endDateString) != 0 {
-			endDateAnytime, err := helpers.GetStringAsDateTime(endDateString)
+		printStartDate = helpers.Midnight(startDateAnytime)
+		if len(printEndDateString) != 0 {
+			endDateAnytime, err := helpers.GetStringAsDateTime(printEndDateString)
 			if err != nil {
 				return err
 			}
-			endDate = helpers.Midnight(endDateAnytime).AddDate(0, 0, 1)
+			printEndDate = helpers.Midnight(endDateAnytime).AddDate(0, 0, 1)
 		}
-	} else if today {
-		startDate = helpers.Midnight(time.Now())
-		endDate = startDate.AddDate(0, 0, 1)
-	} else if thisWeek {
-		startDate = helpers.GetPreviousMonday(time.Now())
-		endDate = startDate.AddDate(0, 0, 7)
+	} else if printToday {
+		printStartDate = helpers.Midnight(time.Now())
+		printEndDate = printStartDate.AddDate(0, 0, 1)
+	} else if printThisWeek {
+		printStartDate = helpers.GetPreviousMonday(time.Now())
+		printEndDate = printStartDate.AddDate(0, 0, 7)
 	} else {
 		return errors.New("one flag is required")
 	}
@@ -183,33 +183,33 @@ func verifyDates() error {
 
 // verifyFilters ensures that the filters make sense
 func verifyFilters() {
-	titleFilter = strings.TrimSpace(titleFilter)
-	descriptionFilter = strings.TrimSpace(descriptionFilter)
-	authorFilter = strings.TrimSpace(authorFilter)
-	rawTagsList := strings.Split(rawTagsFilter, ",")
+	printFilterTitle = strings.TrimSpace(printFilterTitle)
+	printFilterDescription = strings.TrimSpace(printFilterDescription)
+	printFilterAuthor = strings.TrimSpace(printFilterAuthor)
+	rawTagsList := strings.Split(printFilterTagsString, ",")
 
 	for _, tag := range rawTagsList {
-		tagsFilter = append(tagsFilter, strings.TrimSpace(tag))
+		printFilterTags = append(printFilterTags, strings.TrimSpace(tag))
 	}
 }
 
 // verifySingleFormat ensures that there is only 1 output format used.
 func verifySingleFormat() {
-	if !prettyOutput && !yamlOutput && !jsonOutput {
+	if !printOutputPretty && !printOutputYAML && !printOutputJSON {
 		defaultFormat := viper.GetString("default.format")
 		if defaultFormat == "yaml" || defaultFormat == "yml" {
-			yamlOutput = true
+			printOutputYAML = true
 		} else if defaultFormat == "json" {
-			jsonOutput = true
+			printOutputJSON = true
 		} else {
-			prettyOutput = true
+			printOutputPretty = true
 		}
 	} else {
-		if prettyOutput {
-			yamlOutput = false
-			jsonOutput = false
-		} else if yamlOutput {
-			jsonOutput = false
+		if printOutputPretty {
+			printOutputYAML = false
+			printOutputJSON = false
+		} else if printOutputYAML {
+			printOutputJSON = false
 		}
 	}
 }
