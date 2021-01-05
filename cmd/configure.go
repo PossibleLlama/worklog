@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/PossibleLlama/worklog/model"
 
@@ -70,6 +71,8 @@ func OverrideDefaultsArgs(cmd *cobra.Command, args []string) error {
 }
 
 func overrideDefaultsArgs() error {
+	configProvidedAuthor = strings.TrimSpace(configProvidedAuthor)
+	configProvidedFormat = strings.TrimSpace(configProvidedFormat)
 	if configProvidedAuthor == "" &&
 		configProvidedFormat == "" &&
 		configProvidedDuration < 0 {
@@ -82,7 +85,7 @@ func overrideDefaultsArgs() error {
 		configProvidedFormat != "pretty" &&
 		configProvidedFormat != "json" &&
 		configProvidedFormat != "yaml" {
-		return errors.New("provided format is not valid")
+		return errors.New("format is not valid")
 	}
 	return nil
 }
