@@ -62,10 +62,10 @@ worklog application.`,
 
 // DefaultArgs public method to validate arguments
 func DefaultArgs(cmd *cobra.Command, args []string) error {
-	return defaultArgs(args...)
+	return defaultArgs()
 }
 
-func defaultArgs(args ...string) error {
+func defaultArgs() error {
 	if providedAuthor == "" &&
 		providedFormat == "" &&
 		providedDuration < 0 {

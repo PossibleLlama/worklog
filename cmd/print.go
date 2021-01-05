@@ -44,10 +44,10 @@ been created between the dates provided.`,
 
 // PrintArgs public method to validate arguments
 func PrintArgs(cmd *cobra.Command, args []string) error {
-	return printArgs(args...)
+	return printArgs()
 }
 
-func printArgs(args ...string) error {
+func printArgs() error {
 	verifySingleFormat()
 	verifyFilters()
 	return verifyDates()
@@ -59,6 +59,7 @@ func PrintRun(cmd *cobra.Command, args []string) error {
 }
 
 func printRun(args ...string) error {
+	// Passing args through to allow for specifying ID's
 	filter := model.NewWork(
 		titleFilter,
 		descriptionFilter,

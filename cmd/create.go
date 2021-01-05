@@ -31,10 +31,10 @@ the user has created.`,
 
 // CreateArgs public method to validate arguments
 func CreateArgs(cmd *cobra.Command, args []string) error {
-	return createArgs(args...)
+	return createArgs()
 }
 
-func createArgs(args ...string) error {
+func createArgs() error {
 	if duration <= -1 {
 		duration = viper.GetInt("default.duration")
 	}
@@ -56,10 +56,10 @@ func createArgs(args ...string) error {
 
 // CreateRun public method to run create
 func CreateRun(cmd *cobra.Command, args []string) error {
-	return createRun(args...)
+	return createRun()
 }
 
-func createRun(args ...string) error {
+func createRun() error {
 	_, err := wlService.CreateWorklog(model.NewWork(
 		title,
 		description,
