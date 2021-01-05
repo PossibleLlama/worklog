@@ -9,8 +9,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const configDefaultAuthor = ""
-const configDefaultDuration = 15
+const (
+	configDefaultAuthor   = ""
+	configDefaultDuration = 15
+	configDefaultFormat   = "pretty"
+)
 
 var configProvidedAuthor string
 var configProvidedDuration int
@@ -34,6 +37,7 @@ func ConfigArgs(cmd *cobra.Command, args []string) error {
 func configArgs() error {
 	configProvidedAuthor = configDefaultAuthor
 	configProvidedDuration = configDefaultDuration
+	configProvidedFormat = configDefaultFormat
 	return nil
 }
 
@@ -77,8 +81,7 @@ func defaultArgs() error {
 	if configProvidedFormat != "" &&
 		configProvidedFormat != "pretty" &&
 		configProvidedFormat != "json" &&
-		configProvidedFormat != "yaml" &&
-		configProvidedFormat != "yml" {
+		configProvidedFormat != "yaml" {
 		return errors.New("provided format is not valid")
 	}
 	return nil
