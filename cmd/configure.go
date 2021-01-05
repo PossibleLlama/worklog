@@ -28,10 +28,10 @@ setting up the defaults and adding in passed arguments.`,
 
 // ConfigArgs public method to validate arguments
 func ConfigArgs(cmd *cobra.Command, args []string) error {
-	return configArgs(args...)
+	return configArgs()
 }
 
-func configArgs(args ...string) error {
+func configArgs() error {
 	providedAuthor = defaultAuthor
 	providedDuration = defaultDuration
 	return nil
@@ -39,11 +39,16 @@ func configArgs(args ...string) error {
 
 // ConfigRun public method to run configuration
 func ConfigRun(cmd *cobra.Command, args []string) error {
-	return configRun(args...)
+	return configRun()
 }
 
-func configRun(args ...string) error {
-	return callService()
+func configRun() error {
+	cfg := model.NewConfig(providedAuthor, providedFormat, providedDuration)
+	if err := wlService.Congfigure(cfg); err != nil {
+		return err
+	}
+	fmt.Println("Successfully configured")
+	return nil
 }
 
 var defaultsCmd = &cobra.Command{
@@ -98,13 +103,4 @@ func init() {
 		"format",
 		"",
 		"Format to print work in. If provided, must be one of 'pretty', 'yaml', 'json'")
-}
-
-func callService() error {
-	config := model.NewConfig(providedAuthor, providedFormat, providedDuration)
-	if err := wlService.Congfigure(config); err != nil {
-		return err
-	}
-	fmt.Println("Successfully configured")
-	return nil
 }
