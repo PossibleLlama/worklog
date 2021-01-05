@@ -55,21 +55,21 @@ func configRun() error {
 	return nil
 }
 
-var defaultsCmd = &cobra.Command{
+var overrideDefaultsCmd = &cobra.Command{
 	Use:   "defaults",
 	Short: "Default variables to be used",
 	Long: `Default variables to be used with the
 worklog application.`,
-	Args: DefaultArgs,
+	Args: OverrideDefaultsArgs,
 	RunE: ConfigRun,
 }
 
-// DefaultArgs public method to validate arguments
-func DefaultArgs(cmd *cobra.Command, args []string) error {
-	return defaultArgs()
+// OverrideDefaultsArgs public method to validate arguments
+func OverrideDefaultsArgs(cmd *cobra.Command, args []string) error {
+	return overrideDefaultsArgs()
 }
 
-func defaultArgs() error {
+func overrideDefaultsArgs() error {
 	if configProvidedAuthor == "" &&
 		configProvidedFormat == "" &&
 		configProvidedDuration < 0 {
@@ -89,19 +89,19 @@ func defaultArgs() error {
 
 func init() {
 	rootCmd.AddCommand(configureCmd)
-	configureCmd.AddCommand(defaultsCmd)
+	configureCmd.AddCommand(overrideDefaultsCmd)
 
-	defaultsCmd.Flags().StringVar(
+	overrideDefaultsCmd.Flags().StringVar(
 		&configProvidedAuthor,
 		"author",
 		"",
 		"The authour for all work")
-	defaultsCmd.Flags().IntVar(
+	overrideDefaultsCmd.Flags().IntVar(
 		&configProvidedDuration,
 		"duration",
 		-1,
 		"Default duration that work takes")
-	defaultsCmd.Flags().StringVar(
+	overrideDefaultsCmd.Flags().StringVar(
 		&configProvidedFormat,
 		"format",
 		"",
