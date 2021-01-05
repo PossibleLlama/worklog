@@ -48,7 +48,7 @@ func ConfigRun(cmd *cobra.Command, args []string) error {
 
 func configRun() error {
 	cfg := model.NewConfig(configProvidedAuthor, configProvidedFormat, configProvidedDuration)
-	if err := wlService.Congfigure(cfg); err != nil {
+	if err := wlService.Configure(cfg); err != nil {
 		return err
 	}
 	fmt.Println("Successfully configured")

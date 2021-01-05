@@ -70,7 +70,7 @@ func TestConfigRun(t *testing.T) {
 		cfg := model.NewConfig(testItem.author, testItem.format, testItem.duration)
 
 		mockService := new(service.MockService)
-		mockService.On("Congfigure", cfg).Return(testItem.expErr)
+		mockService.On("Configure", cfg).Return(testItem.expErr)
 		wlService = mockService
 
 		t.Run(testItem.name, func(t *testing.T) {
@@ -80,7 +80,7 @@ func TestConfigRun(t *testing.T) {
 
 			mockService.AssertExpectations(t)
 			mockService.AssertCalled(t,
-				"Congfigure",
+				"Configure",
 				cfg)
 			assert.Equal(t, testItem.expErr, actualErr)
 		})

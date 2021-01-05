@@ -8,7 +8,7 @@ import (
 
 // WorklogService defines what a service for worklogs should be capable of doing
 type WorklogService interface {
-	Congfigure(cfg *model.Config) error
+	Configure(cfg *model.Config) error
 	CreateWorklog(wl *model.Work) (int, error)
 	GetWorklogsBetween(start, end time.Time, filter *model.Work) ([]*model.Work, int, error)
 }
