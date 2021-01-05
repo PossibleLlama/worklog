@@ -38,36 +38,50 @@ var printCmd = &cobra.Command{
 	Short: "Print all worklogs since provided date",
 	Long: `Prints all worklogs to console that have
 been created between the dates provided.`,
-	Args: func(cmd *cobra.Command, args []string) error {
-		verifySingleFormat()
-		verifyFilters()
-		return verifyDates()
-	},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		filter := model.NewWork(
-			titleFilter,
-			descriptionFilter,
-			authorFilter,
-			-1,
-			tagsFilter,
-			time.Time{})
-		worklogs, code, err := wlService.GetWorklogsBetween(startDate, endDate, filter)
-		if err != nil {
-			return err
-		}
+	Args: PrintArgs,
+	RunE: PrintRun,
+}
 
-		if code == http.StatusNotFound && !jsonOutput {
-			fmt.Printf("No work found between %s and %s with the given filter\n",
-				startDate, endDate.Add(time.Second*-1))
-		} else if prettyOutput {
-			model.WriteAllWorkToPrettyText(os.Stdout, worklogs)
-		} else if yamlOutput {
-			model.WriteAllWorkToPrettyYAML(os.Stdout, worklogs)
-		} else {
-			model.WriteAllWorkToPrettyJSON(os.Stdout, worklogs)
-		}
-		return nil
-	},
+// PrintArgs public method to validate arguments
+func PrintArgs(cmd *cobra.Command, args []string) error {
+	return printArgs(args...)
+}
+
+func printArgs(args ...string) error {
+	verifySingleFormat()
+	verifyFilters()
+	return verifyDates()
+}
+
+// PrintRun public method to run print
+func PrintRun(cmd *cobra.Command, args []string) error {
+	return printRun(args...)
+}
+
+func printRun(args ...string) error {
+	filter := model.NewWork(
+		titleFilter,
+		descriptionFilter,
+		authorFilter,
+		-1,
+		tagsFilter,
+		time.Time{})
+	worklogs, code, err := wlService.GetWorklogsBetween(startDate, endDate, filter)
+	if err != nil {
+		return err
+	}
+
+	if code == http.StatusNotFound && !jsonOutput {
+		fmt.Printf("No work found between %s and %s with the given filter\n",
+			startDate, endDate.Add(time.Second*-1))
+	} else if prettyOutput {
+		model.WriteAllWorkToPrettyText(os.Stdout, worklogs)
+	} else if yamlOutput {
+		model.WriteAllWorkToPrettyYAML(os.Stdout, worklogs)
+	} else {
+		model.WriteAllWorkToPrettyJSON(os.Stdout, worklogs)
+	}
+	return nil
 }
 
 func init() {
