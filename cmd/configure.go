@@ -37,7 +37,7 @@ func configArgs(args ...string) error {
 	return nil
 }
 
-// ConfigRun public method to run configuration using default values
+// ConfigRun public method to run configuration
 func ConfigRun(cmd *cobra.Command, args []string) error {
 	return configRun(args...)
 }
@@ -51,27 +51,32 @@ var defaultsCmd = &cobra.Command{
 	Short: "Default variables to be used",
 	Long: `Default variables to be used with the
 worklog application.`,
-	Args: func(cmd *cobra.Command, args []string) error {
-		if providedAuthor == "" &&
-			providedFormat == "" &&
-			providedDuration < 0 {
-			return errors.New("defaults requires at least one argument")
-		}
-		if providedDuration < 0 {
-			providedDuration = defaultDuration
-		}
-		if providedFormat != "" &&
-			providedFormat != "pretty" &&
-			providedFormat != "json" &&
-			providedFormat != "yaml" &&
-			providedFormat != "yml" {
-			return errors.New("provided format is not valid")
-		}
-		return nil
-	},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return callService()
-	},
+	Args: DefaultArgs,
+	RunE: ConfigRun,
+}
+
+// DefaultArgs public method to validate arguments
+func DefaultArgs(cmd *cobra.Command, args []string) error {
+	return defaultArgs(args...)
+}
+
+func defaultArgs(args ...string) error {
+	if providedAuthor == "" &&
+		providedFormat == "" &&
+		providedDuration < 0 {
+		return errors.New("defaults requires at least one argument")
+	}
+	if providedDuration < 0 {
+		providedDuration = defaultDuration
+	}
+	if providedFormat != "" &&
+		providedFormat != "pretty" &&
+		providedFormat != "json" &&
+		providedFormat != "yaml" &&
+		providedFormat != "yml" {
+		return errors.New("provided format is not valid")
+	}
+	return nil
 }
 
 func init() {
