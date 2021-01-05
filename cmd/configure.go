@@ -22,14 +22,28 @@ var configureCmd = &cobra.Command{
 	Short: "Setup configuration for the application",
 	Long: `Setup configuration file for the application,
 setting up the defaults and adding in passed arguments.`,
-	Args: func(cmd *cobra.Command, args []string) error {
-		providedAuthor = defaultAuthor
-		providedDuration = defaultDuration
-		return nil
-	},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return callService()
-	},
+	Args: ConfigArgs,
+	RunE: ConfigRun,
+}
+
+// ConfigArgs public method to validate arguments
+func ConfigArgs(cmd *cobra.Command, args []string) error {
+	return configArgs(args...)
+}
+
+func configArgs(args ...string) error {
+	providedAuthor = defaultAuthor
+	providedDuration = defaultDuration
+	return nil
+}
+
+// ConfigRun public method to run configuration using default values
+func ConfigRun(cmd *cobra.Command, args []string) error {
+	return configRun(args...)
+}
+
+func configRun(args ...string) error {
+	return callService()
 }
 
 var defaultsCmd = &cobra.Command{
