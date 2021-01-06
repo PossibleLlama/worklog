@@ -16,7 +16,7 @@ const (
 	longLength  = 256
 )
 
-func setProvidedValues(author, format string, duration int) {
+func setProvidedConfigureValues(author, format string, duration int) {
 	configProvidedAuthor = author
 	configProvidedDuration = duration
 	configProvidedFormat = format
@@ -33,7 +33,7 @@ func TestConfigArgs(t *testing.T) {
 
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
-			setProvidedValues(helpers.RandString(shortLength), helpers.RandString(shortLength), shortLength)
+			setProvidedConfigureValues(helpers.RandString(shortLength), helpers.RandString(shortLength), shortLength)
 
 			configArgs()
 
@@ -75,7 +75,7 @@ func TestConfigRun(t *testing.T) {
 		wlService = mockService
 
 		t.Run(testItem.name, func(t *testing.T) {
-			setProvidedValues(testItem.author, testItem.format, testItem.duration)
+			setProvidedConfigureValues(testItem.author, testItem.format, testItem.duration)
 
 			actualErr := configRun()
 
@@ -173,7 +173,7 @@ func TestOverrideDefaultsArgs(t *testing.T) {
 
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
-			setProvidedValues(testItem.author, testItem.format, testItem.duration)
+			setProvidedConfigureValues(testItem.author, testItem.format, testItem.duration)
 
 			actualErr := overrideDefaultsArgs()
 
