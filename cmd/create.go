@@ -40,16 +40,17 @@ func createArgs() error {
 	}
 	createTitle = strings.TrimSpace(createTitle)
 	createDescription = strings.TrimSpace(createDescription)
+
+	for _, tag := range strings.Split(createTagsString, ",") {
+		createTags = append(createTags, strings.TrimSpace(tag))
+	}
+
 	whenDate, err := helpers.GetStringAsDateTime(
 		strings.TrimSpace(createWhenString))
 	if err != nil {
 		return err
 	}
 	createWhen = whenDate
-
-	for _, tag := range strings.Split(createTagsString, ",") {
-		createTags = append(createTags, strings.TrimSpace(tag))
-	}
 
 	return nil
 }
