@@ -7,11 +7,14 @@ import (
 	"time"
 
 	"github.com/PossibleLlama/worklog/helpers"
+	"github.com/PossibleLlama/worklog/model"
+	"github.com/PossibleLlama/worklog/service"
 	"github.com/stretchr/testify/assert"
 )
 
 var (
 	defaultDuration = 0
+	defaultAuthor   = ""
 )
 
 func setProvidedCreateValues(title, description, when string, duration int, tags string) {
@@ -129,6 +132,52 @@ func TestCreateArgs(t *testing.T) {
 			assert.Equal(t, testItem.tags, createTags)
 			assert.Equal(t, testItem.whenString, createWhenString)
 			assert.Equal(t, testItem.when, createWhen)
+		})
+	}
+}
+
+func TestCreateRun(t *testing.T) {
+	now, _ := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	var tests = []struct {
+		name        string
+		title       string
+		description string
+		duration    int
+		tags        string
+		when        string
+		expErr      error
+	}{
+		{
+			name:        "Send to service",
+			title:       helpers.RandString(shortLength),
+			description: helpers.RandString(shortLength),
+			duration:    longLength,
+			tags:        helpers.RandString(shortLength) + "," + helpers.RandString(shortLength),
+			when:        now.Format(time.RFC3339),
+			expErr:      nil,
+		},
+	}
+
+	for _, testItem := range tests {
+		w := &model.Work{}
+		mockService := new(service.MockService)
+		// TODO fix so time isn't an issue
+		mockService.On("Save", w)
+		wlService = mockService
+
+		t.Run(testItem.name, func(t *testing.T) {
+			setProvidedCreateValues(
+				testItem.title,
+				testItem.description,
+				testItem.when,
+				testItem.duration,
+				testItem.tags)
+
+			actualErr := createRun()
+
+			mockService.AssertExpectations(t)
+			mockService.AssertCalled(t, "Save", w)
+			assert.Equal(t, testItem.expErr, actualErr)
 		})
 	}
 }
