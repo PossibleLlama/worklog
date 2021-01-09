@@ -17,7 +17,7 @@ var (
 	defaultAuthor   = ""
 )
 
-func setProvidedCreateValues(title, description, when string, duration int, tags string) {
+func setProvidedCreateArgValues(title, description, when string, duration int, tags string) {
 	createTitle = title
 	createDescription = description
 	createDuration = duration
@@ -25,6 +25,16 @@ func setProvidedCreateValues(title, description, when string, duration int, tags
 	createTags = []string{}
 	createWhenString = when
 	createWhen = time.Time{}
+}
+
+func setProvidedCreateRunValues(title, description string, when time.Time, duration int, tags []string) {
+	createTitle = title
+	createDescription = description
+	createDuration = duration
+	createTagsString = strings.Join(tags, ",")
+	createTags = tags
+	createWhenString = when.Format(time.RFC3339)
+	createWhen = when
 }
 
 func TestCreateArgs(t *testing.T) {
@@ -105,7 +115,7 @@ func TestCreateArgs(t *testing.T) {
 
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
-			setProvidedCreateValues(
+			setProvidedCreateArgValues(
 				testItem.title,
 				testItem.description,
 				testItem.whenString,
@@ -143,8 +153,8 @@ func TestCreateRun(t *testing.T) {
 		title       string
 		description string
 		duration    int
-		tags        string
-		when        string
+		tags        []string
+		when        time.Time
 		expErr      error
 	}{
 		{
@@ -152,9 +162,11 @@ func TestCreateRun(t *testing.T) {
 			title:       helpers.RandString(shortLength),
 			description: helpers.RandString(shortLength),
 			duration:    longLength,
-			tags:        helpers.RandString(shortLength) + "," + helpers.RandString(shortLength),
-			when:        now.Format(time.RFC3339),
-			expErr:      nil,
+			tags: []string{
+				helpers.RandString(shortLength),
+				helpers.RandString(shortLength)},
+			when:   now,
+			expErr: nil,
 		},
 	}
 
@@ -165,7 +177,8 @@ func TestCreateRun(t *testing.T) {
 			Author:      defaultAuthor,
 			Duration:    testItem.duration,
 			Where:       "",
-			Tags:        []string{},
+			Tags:        testItem.tags,
+			When:        now,
 			CreatedAt:   now,
 		}
 		mockService := new(service.MockService)
@@ -173,7 +186,7 @@ func TestCreateRun(t *testing.T) {
 		wlService = mockService
 
 		t.Run(testItem.name, func(t *testing.T) {
-			setProvidedCreateValues(
+			setProvidedCreateRunValues(
 				testItem.title,
 				testItem.description,
 				testItem.when,
