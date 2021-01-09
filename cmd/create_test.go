@@ -159,10 +159,17 @@ func TestCreateRun(t *testing.T) {
 	}
 
 	for _, testItem := range tests {
-		w := &model.Work{}
+		w := &model.Work{
+			Title:       testItem.title,
+			Description: testItem.description,
+			Author:      defaultAuthor,
+			Duration:    testItem.duration,
+			Where:       "",
+			Tags:        []string{},
+			CreatedAt:   now,
+		}
 		mockService := new(service.MockService)
-		// TODO fix so time isn't an issue
-		mockService.On("Save", w)
+		mockService.On("CreateWorklog", w).Return(0, testItem.expErr)
 		wlService = mockService
 
 		t.Run(testItem.name, func(t *testing.T) {
@@ -176,7 +183,7 @@ func TestCreateRun(t *testing.T) {
 			actualErr := createRun()
 
 			mockService.AssertExpectations(t)
-			mockService.AssertCalled(t, "Save", w)
+			mockService.AssertCalled(t, "CreateWorklog", w)
 			assert.Equal(t, testItem.expErr, actualErr)
 		})
 	}
