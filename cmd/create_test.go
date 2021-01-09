@@ -167,6 +167,16 @@ func TestCreateRun(t *testing.T) {
 				helpers.RandString(shortLength)},
 			when:   now,
 			expErr: nil,
+		}, {
+			name:        "Error passed back",
+			title:       helpers.RandString(shortLength),
+			description: helpers.RandString(shortLength),
+			duration:    longLength,
+			tags: []string{
+				helpers.RandString(shortLength),
+				helpers.RandString(shortLength)},
+			when:   now,
+			expErr: nil,
 		},
 	}
 
