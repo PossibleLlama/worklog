@@ -52,16 +52,22 @@ func TestPrintArgs(t *testing.T) {
 	endDate, _ = time.Parse(time.RFC3339, fmt.Sprintf("%d-%s-%dT12:00:00Z", y, m, d))
 
 	var tests = []struct {
-		name   string
-		format format
-		filter *model.Work
-		sDate  string
-		eDate  string
-		expErr error
+		name       string
+		usedFormat format
+		expFormat  format
+		filter     *model.Work
+		sDate      string
+		eDate      string
+		expErr     error
 	}{
 		{
 			name: "Full arguments pretty",
-			format: format{
+			usedFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+			expFormat: format{
 				pretty: true,
 				yaml:   false,
 				json:   false,
@@ -79,7 +85,12 @@ func TestPrintArgs(t *testing.T) {
 			expErr: nil,
 		}, {
 			name: "Full arguments yaml",
-			format: format{
+			usedFormat: format{
+				pretty: false,
+				yaml:   true,
+				json:   false,
+			},
+			expFormat: format{
 				pretty: false,
 				yaml:   true,
 				json:   false,
@@ -97,10 +108,38 @@ func TestPrintArgs(t *testing.T) {
 			expErr: nil,
 		}, {
 			name: "Full arguments json",
-			format: format{
+			usedFormat: format{
 				pretty: false,
 				yaml:   false,
 				json:   true,
+			},
+			expFormat: format{
+				pretty: false,
+				yaml:   false,
+				json:   true,
+			},
+			filter: &model.Work{
+				Title:       helpers.RandString(shortLength),
+				Description: helpers.RandString(shortLength),
+				Author:      helpers.RandString(shortLength),
+				Tags: []string{
+					helpers.RandString(shortLength),
+					helpers.RandString(shortLength)},
+			},
+			sDate:  startDate.Format(time.RFC3339),
+			eDate:  endDate.Format(time.RFC3339),
+			expErr: nil,
+		}, {
+			name: "All formats",
+			usedFormat: format{
+				pretty: true,
+				yaml:   true,
+				json:   true,
+			},
+			expFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
 			},
 			filter: &model.Work{
 				Title:       helpers.RandString(shortLength),
@@ -121,7 +160,7 @@ func TestPrintArgs(t *testing.T) {
 			testItem.filter.Title,
 			testItem.filter.Description,
 			testItem.filter.Author,
-			testItem.format,
+			testItem.usedFormat,
 			testItem.filter.Tags,
 			testItem.sDate,
 			testItem.eDate)
@@ -134,9 +173,9 @@ func TestPrintArgs(t *testing.T) {
 			assert.Equal(t, strings.Join(testItem.filter.Tags, ","), printFilterTagsString)
 			assert.Equal(t, testItem.filter.Tags, printFilterTags)
 
-			assert.Equal(t, testItem.format.pretty, printOutputPretty)
-			assert.Equal(t, testItem.format.yaml, printOutputYAML)
-			assert.Equal(t, testItem.format.json, printOutputJSON)
+			assert.Equal(t, testItem.expFormat.pretty, printOutputPretty)
+			assert.Equal(t, testItem.expFormat.yaml, printOutputYAML)
+			assert.Equal(t, testItem.expFormat.json, printOutputJSON)
 
 			assert.Equal(t, startDate, printStartDate, fmt.Sprintf("Exp: %s, Act: %s", startDate, testItem.sDate))
 			assert.Equal(t, testItem.sDate, printStartDateString)
