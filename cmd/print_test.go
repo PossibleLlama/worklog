@@ -159,6 +159,75 @@ func TestPrintArgs(t *testing.T) {
 			sDate:  providedStartDate.Format(time.RFC3339),
 			eDate:  providedEndDate.Format(time.RFC3339),
 			expErr: nil,
+		}, {
+			name: "Pretty and yaml formats",
+			usedFormat: format{
+				pretty: true,
+				yaml:   true,
+				json:   false,
+			},
+			expFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+			filter: &model.Work{
+				Title:       helpers.RandString(shortLength),
+				Description: helpers.RandString(shortLength),
+				Author:      helpers.RandString(shortLength),
+				Tags: []string{
+					helpers.RandString(shortLength),
+					helpers.RandString(shortLength)},
+			},
+			sDate:  providedStartDate.Format(time.RFC3339),
+			eDate:  providedEndDate.Format(time.RFC3339),
+			expErr: nil,
+		}, {
+			name: "Pretty and json formats",
+			usedFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   true,
+			},
+			expFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+			filter: &model.Work{
+				Title:       helpers.RandString(shortLength),
+				Description: helpers.RandString(shortLength),
+				Author:      helpers.RandString(shortLength),
+				Tags: []string{
+					helpers.RandString(shortLength),
+					helpers.RandString(shortLength)},
+			},
+			sDate:  providedStartDate.Format(time.RFC3339),
+			eDate:  providedEndDate.Format(time.RFC3339),
+			expErr: nil,
+		}, {
+			name: "Yaml and json formats",
+			usedFormat: format{
+				pretty: false,
+				yaml:   true,
+				json:   true,
+			},
+			expFormat: format{
+				pretty: false,
+				yaml:   true,
+				json:   false,
+			},
+			filter: &model.Work{
+				Title:       helpers.RandString(shortLength),
+				Description: helpers.RandString(shortLength),
+				Author:      helpers.RandString(shortLength),
+				Tags: []string{
+					helpers.RandString(shortLength),
+					helpers.RandString(shortLength)},
+			},
+			sDate:  providedStartDate.Format(time.RFC3339),
+			eDate:  providedEndDate.Format(time.RFC3339),
+			expErr: nil,
 		},
 	}
 
