@@ -291,6 +291,48 @@ func TestPrintArgs(t *testing.T) {
 			sDate:  providedStartDate.Format(time.RFC3339),
 			eDate:  providedEndDate.Format(time.RFC3339),
 			expErr: nil,
+		}, {
+			name: "Single filter with postfix spacing",
+			usedFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+			expFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+			filter: &model.Work{
+				Title:       helpers.RandString(shortLength) + " ",
+				Description: "",
+				Author:      "",
+				Tags:        []string{},
+			},
+			sDate:  providedStartDate.Format(time.RFC3339),
+			eDate:  providedEndDate.Format(time.RFC3339),
+			expErr: nil,
+		}, {
+			name: "Single filter with prefix spacing",
+			usedFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+			expFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+			filter: &model.Work{
+				Title:       " " + helpers.RandString(shortLength),
+				Description: "",
+				Author:      "",
+				Tags:        []string{},
+			},
+			sDate:  providedStartDate.Format(time.RFC3339),
+			eDate:  providedEndDate.Format(time.RFC3339),
+			expErr: nil,
 		},
 	}
 
@@ -306,9 +348,9 @@ func TestPrintArgs(t *testing.T) {
 		t.Run(testItem.name, func(t *testing.T) {
 			actualErr := printArgs()
 
-			assert.Equal(t, testItem.filter.Title, printFilterTitle)
-			assert.Equal(t, testItem.filter.Description, printFilterDescription)
-			assert.Equal(t, testItem.filter.Author, printFilterAuthor)
+			assert.Equal(t, strings.TrimSpace(testItem.filter.Title), printFilterTitle)
+			assert.Equal(t, strings.TrimSpace(testItem.filter.Description), printFilterDescription)
+			assert.Equal(t, strings.TrimSpace(testItem.filter.Author), printFilterAuthor)
 			assert.Equal(t, strings.Join(testItem.filter.Tags, ","), printFilterTagsString)
 			assert.Equal(t, testItem.filter.Tags, printFilterTags)
 
