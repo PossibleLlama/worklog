@@ -155,6 +155,42 @@ func init() {
 		"Output in a json format")
 }
 
+// verifySingleFormat ensures that there is only 1 output format used.
+func verifySingleFormat() {
+	if !printOutputPretty && !printOutputYAML && !printOutputJSON {
+		defaultFormat := viper.GetString("default.format")
+		if defaultFormat == "yaml" || defaultFormat == "yml" {
+			printOutputYAML = true
+		} else if defaultFormat == "json" {
+			printOutputJSON = true
+		} else {
+			printOutputPretty = true
+		}
+	} else {
+		if printOutputPretty {
+			printOutputYAML = false
+			printOutputJSON = false
+		} else if printOutputYAML {
+			printOutputJSON = false
+		}
+	}
+}
+
+// verifyFilters ensures that the filters make sense
+func verifyFilters() {
+	printFilterTitle = strings.TrimSpace(printFilterTitle)
+	printFilterDescription = strings.TrimSpace(printFilterDescription)
+	printFilterAuthor = strings.TrimSpace(printFilterAuthor)
+	rawTagsList := strings.Split(printFilterTagsString, ",")
+
+	for _, tag := range rawTagsList {
+		if strings.TrimSpace(tag) != "" {
+			printFilterTags = append(printFilterTags, strings.TrimSpace(tag))
+		}
+	}
+}
+
+// verifyDates ensures the dates are valid
 func verifyDates() error {
 	if len(printStartDateString) != 0 {
 		startDateAnytime, err := helpers.GetStringAsDateTime(printStartDateString)
@@ -179,39 +215,4 @@ func verifyDates() error {
 		return errors.New("one flag is required")
 	}
 	return nil
-}
-
-// verifyFilters ensures that the filters make sense
-func verifyFilters() {
-	printFilterTitle = strings.TrimSpace(printFilterTitle)
-	printFilterDescription = strings.TrimSpace(printFilterDescription)
-	printFilterAuthor = strings.TrimSpace(printFilterAuthor)
-	rawTagsList := strings.Split(printFilterTagsString, ",")
-
-	for _, tag := range rawTagsList {
-		if strings.TrimSpace(tag) != "" {
-			printFilterTags = append(printFilterTags, strings.TrimSpace(tag))
-		}
-	}
-}
-
-// verifySingleFormat ensures that there is only 1 output format used.
-func verifySingleFormat() {
-	if !printOutputPretty && !printOutputYAML && !printOutputJSON {
-		defaultFormat := viper.GetString("default.format")
-		if defaultFormat == "yaml" || defaultFormat == "yml" {
-			printOutputYAML = true
-		} else if defaultFormat == "json" {
-			printOutputJSON = true
-		} else {
-			printOutputPretty = true
-		}
-	} else {
-		if printOutputPretty {
-			printOutputYAML = false
-			printOutputJSON = false
-		} else if printOutputYAML {
-			printOutputJSON = false
-		}
-	}
 }
