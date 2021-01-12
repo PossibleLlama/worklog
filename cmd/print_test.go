@@ -249,6 +249,48 @@ func TestPrintArgs(t *testing.T) {
 			sDate:  providedStartDate.Format(time.RFC3339),
 			eDate:  providedEndDate.Format(time.RFC3339),
 			expErr: nil,
+		}, {
+			name: "Single filter",
+			usedFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+			expFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+			filter: &model.Work{
+				Title:       helpers.RandString(shortLength),
+				Description: "",
+				Author:      "",
+				Tags:        []string{},
+			},
+			sDate:  providedStartDate.Format(time.RFC3339),
+			eDate:  providedEndDate.Format(time.RFC3339),
+			expErr: nil,
+		}, {
+			name: "Multiple filters",
+			usedFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+			expFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+			filter: &model.Work{
+				Title:       helpers.RandString(shortLength),
+				Description: "",
+				Author:      "",
+				Tags:        []string{helpers.RandString(shortLength)},
+			},
+			sDate:  providedStartDate.Format(time.RFC3339),
+			eDate:  providedEndDate.Format(time.RFC3339),
+			expErr: nil,
 		},
 	}
 
