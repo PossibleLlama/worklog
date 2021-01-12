@@ -11,6 +11,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const (
+	zero = 00
+)
+
 var (
 	providedStartDate time.Time
 	expectedStartDate time.Time
@@ -53,10 +57,10 @@ func TestPrintArgs(t *testing.T) {
 	y1, m1, d1 := now.Date()
 	y2, m2, d2 := now.Add(time.Hour * 24).Date()
 	y3, m3, d3 := now.Add(time.Hour * 48).Date()
-	providedStartDate = time.Date(y1, m1, d1, 06, 00, 00, 00, time.UTC)
-	expectedStartDate = time.Date(y1, m1, d1, 00, 00, 00, 00, time.UTC)
-	providedEndDate = time.Date(y2, m2, d2, 12, 00, 00, 00, time.UTC)
-	expectedEndDate = time.Date(y3, m3, d3, 00, 00, 00, 00, time.UTC)
+	providedStartDate = time.Date(y1, m1, d1, 06, zero, zero, zero, time.UTC)
+	expectedStartDate = time.Date(y1, m1, d1, zero, zero, zero, zero, time.UTC)
+	providedEndDate = time.Date(y2, m2, d2, 12, zero, zero, zero, time.UTC)
+	expectedEndDate = time.Date(y3, m3, d3, zero, zero, zero, zero, time.UTC)
 
 	var tests = []struct {
 		name       string
