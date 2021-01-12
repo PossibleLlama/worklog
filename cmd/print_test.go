@@ -62,11 +62,14 @@ func TestPrintArgs(t *testing.T) {
 	providedEndDate = time.Date(y2, m2, d2, 12, zero, zero, zero, time.UTC)
 	expectedEndDate = time.Date(y3, m3, d3, zero, zero, zero, zero, time.UTC)
 
+	randString := helpers.RandString(shortLength)
+
 	var tests = []struct {
 		name       string
 		usedFormat format
 		expFormat  format
-		filter     *model.Work
+		usedFilter *model.Work
+		expFilter  *model.Work
 		sDate      string
 		eDate      string
 		expErr     error
@@ -83,7 +86,7 @@ func TestPrintArgs(t *testing.T) {
 				yaml:   false,
 				json:   false,
 			},
-			filter: &model.Work{
+			usedFilter: &model.Work{
 				Title:       helpers.RandString(shortLength),
 				Description: helpers.RandString(shortLength),
 				Author:      helpers.RandString(shortLength),
@@ -106,7 +109,7 @@ func TestPrintArgs(t *testing.T) {
 				yaml:   true,
 				json:   false,
 			},
-			filter: &model.Work{
+			usedFilter: &model.Work{
 				Title:       helpers.RandString(shortLength),
 				Description: helpers.RandString(shortLength),
 				Author:      helpers.RandString(shortLength),
@@ -129,7 +132,7 @@ func TestPrintArgs(t *testing.T) {
 				yaml:   false,
 				json:   true,
 			},
-			filter: &model.Work{
+			usedFilter: &model.Work{
 				Title:       helpers.RandString(shortLength),
 				Description: helpers.RandString(shortLength),
 				Author:      helpers.RandString(shortLength),
@@ -152,7 +155,7 @@ func TestPrintArgs(t *testing.T) {
 				yaml:   false,
 				json:   false,
 			},
-			filter: &model.Work{
+			usedFilter: &model.Work{
 				Title:       helpers.RandString(shortLength),
 				Description: helpers.RandString(shortLength),
 				Author:      helpers.RandString(shortLength),
@@ -175,7 +178,7 @@ func TestPrintArgs(t *testing.T) {
 				yaml:   false,
 				json:   false,
 			},
-			filter: &model.Work{
+			usedFilter: &model.Work{
 				Title:       helpers.RandString(shortLength),
 				Description: helpers.RandString(shortLength),
 				Author:      helpers.RandString(shortLength),
@@ -198,7 +201,7 @@ func TestPrintArgs(t *testing.T) {
 				yaml:   false,
 				json:   false,
 			},
-			filter: &model.Work{
+			usedFilter: &model.Work{
 				Title:       helpers.RandString(shortLength),
 				Description: helpers.RandString(shortLength),
 				Author:      helpers.RandString(shortLength),
@@ -221,7 +224,7 @@ func TestPrintArgs(t *testing.T) {
 				yaml:   true,
 				json:   false,
 			},
-			filter: &model.Work{
+			usedFilter: &model.Work{
 				Title:       helpers.RandString(shortLength),
 				Description: helpers.RandString(shortLength),
 				Author:      helpers.RandString(shortLength),
@@ -244,7 +247,7 @@ func TestPrintArgs(t *testing.T) {
 				yaml:   false,
 				json:   false,
 			},
-			filter: &model.Work{
+			usedFilter: &model.Work{
 				Title:       "",
 				Description: "",
 				Author:      "",
@@ -265,7 +268,7 @@ func TestPrintArgs(t *testing.T) {
 				yaml:   false,
 				json:   false,
 			},
-			filter: &model.Work{
+			usedFilter: &model.Work{
 				Title:       helpers.RandString(shortLength),
 				Description: "",
 				Author:      "",
@@ -286,7 +289,7 @@ func TestPrintArgs(t *testing.T) {
 				yaml:   false,
 				json:   false,
 			},
-			filter: &model.Work{
+			usedFilter: &model.Work{
 				Title:       helpers.RandString(shortLength),
 				Description: "",
 				Author:      "",
@@ -299,19 +302,17 @@ func TestPrintArgs(t *testing.T) {
 			name: "Single filter with postfix spacing",
 			usedFormat: format{
 				pretty: true,
-				yaml:   false,
-				json:   false,
 			},
 			expFormat: format{
 				pretty: true,
-				yaml:   false,
-				json:   false,
 			},
-			filter: &model.Work{
-				Title:       helpers.RandString(shortLength) + " ",
-				Description: "",
-				Author:      "",
-				Tags:        []string{},
+			usedFilter: &model.Work{
+				Title: randString + " ",
+				Tags:  []string{},
+			},
+			expFilter: &model.Work{
+				Title: randString,
+				Tags:  []string{},
 			},
 			sDate:  providedStartDate.Format(time.RFC3339),
 			eDate:  providedEndDate.Format(time.RFC3339),
@@ -320,19 +321,34 @@ func TestPrintArgs(t *testing.T) {
 			name: "Single filter with prefix spacing",
 			usedFormat: format{
 				pretty: true,
-				yaml:   false,
-				json:   false,
 			},
 			expFormat: format{
 				pretty: true,
-				yaml:   false,
-				json:   false,
 			},
-			filter: &model.Work{
-				Title:       " " + helpers.RandString(shortLength),
-				Description: "",
-				Author:      "",
-				Tags:        []string{},
+			usedFilter: &model.Work{
+				Title: " " + randString,
+				Tags:  []string{},
+			},
+			expFilter: &model.Work{
+				Title: randString,
+				Tags:  []string{},
+			},
+			sDate:  providedStartDate.Format(time.RFC3339),
+			eDate:  providedEndDate.Format(time.RFC3339),
+			expErr: nil,
+		}, {
+			name: "Empty string for tag does not filter",
+			usedFormat: format{
+				pretty: true,
+			},
+			expFormat: format{
+				pretty: true,
+			},
+			usedFilter: &model.Work{
+				Tags: []string{""},
+			},
+			expFilter: &model.Work{
+				Tags: []string{},
 			},
 			sDate:  providedStartDate.Format(time.RFC3339),
 			eDate:  providedEndDate.Format(time.RFC3339),
@@ -342,21 +358,29 @@ func TestPrintArgs(t *testing.T) {
 
 	for _, testItem := range tests {
 		setProvidedPrintArgValues(
-			testItem.filter.Title,
-			testItem.filter.Description,
-			testItem.filter.Author,
+			testItem.usedFilter.Title,
+			testItem.usedFilter.Description,
+			testItem.usedFilter.Author,
 			testItem.usedFormat,
-			testItem.filter.Tags,
+			testItem.usedFilter.Tags,
 			testItem.sDate,
 			testItem.eDate)
 		t.Run(testItem.name, func(t *testing.T) {
 			actualErr := printArgs()
 
-			assert.Equal(t, strings.TrimSpace(testItem.filter.Title), printFilterTitle)
-			assert.Equal(t, strings.TrimSpace(testItem.filter.Description), printFilterDescription)
-			assert.Equal(t, strings.TrimSpace(testItem.filter.Author), printFilterAuthor)
-			assert.Equal(t, strings.Join(testItem.filter.Tags, ","), printFilterTagsString)
-			assert.Equal(t, testItem.filter.Tags, printFilterTags)
+			if testItem.expFilter == nil {
+				assert.Equal(t, testItem.usedFilter.Title, printFilterTitle)
+				assert.Equal(t, testItem.usedFilter.Description, printFilterDescription)
+				assert.Equal(t, testItem.usedFilter.Author, printFilterAuthor)
+				assert.Equal(t, strings.Join(testItem.usedFilter.Tags, ","), printFilterTagsString)
+				assert.Equal(t, testItem.usedFilter.Tags, printFilterTags)
+			} else {
+				assert.Equal(t, testItem.expFilter.Title, printFilterTitle)
+				assert.Equal(t, testItem.expFilter.Description, printFilterDescription)
+				assert.Equal(t, testItem.expFilter.Author, printFilterAuthor)
+				assert.Equal(t, strings.Join(testItem.usedFilter.Tags, ","), printFilterTagsString)
+				assert.Equal(t, testItem.expFilter.Tags, printFilterTags)
+			}
 
 			assert.Equal(t, testItem.expFormat.pretty, printOutputPretty)
 			assert.Equal(t, testItem.expFormat.yaml, printOutputYAML)
