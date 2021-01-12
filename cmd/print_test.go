@@ -405,6 +405,23 @@ func TestPrintArgs(t *testing.T) {
 			sDate:  providedStartDate.Format(time.RFC3339),
 			eDate:  "",
 			expErr: nil,
+		}, {
+			name: "Invalid string for end date throws error",
+			usedFormat: format{
+				pretty: true,
+			},
+			expFormat: format{
+				pretty: true,
+			},
+			usedFilter: &model.Work{
+				Tags: []string{},
+			},
+			expFilter: &model.Work{
+				Tags: []string{},
+			},
+			sDate:  providedStartDate.Format(time.RFC3339),
+			eDate:  randString,
+			expErr: errors.New("unable to parse string as date. 'parsing time \"" + randString + "\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"" + randString + "\" as \"2006\"'"),
 		},
 	}
 
