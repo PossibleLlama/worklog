@@ -228,6 +228,27 @@ func TestPrintArgs(t *testing.T) {
 			sDate:  providedStartDate.Format(time.RFC3339),
 			eDate:  providedEndDate.Format(time.RFC3339),
 			expErr: nil,
+		}, {
+			name: "No filters",
+			usedFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+			expFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+			filter: &model.Work{
+				Title:       "",
+				Description: "",
+				Author:      "",
+				Tags:        []string{},
+			},
+			sDate:  providedStartDate.Format(time.RFC3339),
+			eDate:  providedEndDate.Format(time.RFC3339),
+			expErr: nil,
 		},
 	}
 

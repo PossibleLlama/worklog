@@ -189,7 +189,9 @@ func verifyFilters() {
 	rawTagsList := strings.Split(printFilterTagsString, ",")
 
 	for _, tag := range rawTagsList {
-		printFilterTags = append(printFilterTags, strings.TrimSpace(tag))
+		if strings.TrimSpace(tag) != "" {
+			printFilterTags = append(printFilterTags, strings.TrimSpace(tag))
+		}
 	}
 }
 
