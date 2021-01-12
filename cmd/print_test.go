@@ -12,8 +12,10 @@ import (
 )
 
 var (
-	startDate time.Time
-	endDate   time.Time
+	providedStartDate time.Time
+	expectedStartDate time.Time
+	providedEndDate   time.Time
+	expectedEndDate   time.Time
 )
 
 type format struct {
@@ -47,9 +49,14 @@ func setFormatValues(fr format) {
 }
 
 func TestPrintArgs(t *testing.T) {
-	y, m, d := time.Now().Date()
-	startDate, _ = time.Parse(time.RFC3339, fmt.Sprintf("%d-%s-%dT06:00:00Z", y, m, d))
-	endDate, _ = time.Parse(time.RFC3339, fmt.Sprintf("%d-%s-%dT12:00:00Z", y, m, d))
+	now := time.Now()
+	y1, m1, d1 := now.Date()
+	y2, m2, d2 := now.Add(time.Hour * 24).Date()
+	y3, m3, d3 := now.Add(time.Hour * 48).Date()
+	providedStartDate = time.Date(y1, m1, d1, 06, 00, 00, 00, time.UTC)
+	expectedStartDate = time.Date(y1, m1, d1, 00, 00, 00, 00, time.UTC)
+	providedEndDate = time.Date(y2, m2, d2, 12, 00, 00, 00, time.UTC)
+	expectedEndDate = time.Date(y3, m3, d3, 00, 00, 00, 00, time.UTC)
 
 	var tests = []struct {
 		name       string
@@ -80,8 +87,8 @@ func TestPrintArgs(t *testing.T) {
 					helpers.RandString(shortLength),
 					helpers.RandString(shortLength)},
 			},
-			sDate:  startDate.Format(time.RFC3339),
-			eDate:  endDate.Format(time.RFC3339),
+			sDate:  providedStartDate.Format(time.RFC3339),
+			eDate:  providedEndDate.Format(time.RFC3339),
 			expErr: nil,
 		}, {
 			name: "Full arguments yaml",
@@ -103,8 +110,8 @@ func TestPrintArgs(t *testing.T) {
 					helpers.RandString(shortLength),
 					helpers.RandString(shortLength)},
 			},
-			sDate:  startDate.Format(time.RFC3339),
-			eDate:  endDate.Format(time.RFC3339),
+			sDate:  providedStartDate.Format(time.RFC3339),
+			eDate:  providedEndDate.Format(time.RFC3339),
 			expErr: nil,
 		}, {
 			name: "Full arguments json",
@@ -126,8 +133,8 @@ func TestPrintArgs(t *testing.T) {
 					helpers.RandString(shortLength),
 					helpers.RandString(shortLength)},
 			},
-			sDate:  startDate.Format(time.RFC3339),
-			eDate:  endDate.Format(time.RFC3339),
+			sDate:  providedStartDate.Format(time.RFC3339),
+			eDate:  providedEndDate.Format(time.RFC3339),
 			expErr: nil,
 		}, {
 			name: "All formats",
@@ -149,8 +156,8 @@ func TestPrintArgs(t *testing.T) {
 					helpers.RandString(shortLength),
 					helpers.RandString(shortLength)},
 			},
-			sDate:  startDate.Format(time.RFC3339),
-			eDate:  endDate.Format(time.RFC3339),
+			sDate:  providedStartDate.Format(time.RFC3339),
+			eDate:  providedEndDate.Format(time.RFC3339),
 			expErr: nil,
 		},
 	}
@@ -177,9 +184,9 @@ func TestPrintArgs(t *testing.T) {
 			assert.Equal(t, testItem.expFormat.yaml, printOutputYAML)
 			assert.Equal(t, testItem.expFormat.json, printOutputJSON)
 
-			assert.Equal(t, startDate, printStartDate, fmt.Sprintf("Exp: %s, Act: %s", startDate, testItem.sDate))
+			assert.Equal(t, expectedStartDate, printStartDate, fmt.Sprintf("Start: Exp: %s, Act: %s", expectedStartDate, printStartDate))
 			assert.Equal(t, testItem.sDate, printStartDateString)
-			// assert.Equal(t, endDate, printEndDate)
+			assert.Equal(t, expectedEndDate, printEndDate, fmt.Sprintf("End: Exp: %s, Act: %s", expectedEndDate, printEndDate))
 			assert.Equal(t, testItem.eDate, printEndDateString)
 
 			assert.Equal(t, testItem.expErr, actualErr)
