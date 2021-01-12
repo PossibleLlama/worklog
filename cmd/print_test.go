@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"testing"
@@ -353,6 +354,23 @@ func TestPrintArgs(t *testing.T) {
 			sDate:  providedStartDate.Format(time.RFC3339),
 			eDate:  providedEndDate.Format(time.RFC3339),
 			expErr: nil,
+		}, {
+			name: "Empty string for start date throws error",
+			usedFormat: format{
+				pretty: true,
+			},
+			expFormat: format{
+				pretty: true,
+			},
+			usedFilter: &model.Work{
+				Tags: []string{},
+			},
+			expFilter: &model.Work{
+				Tags: []string{},
+			},
+			sDate:  "",
+			eDate:  providedEndDate.Format(time.RFC3339),
+			expErr: errors.New("one flag is required"),
 		},
 	}
 
@@ -386,11 +404,14 @@ func TestPrintArgs(t *testing.T) {
 			assert.Equal(t, testItem.expFormat.yaml, printOutputYAML)
 			assert.Equal(t, testItem.expFormat.json, printOutputJSON)
 
-			assert.Equal(t, expectedStartDate, printStartDate, fmt.Sprintf("Start: Exp: %s, Act: %s", expectedStartDate, printStartDate))
-			assert.Equal(t, testItem.sDate, printStartDateString)
-			assert.Equal(t, expectedEndDate, printEndDate, fmt.Sprintf("End: Exp: %s, Act: %s", expectedEndDate, printEndDate))
-			assert.Equal(t, testItem.eDate, printEndDateString)
-
+			if testItem.sDate != "" {
+				assert.Equal(t, expectedStartDate, printStartDate, fmt.Sprintf("Start: Exp: %s, Act: %s", expectedStartDate, printStartDate))
+				assert.Equal(t, testItem.sDate, printStartDateString)
+				if testItem.eDate != "" {
+					assert.Equal(t, expectedEndDate, printEndDate, fmt.Sprintf("End: Exp: %s, Act: %s", expectedEndDate, printEndDate))
+					assert.Equal(t, testItem.eDate, printEndDateString)
+				}
+			}
 			assert.Equal(t, testItem.expErr, actualErr)
 		})
 	}
