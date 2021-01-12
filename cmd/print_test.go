@@ -72,7 +72,9 @@ func TestPrintArgs(t *testing.T) {
 		usedFilter *model.Work
 		expFilter  *model.Work
 		sDate      string
+		expSDate   *time.Time
 		eDate      string
+		expEDate   *time.Time
 		expErr     error
 	}{
 		{
@@ -456,10 +458,20 @@ func TestPrintArgs(t *testing.T) {
 			assert.Equal(t, testItem.expFormat.json, printOutputJSON)
 
 			if len(testItem.sDate) == 20 {
-				assert.Equal(t, expectedStartDate, printStartDate, fmt.Sprintf("Start: Exp: %s, Act: %s", expectedStartDate, printStartDate))
+				startDateString := fmt.Sprintf("Start: Exp: %s, Act: %s", expectedStartDate, printStartDate)
+				if testItem.expSDate == nil {
+					assert.Equal(t, expectedStartDate, printStartDate, startDateString)
+				} else {
+					assert.Equal(t, testItem.expSDate, printStartDate, startDateString)
+				}
 				assert.Equal(t, testItem.sDate, printStartDateString)
 				if len(testItem.eDate) == 20 {
-					assert.Equal(t, expectedEndDate, printEndDate, fmt.Sprintf("End: Exp: %s, Act: %s", expectedEndDate, printEndDate))
+					endDateString := fmt.Sprintf("End: Exp: %s, Act: %s", expectedEndDate, printEndDate)
+					if testItem.expEDate == nil {
+						assert.Equal(t, expectedEndDate, printEndDate, endDateString)
+					} else {
+						assert.Equal(t, testItem.expEDate, printEndDate, endDateString)
+					}
 					assert.Equal(t, testItem.eDate, printEndDateString)
 				}
 			}
