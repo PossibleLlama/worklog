@@ -12,9 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const (
-	zero = 00
-)
+const zero = 00
 
 var testDefaultFormat = format{
 	pretty: true,
@@ -41,13 +39,6 @@ var (
 		now.Add(day).Month(),
 		now.Add(day).Day(),
 		zero, zero, zero, zero, time.UTC)
-)
-
-var (
-	providedStartDate time.Time
-	expectedStartDate time.Time
-	providedEndDate   time.Time
-	expectedEndDate   time.Time
 )
 
 type format struct {
@@ -298,149 +289,75 @@ func TestPrintArgsFilter(t *testing.T) {
 	}
 }
 
-func TestPrintArgs(t *testing.T) {
-	y1, m1, d1 := now.Date()
-	y2, m2, d2 := now.Add(time.Hour * 24).Date()
-	y3, m3, d3 := now.Add(time.Hour * 48).Date()
-	providedStartDate = time.Date(y1, m1, d1, 06, zero, zero, zero, time.UTC)
-	expectedStartDate = time.Date(y1, m1, d1, zero, zero, zero, zero, time.UTC)
-	providedEndDate = time.Date(y2, m2, d2, 12, zero, zero, zero, time.UTC)
-	expectedEndDate = time.Date(y3, m3, d3, zero, zero, zero, zero, time.UTC)
-
+func TestPrintArgsDates(t *testing.T) {
 	randString := helpers.RandString(shortLength)
 
 	var tests = []struct {
-		name       string
-		usedFormat format
-		expFormat  format
-		usedFilter *model.Work
-		expFilter  *model.Work
-		sDate      string
-		expSDate   *time.Time
-		eDate      string
-		expEDate   *time.Time
-		expErr     error
+		name     string
+		sDate    string
+		expSDate time.Time
+		eDate    string
+		expEDate time.Time
+		expErr   error
 	}{
 		{
-			name: "Empty string for start date throws error",
-			usedFormat: format{
-				pretty: true,
-			},
-			expFormat: format{
-				pretty: true,
-			},
-			usedFilter: &model.Work{
-				Tags: []string{},
-			},
-			expFilter: &model.Work{
-				Tags: []string{},
-			},
-			sDate:  "",
-			eDate:  providedEndDate.Format(time.RFC3339),
-			expErr: errors.New("one flag is required"),
+			name:     "Start date is required before end date is used",
+			sDate:    "",
+			expSDate: time.Time{},
+			eDate:    testDefaultEndDate.Format(time.RFC3339),
+			expErr:   errors.New("one flag is required"),
 		}, {
-			name: "Invalid string for start date throws error",
-			usedFormat: format{
-				pretty: true,
-			},
-			expFormat: format{
-				pretty: true,
-			},
-			usedFilter: &model.Work{
-				Tags: []string{},
-			},
-			expFilter: &model.Work{
-				Tags: []string{},
-			},
-			sDate:  randString,
-			eDate:  "",
-			expErr: errors.New("unable to parse string as date. 'parsing time \"" + randString + "\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"" + randString + "\" as \"2006\"'"),
+			name:     "Invalid string for start date throws error",
+			sDate:    randString,
+			expSDate: time.Time{},
+			eDate:    "",
+			expErr:   errors.New("unable to parse string as date. 'parsing time \"" + randString + "\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"" + randString + "\" as \"2006\"'"),
 		}, {
-			name: "Empty string for end date with valid date does not throw error",
-			usedFormat: format{
-				pretty: true,
-			},
-			expFormat: format{
-				pretty: true,
-			},
-			usedFilter: &model.Work{
-				Tags: []string{},
-			},
-			expFilter: &model.Work{
-				Tags: []string{},
-			},
-			sDate:  providedStartDate.Format(time.RFC3339),
-			eDate:  "",
-			expErr: nil,
+			name:     "End date is not required if start date provided",
+			sDate:    testDefaultStartDate.Format(time.RFC3339),
+			expSDate: testDefaultStartDate,
+			eDate:    "",
+			expErr:   nil,
 		}, {
-			name: "Invalid string for end date throws error",
-			usedFormat: format{
-				pretty: true,
-			},
-			expFormat: format{
-				pretty: true,
-			},
-			usedFilter: &model.Work{
-				Tags: []string{},
-			},
-			expFilter: &model.Work{
-				Tags: []string{},
-			},
-			sDate:  providedStartDate.Format(time.RFC3339),
-			eDate:  randString,
-			expErr: errors.New("unable to parse string as date. 'parsing time \"" + randString + "\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"" + randString + "\" as \"2006\"'"),
+			name:     "Invalid string for end date throws error when start date provided",
+			sDate:    testDefaultStartDate.Format(time.RFC3339),
+			expSDate: testDefaultStartDate,
+			eDate:    randString,
+			expErr:   errors.New("unable to parse string as date. 'parsing time \"" + randString + "\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"" + randString + "\" as \"2006\"'"),
 		},
 	}
 
 	for _, testItem := range tests {
 		setProvidedPrintArgValues(
-			testItem.usedFilter.Title,
-			testItem.usedFilter.Description,
-			testItem.usedFilter.Author,
-			testItem.usedFormat,
-			testItem.usedFilter.Tags,
+			testDefaultFilter.Title,
+			testDefaultFilter.Description,
+			testDefaultFilter.Author,
+			testDefaultFormat,
+			testDefaultFilter.Tags,
 			testItem.sDate,
 			testItem.eDate)
+
 		t.Run(testItem.name, func(t *testing.T) {
 			actualErr := printArgs()
 
-			if testItem.expFilter == nil {
-				assert.Equal(t, testItem.usedFilter.Title, printFilterTitle)
-				assert.Equal(t, testItem.usedFilter.Description, printFilterDescription)
-				assert.Equal(t, testItem.usedFilter.Author, printFilterAuthor)
-				assert.Equal(t, strings.Join(testItem.usedFilter.Tags, ","), printFilterTagsString)
-				assert.Equal(t, testItem.usedFilter.Tags, printFilterTags)
-			} else {
-				assert.Equal(t, testItem.expFilter.Title, printFilterTitle)
-				assert.Equal(t, testItem.expFilter.Description, printFilterDescription)
-				assert.Equal(t, testItem.expFilter.Author, printFilterAuthor)
-				assert.Equal(t, strings.Join(testItem.usedFilter.Tags, ","), printFilterTagsString)
-				assert.Equal(t, testItem.expFilter.Tags, printFilterTags)
-			}
+			debugStringStartDate := fmt.Sprintf(
+				"Start: Exp: %s, Act: %s",
+				testItem.expSDate,
+				printStartDate)
+			debugStringEndDate := fmt.Sprintf(
+				"End: Exp: %s, Act: %s",
+				testItem.expEDate,
+				printEndDate)
 
-			assert.Equal(t, testItem.expFormat.pretty, printOutputPretty)
-			assert.Equal(t, testItem.expFormat.yaml, printOutputYAML)
-			assert.Equal(t, testItem.expFormat.json, printOutputJSON)
-
-			if len(testItem.sDate) == 20 {
-				startDateString := fmt.Sprintf("Start: Exp: %s, Act: %s", expectedStartDate, printStartDate)
-				if testItem.expSDate == nil {
-					assert.Equal(t, expectedStartDate, printStartDate, startDateString)
-				} else {
-					assert.Equal(t, testItem.expSDate, printStartDate, startDateString)
-				}
-				assert.Equal(t, testItem.sDate, printStartDateString)
-				if len(testItem.eDate) == 20 {
-					endDateString := fmt.Sprintf("End: Exp: %s, Act: %s", expectedEndDate, printEndDate)
-					if testItem.expEDate == nil {
-						assert.Equal(t, expectedEndDate, printEndDate, endDateString)
-					} else {
-						assert.Equal(t, testItem.expEDate, printEndDate, endDateString)
-					}
-					assert.Equal(t, testItem.eDate, printEndDateString)
-				}
-			}
 			assert.Equal(t, testItem.expErr, actualErr)
+
+			// Check string values
+			assert.Equal(t, testItem.sDate, printStartDateString)
+			assert.Equal(t, testItem.eDate, printEndDateString)
+
+			// Check time values
+			assert.Equal(t, testItem.expSDate, printStartDate, debugStringStartDate)
+			assert.Equal(t, testItem.expEDate, printEndDate, debugStringEndDate)
 		})
 	}
 }
