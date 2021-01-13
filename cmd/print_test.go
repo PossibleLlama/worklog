@@ -194,6 +194,110 @@ func TestPrintArgsFormat(t *testing.T) {
 	}
 }
 
+func TestPrintArgsFilter(t *testing.T) {
+	randString := helpers.RandString(shortLength)
+
+	var tests = []struct {
+		name       string
+		usedFilter *model.Work
+		expFilter  *model.Work
+	}{
+		{
+			name: "No filters",
+			usedFilter: &model.Work{
+				Title:       "",
+				Description: "",
+				Author:      "",
+				Tags:        []string{},
+			},
+			expFilter: &model.Work{
+				Title:       "",
+				Description: "",
+				Author:      "",
+				Tags:        []string{},
+			},
+		}, {
+			name: "Single filter",
+			usedFilter: &model.Work{
+				Title:       randString,
+				Description: "",
+				Author:      "",
+				Tags:        []string{},
+			},
+			expFilter: &model.Work{
+				Title:       randString,
+				Description: "",
+				Author:      "",
+				Tags:        []string{},
+			},
+		}, {
+			name: "Multiple filters",
+			usedFilter: &model.Work{
+				Title:       randString,
+				Description: "",
+				Author:      "",
+				Tags:        []string{randString},
+			},
+			expFilter: &model.Work{
+				Title:       randString,
+				Description: "",
+				Author:      "",
+				Tags:        []string{randString},
+			},
+		}, {
+			name: "Single filter with postfix spacing",
+			usedFilter: &model.Work{
+				Title: randString + " ",
+				Tags:  []string{},
+			},
+			expFilter: &model.Work{
+				Title: randString,
+				Tags:  []string{},
+			},
+		}, {
+			name: "Single filter with prefix spacing",
+			usedFilter: &model.Work{
+				Title: " " + randString,
+				Tags:  []string{},
+			},
+			expFilter: &model.Work{
+				Title: randString,
+				Tags:  []string{},
+			},
+		}, {
+			name: "Empty string for tag does not filter",
+			usedFilter: &model.Work{
+				Tags: []string{""},
+			},
+			expFilter: &model.Work{
+				Tags: []string{},
+			},
+		},
+	}
+
+	for _, testItem := range tests {
+		setProvidedPrintArgValues(
+			testItem.usedFilter.Title,
+			testItem.usedFilter.Description,
+			testItem.usedFilter.Author,
+			testDefaultFormat,
+			testItem.usedFilter.Tags,
+			testDefaultStartDate.Format(time.RFC3339),
+			testDefaultEndDate.Format(time.RFC3339))
+
+		t.Run(testItem.name, func(t *testing.T) {
+			err := printArgs()
+
+			assert.Nil(t, err)
+			assert.Equal(t, testItem.expFilter.Title, printFilterTitle)
+			assert.Equal(t, testItem.expFilter.Description, printFilterDescription)
+			assert.Equal(t, testItem.expFilter.Author, printFilterAuthor)
+			assert.Equal(t, strings.Join(testItem.usedFilter.Tags, ","), printFilterTagsString)
+			assert.Equal(t, testItem.expFilter.Tags, printFilterTags)
+		})
+	}
+}
+
 func TestPrintArgs(t *testing.T) {
 	y1, m1, d1 := now.Date()
 	y2, m2, d2 := now.Add(time.Hour * 24).Date()
@@ -218,124 +322,6 @@ func TestPrintArgs(t *testing.T) {
 		expErr     error
 	}{
 		{
-			name: "No filters",
-			usedFormat: format{
-				pretty: true,
-				yaml:   false,
-				json:   false,
-			},
-			expFormat: format{
-				pretty: true,
-				yaml:   false,
-				json:   false,
-			},
-			usedFilter: &model.Work{
-				Title:       "",
-				Description: "",
-				Author:      "",
-				Tags:        []string{},
-			},
-			sDate:  providedStartDate.Format(time.RFC3339),
-			eDate:  providedEndDate.Format(time.RFC3339),
-			expErr: nil,
-		}, {
-			name: "Single filter",
-			usedFormat: format{
-				pretty: true,
-				yaml:   false,
-				json:   false,
-			},
-			expFormat: format{
-				pretty: true,
-				yaml:   false,
-				json:   false,
-			},
-			usedFilter: &model.Work{
-				Title:       helpers.RandString(shortLength),
-				Description: "",
-				Author:      "",
-				Tags:        []string{},
-			},
-			sDate:  providedStartDate.Format(time.RFC3339),
-			eDate:  providedEndDate.Format(time.RFC3339),
-			expErr: nil,
-		}, {
-			name: "Multiple filters",
-			usedFormat: format{
-				pretty: true,
-				yaml:   false,
-				json:   false,
-			},
-			expFormat: format{
-				pretty: true,
-				yaml:   false,
-				json:   false,
-			},
-			usedFilter: &model.Work{
-				Title:       helpers.RandString(shortLength),
-				Description: "",
-				Author:      "",
-				Tags:        []string{helpers.RandString(shortLength)},
-			},
-			sDate:  providedStartDate.Format(time.RFC3339),
-			eDate:  providedEndDate.Format(time.RFC3339),
-			expErr: nil,
-		}, {
-			name: "Single filter with postfix spacing",
-			usedFormat: format{
-				pretty: true,
-			},
-			expFormat: format{
-				pretty: true,
-			},
-			usedFilter: &model.Work{
-				Title: randString + " ",
-				Tags:  []string{},
-			},
-			expFilter: &model.Work{
-				Title: randString,
-				Tags:  []string{},
-			},
-			sDate:  providedStartDate.Format(time.RFC3339),
-			eDate:  providedEndDate.Format(time.RFC3339),
-			expErr: nil,
-		}, {
-			name: "Single filter with prefix spacing",
-			usedFormat: format{
-				pretty: true,
-			},
-			expFormat: format{
-				pretty: true,
-			},
-			usedFilter: &model.Work{
-				Title: " " + randString,
-				Tags:  []string{},
-			},
-			expFilter: &model.Work{
-				Title: randString,
-				Tags:  []string{},
-			},
-			sDate:  providedStartDate.Format(time.RFC3339),
-			eDate:  providedEndDate.Format(time.RFC3339),
-			expErr: nil,
-		}, {
-			name: "Empty string for tag does not filter",
-			usedFormat: format{
-				pretty: true,
-			},
-			expFormat: format{
-				pretty: true,
-			},
-			usedFilter: &model.Work{
-				Tags: []string{""},
-			},
-			expFilter: &model.Work{
-				Tags: []string{},
-			},
-			sDate:  providedStartDate.Format(time.RFC3339),
-			eDate:  providedEndDate.Format(time.RFC3339),
-			expErr: nil,
-		}, {
 			name: "Empty string for start date throws error",
 			usedFormat: format{
 				pretty: true,
