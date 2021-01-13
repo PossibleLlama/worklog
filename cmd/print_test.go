@@ -80,8 +80,121 @@ func setFormatValues(fr format) {
 	printOutputJSON = fr.json
 }
 
+func TestPrintArgsFormat(t *testing.T) {
+	var tests = []struct {
+		name       string
+		usedFormat format
+		expFormat  format
+	}{
+		{
+			name: "Full arguments pretty",
+			usedFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+			expFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+		}, {
+			name: "Full arguments yaml",
+			usedFormat: format{
+				pretty: false,
+				yaml:   true,
+				json:   false,
+			},
+			expFormat: format{
+				pretty: false,
+				yaml:   true,
+				json:   false,
+			},
+		}, {
+			name: "Full arguments json",
+			usedFormat: format{
+				pretty: false,
+				yaml:   false,
+				json:   true,
+			},
+			expFormat: format{
+				pretty: false,
+				yaml:   false,
+				json:   true,
+			},
+		}, {
+			name: "All formats",
+			usedFormat: format{
+				pretty: true,
+				yaml:   true,
+				json:   true,
+			},
+			expFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+		}, {
+			name: "Pretty and yaml formats",
+			usedFormat: format{
+				pretty: true,
+				yaml:   true,
+				json:   false,
+			},
+			expFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+		}, {
+			name: "Pretty and json formats",
+			usedFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   true,
+			},
+			expFormat: format{
+				pretty: true,
+				yaml:   false,
+				json:   false,
+			},
+		}, {
+			name: "Yaml and json formats",
+			usedFormat: format{
+				pretty: false,
+				yaml:   true,
+				json:   true,
+			},
+			expFormat: format{
+				pretty: false,
+				yaml:   true,
+				json:   false,
+			},
+		},
+	}
+
+	for _, testItem := range tests {
+		setProvidedPrintArgValues(
+			testDefaultFilter.Title,
+			testDefaultFilter.Description,
+			testDefaultFilter.Author,
+			testItem.usedFormat,
+			testDefaultFilter.Tags,
+			testDefaultStartDate.Format(time.RFC3339),
+			testDefaultEndDate.Format(time.RFC3339))
+
+		t.Run(testItem.name, func(t *testing.T) {
+			err := printArgs()
+
+			assert.Nil(t, err)
+			assert.Equal(t, testItem.expFormat.pretty, printOutputPretty)
+			assert.Equal(t, testItem.expFormat.yaml, printOutputYAML)
+			assert.Equal(t, testItem.expFormat.json, printOutputJSON)
+		})
+	}
+}
+
 func TestPrintArgs(t *testing.T) {
-	now := time.Now()
 	y1, m1, d1 := now.Date()
 	y2, m2, d2 := now.Add(time.Hour * 24).Date()
 	y3, m3, d3 := now.Add(time.Hour * 48).Date()
@@ -105,167 +218,6 @@ func TestPrintArgs(t *testing.T) {
 		expErr     error
 	}{
 		{
-			name: "Full arguments pretty",
-			usedFormat: format{
-				pretty: true,
-				yaml:   false,
-				json:   false,
-			},
-			expFormat: format{
-				pretty: true,
-				yaml:   false,
-				json:   false,
-			},
-			usedFilter: &model.Work{
-				Title:       helpers.RandString(shortLength),
-				Description: helpers.RandString(shortLength),
-				Author:      helpers.RandString(shortLength),
-				Tags: []string{
-					helpers.RandString(shortLength),
-					helpers.RandString(shortLength)},
-			},
-			sDate:  providedStartDate.Format(time.RFC3339),
-			eDate:  providedEndDate.Format(time.RFC3339),
-			expErr: nil,
-		}, {
-			name: "Full arguments yaml",
-			usedFormat: format{
-				pretty: false,
-				yaml:   true,
-				json:   false,
-			},
-			expFormat: format{
-				pretty: false,
-				yaml:   true,
-				json:   false,
-			},
-			usedFilter: &model.Work{
-				Title:       helpers.RandString(shortLength),
-				Description: helpers.RandString(shortLength),
-				Author:      helpers.RandString(shortLength),
-				Tags: []string{
-					helpers.RandString(shortLength),
-					helpers.RandString(shortLength)},
-			},
-			sDate:  providedStartDate.Format(time.RFC3339),
-			eDate:  providedEndDate.Format(time.RFC3339),
-			expErr: nil,
-		}, {
-			name: "Full arguments json",
-			usedFormat: format{
-				pretty: false,
-				yaml:   false,
-				json:   true,
-			},
-			expFormat: format{
-				pretty: false,
-				yaml:   false,
-				json:   true,
-			},
-			usedFilter: &model.Work{
-				Title:       helpers.RandString(shortLength),
-				Description: helpers.RandString(shortLength),
-				Author:      helpers.RandString(shortLength),
-				Tags: []string{
-					helpers.RandString(shortLength),
-					helpers.RandString(shortLength)},
-			},
-			sDate:  providedStartDate.Format(time.RFC3339),
-			eDate:  providedEndDate.Format(time.RFC3339),
-			expErr: nil,
-		}, {
-			name: "All formats",
-			usedFormat: format{
-				pretty: true,
-				yaml:   true,
-				json:   true,
-			},
-			expFormat: format{
-				pretty: true,
-				yaml:   false,
-				json:   false,
-			},
-			usedFilter: &model.Work{
-				Title:       helpers.RandString(shortLength),
-				Description: helpers.RandString(shortLength),
-				Author:      helpers.RandString(shortLength),
-				Tags: []string{
-					helpers.RandString(shortLength),
-					helpers.RandString(shortLength)},
-			},
-			sDate:  providedStartDate.Format(time.RFC3339),
-			eDate:  providedEndDate.Format(time.RFC3339),
-			expErr: nil,
-		}, {
-			name: "Pretty and yaml formats",
-			usedFormat: format{
-				pretty: true,
-				yaml:   true,
-				json:   false,
-			},
-			expFormat: format{
-				pretty: true,
-				yaml:   false,
-				json:   false,
-			},
-			usedFilter: &model.Work{
-				Title:       helpers.RandString(shortLength),
-				Description: helpers.RandString(shortLength),
-				Author:      helpers.RandString(shortLength),
-				Tags: []string{
-					helpers.RandString(shortLength),
-					helpers.RandString(shortLength)},
-			},
-			sDate:  providedStartDate.Format(time.RFC3339),
-			eDate:  providedEndDate.Format(time.RFC3339),
-			expErr: nil,
-		}, {
-			name: "Pretty and json formats",
-			usedFormat: format{
-				pretty: true,
-				yaml:   false,
-				json:   true,
-			},
-			expFormat: format{
-				pretty: true,
-				yaml:   false,
-				json:   false,
-			},
-			usedFilter: &model.Work{
-				Title:       helpers.RandString(shortLength),
-				Description: helpers.RandString(shortLength),
-				Author:      helpers.RandString(shortLength),
-				Tags: []string{
-					helpers.RandString(shortLength),
-					helpers.RandString(shortLength)},
-			},
-			sDate:  providedStartDate.Format(time.RFC3339),
-			eDate:  providedEndDate.Format(time.RFC3339),
-			expErr: nil,
-		}, {
-			name: "Yaml and json formats",
-			usedFormat: format{
-				pretty: false,
-				yaml:   true,
-				json:   true,
-			},
-			expFormat: format{
-				pretty: false,
-				yaml:   true,
-				json:   false,
-			},
-			usedFilter: &model.Work{
-				Title:       helpers.RandString(shortLength),
-				Description: helpers.RandString(shortLength),
-				Author:      helpers.RandString(shortLength),
-				Tags: []string{
-					helpers.RandString(shortLength),
-					helpers.RandString(shortLength)},
-			},
-			sDate:  providedStartDate.Format(time.RFC3339),
-			eDate:  providedEndDate.Format(time.RFC3339),
-			expErr: nil,
-		}, {
 			name: "No filters",
 			usedFormat: format{
 				pretty: true,
