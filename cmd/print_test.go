@@ -47,7 +47,7 @@ type format struct {
 	json   bool
 }
 
-func setProvidedPrintArgValues(w model.Work, fr format, s, e string) {
+func setProvidedPrintArgValues(w model.Work, fr format, s, e string, today, week bool) {
 	setFormatValues(fr)
 
 	printFilterTitle = w.Title
@@ -61,8 +61,8 @@ func setProvidedPrintArgValues(w model.Work, fr format, s, e string) {
 	printEndDate = time.Time{}
 	printEndDateString = e
 
-	printToday = false
-	printThisWeek = false
+	printToday = today
+	printThisWeek = week
 }
 
 func setFormatValues(fr format) {
@@ -169,7 +169,9 @@ func TestPrintArgsFormat(t *testing.T) {
 			testDefaultFilter,
 			testItem.usedFormat,
 			testDefaultStartDate.Format(time.RFC3339),
-			testDefaultEndDate.Format(time.RFC3339))
+			testDefaultEndDate.Format(time.RFC3339),
+			false,
+			false)
 
 		t.Run(testItem.name, func(t *testing.T) {
 			err := printArgs()
@@ -268,7 +270,9 @@ func TestPrintArgsFilter(t *testing.T) {
 			testItem.usedFilter,
 			testDefaultFormat,
 			testDefaultStartDate.Format(time.RFC3339),
-			testDefaultEndDate.Format(time.RFC3339))
+			testDefaultEndDate.Format(time.RFC3339),
+			false,
+			false)
 
 		t.Run(testItem.name, func(t *testing.T) {
 			err := printArgs()
@@ -292,6 +296,8 @@ func TestPrintArgsDates(t *testing.T) {
 		expSDate time.Time
 		eDate    string
 		expEDate time.Time
+		today    bool
+		week     bool
 		expErr   error
 	}{
 		{
@@ -299,25 +305,42 @@ func TestPrintArgsDates(t *testing.T) {
 			sDate:    "",
 			expSDate: time.Time{},
 			eDate:    testDefaultEndDate.Format(time.RFC3339),
+			today:    false,
+			week:     false,
 			expErr:   errors.New("one flag is required"),
 		}, {
 			name:     "Invalid string for start date throws error",
 			sDate:    randString,
 			expSDate: time.Time{},
 			eDate:    "",
+			today:    false,
+			week:     false,
 			expErr:   errors.New("unable to parse string as date. 'parsing time \"" + randString + "\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"" + randString + "\" as \"2006\"'"),
 		}, {
 			name:     "End date is not required if start date provided",
 			sDate:    testDefaultStartDate.Format(time.RFC3339),
 			expSDate: testDefaultStartDate,
 			eDate:    "",
+			today:    false,
+			week:     false,
 			expErr:   nil,
 		}, {
 			name:     "Invalid string for end date throws error when start date provided",
 			sDate:    testDefaultStartDate.Format(time.RFC3339),
 			expSDate: testDefaultStartDate,
 			eDate:    randString,
+			today:    false,
+			week:     false,
 			expErr:   errors.New("unable to parse string as date. 'parsing time \"" + randString + "\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"" + randString + "\" as \"2006\"'"),
+		}, {
+			name:     "Today sets start and end date",
+			sDate:    "",
+			expSDate: testDefaultStartDate,
+			eDate:    "",
+			expEDate: testDefaultEndDate,
+			today:    true,
+			week:     false,
+			expErr:   nil,
 		},
 	}
 
@@ -326,7 +349,9 @@ func TestPrintArgsDates(t *testing.T) {
 			testDefaultFilter,
 			testDefaultFormat,
 			testItem.sDate,
-			testItem.eDate)
+			testItem.eDate,
+			testItem.today,
+			testItem.week)
 
 		t.Run(testItem.name, func(t *testing.T) {
 			actualErr := printArgs()
