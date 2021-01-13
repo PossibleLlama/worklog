@@ -16,6 +16,33 @@ const (
 	zero = 00
 )
 
+var testDefaultFormat = format{
+	pretty: true,
+	yaml:   false,
+	json:   false,
+}
+var testDefaultFilter = &model.Work{
+	Title:       "",
+	Description: "",
+	Author:      "",
+	Tags:        []string{},
+}
+
+var (
+	now                  = time.Now()
+	day                  = time.Hour * 24
+	testDefaultStartDate = time.Date(
+		now.Year(),
+		now.Month(),
+		now.Day(),
+		zero, zero, zero, zero, time.UTC)
+	testDefaultEndDate = time.Date(
+		now.Add(day).Year(),
+		now.Add(day).Month(),
+		now.Add(day).Day(),
+		zero, zero, zero, zero, time.UTC)
+)
+
 var (
 	providedStartDate time.Time
 	expectedStartDate time.Time
