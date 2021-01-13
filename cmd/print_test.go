@@ -19,7 +19,7 @@ var testDefaultFormat = format{
 	yaml:   false,
 	json:   false,
 }
-var testDefaultFilter = &model.Work{
+var testDefaultFilter = model.Work{
 	Title:       "",
 	Description: "",
 	Author:      "",
@@ -47,13 +47,13 @@ type format struct {
 	json   bool
 }
 
-func setProvidedPrintArgValues(title, description, author string, fr format, tags []string, s, e string) {
+func setProvidedPrintArgValues(w model.Work, fr format, s, e string) {
 	setFormatValues(fr)
 
-	printFilterTitle = title
-	printFilterDescription = description
-	printFilterAuthor = author
-	printFilterTagsString = strings.Join(tags, ",")
+	printFilterTitle = w.Title
+	printFilterDescription = w.Description
+	printFilterAuthor = w.Author
+	printFilterTagsString = strings.Join(w.Tags, ",")
 	printFilterTags = []string{}
 
 	printStartDate = time.Time{}
@@ -166,11 +166,8 @@ func TestPrintArgsFormat(t *testing.T) {
 
 	for _, testItem := range tests {
 		setProvidedPrintArgValues(
-			testDefaultFilter.Title,
-			testDefaultFilter.Description,
-			testDefaultFilter.Author,
+			testDefaultFilter,
 			testItem.usedFormat,
-			testDefaultFilter.Tags,
 			testDefaultStartDate.Format(time.RFC3339),
 			testDefaultEndDate.Format(time.RFC3339))
 
@@ -190,18 +187,18 @@ func TestPrintArgsFilter(t *testing.T) {
 
 	var tests = []struct {
 		name       string
-		usedFilter *model.Work
-		expFilter  *model.Work
+		usedFilter model.Work
+		expFilter  model.Work
 	}{
 		{
 			name: "No filters",
-			usedFilter: &model.Work{
+			usedFilter: model.Work{
 				Title:       "",
 				Description: "",
 				Author:      "",
 				Tags:        []string{},
 			},
-			expFilter: &model.Work{
+			expFilter: model.Work{
 				Title:       "",
 				Description: "",
 				Author:      "",
@@ -209,13 +206,13 @@ func TestPrintArgsFilter(t *testing.T) {
 			},
 		}, {
 			name: "Single filter",
-			usedFilter: &model.Work{
+			usedFilter: model.Work{
 				Title:       randString,
 				Description: "",
 				Author:      "",
 				Tags:        []string{},
 			},
-			expFilter: &model.Work{
+			expFilter: model.Work{
 				Title:       randString,
 				Description: "",
 				Author:      "",
@@ -223,13 +220,13 @@ func TestPrintArgsFilter(t *testing.T) {
 			},
 		}, {
 			name: "Multiple filters",
-			usedFilter: &model.Work{
+			usedFilter: model.Work{
 				Title:       randString,
 				Description: "",
 				Author:      "",
 				Tags:        []string{randString},
 			},
-			expFilter: &model.Work{
+			expFilter: model.Work{
 				Title:       randString,
 				Description: "",
 				Author:      "",
@@ -237,30 +234,30 @@ func TestPrintArgsFilter(t *testing.T) {
 			},
 		}, {
 			name: "Single filter with postfix spacing",
-			usedFilter: &model.Work{
+			usedFilter: model.Work{
 				Title: randString + " ",
 				Tags:  []string{},
 			},
-			expFilter: &model.Work{
+			expFilter: model.Work{
 				Title: randString,
 				Tags:  []string{},
 			},
 		}, {
 			name: "Single filter with prefix spacing",
-			usedFilter: &model.Work{
+			usedFilter: model.Work{
 				Title: " " + randString,
 				Tags:  []string{},
 			},
-			expFilter: &model.Work{
+			expFilter: model.Work{
 				Title: randString,
 				Tags:  []string{},
 			},
 		}, {
 			name: "Empty string for tag does not filter",
-			usedFilter: &model.Work{
+			usedFilter: model.Work{
 				Tags: []string{""},
 			},
-			expFilter: &model.Work{
+			expFilter: model.Work{
 				Tags: []string{},
 			},
 		},
@@ -268,11 +265,8 @@ func TestPrintArgsFilter(t *testing.T) {
 
 	for _, testItem := range tests {
 		setProvidedPrintArgValues(
-			testItem.usedFilter.Title,
-			testItem.usedFilter.Description,
-			testItem.usedFilter.Author,
+			testItem.usedFilter,
 			testDefaultFormat,
-			testItem.usedFilter.Tags,
 			testDefaultStartDate.Format(time.RFC3339),
 			testDefaultEndDate.Format(time.RFC3339))
 
@@ -329,11 +323,8 @@ func TestPrintArgsDates(t *testing.T) {
 
 	for _, testItem := range tests {
 		setProvidedPrintArgValues(
-			testDefaultFilter.Title,
-			testDefaultFilter.Description,
-			testDefaultFilter.Author,
+			testDefaultFilter,
 			testDefaultFormat,
-			testDefaultFilter.Tags,
 			testItem.sDate,
 			testItem.eDate)
 
