@@ -11,13 +11,13 @@ import (
 	"github.com/spf13/viper"
 )
 
-var title string
-var description string
-var when time.Time
-var whenString string
-var duration int
-var tags []string
-var tagsString string
+var createTitle string
+var createDescription string
+var createWhen time.Time
+var createWhenString string
+var createDuration int
+var createTags []string
+var createTagsString string
 
 // createCmd represents the create command
 var createCmd = &cobra.Command{
@@ -25,64 +25,78 @@ var createCmd = &cobra.Command{
 	Short: "Create a new record of work",
 	Long: `Creating a new record of work that
 the user has created.`,
-	Args: func(cmd *cobra.Command, args []string) error {
-		if duration <= -1 {
-			duration = viper.GetInt("default.duration")
-		}
-		title = strings.TrimSpace(title)
-		description = strings.TrimSpace(description)
-		whenDate, err := helpers.GetStringAsDateTime(
-			strings.TrimSpace(whenString))
-		if err != nil {
-			return err
-		}
-		when = whenDate
+	Args: CreateArgs,
+	RunE: CreateRun,
+}
 
-		for _, tag := range strings.Split(tagsString, ",") {
-			tags = append(tags, strings.TrimSpace(tag))
-		}
+// CreateArgs public method to validate arguments
+func CreateArgs(cmd *cobra.Command, args []string) error {
+	return createArgs()
+}
 
-		return nil
-	},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		work := model.NewWork(
-			title,
-			description,
-			viper.GetString("author"),
-			duration,
-			tags,
-			when)
-		_, err := wlService.CreateWorklog(work)
+func createArgs() error {
+	if createDuration <= -1 {
+		createDuration = viper.GetInt("default.duration")
+	}
+	createTitle = strings.TrimSpace(createTitle)
+	createDescription = strings.TrimSpace(createDescription)
+
+	for _, tag := range strings.Split(createTagsString, ",") {
+		createTags = append(createTags, strings.TrimSpace(tag))
+	}
+
+	whenDate, err := helpers.GetStringAsDateTime(
+		strings.TrimSpace(createWhenString))
+	if err != nil {
 		return err
-	},
+	}
+	createWhen = whenDate
+
+	return nil
+}
+
+// CreateRun public method to run create
+func CreateRun(cmd *cobra.Command, args []string) error {
+	return createRun()
+}
+
+func createRun() error {
+	_, err := wlService.CreateWorklog(model.NewWork(
+		createTitle,
+		createDescription,
+		viper.GetString("author"),
+		createDuration,
+		createTags,
+		createWhen))
+	return err
 }
 
 func init() {
 	rootCmd.AddCommand(createCmd)
 
 	createCmd.Flags().StringVar(
-		&title,
+		&createTitle,
 		"title",
 		"",
 		"A short description of the work done")
 	createCmd.Flags().StringVar(
-		&description,
+		&createDescription,
 		"description",
 		"",
 		"A description of the work")
 	createCmd.Flags().StringVar(
-		&whenString,
+		&createWhenString,
 		"when",
 		helpers.TimeFormat(time.Now()),
 		"When the work was worked in RFC3339 format")
 	createCmd.Flags().IntVarP(
-		&duration,
+		&createDuration,
 		"duration",
 		"",
 		-1,
 		"Length of time spent on the work")
 	createCmd.Flags().StringVar(
-		&tagsString,
+		&createTagsString,
 		"tags",
 		"",
 		"Comma seperated list of tags this work relates to")

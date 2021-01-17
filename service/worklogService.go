@@ -20,7 +20,7 @@ func NewWorklogService(repository repository.WorklogRepository) WorklogService {
 	return &service{}
 }
 
-func (*service) Congfigure(cfg *model.Config) error {
+func (*service) Configure(cfg *model.Config) error {
 	return repo.Configure(cfg)
 }
 

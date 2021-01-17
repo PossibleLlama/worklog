@@ -75,7 +75,7 @@ func TestConfigure(t *testing.T) {
 		svc := NewWorklogService(mockRepo)
 
 		t.Run(testItem.name, func(t *testing.T) {
-			returnedErr := svc.Congfigure(testItem.cfg)
+			returnedErr := svc.Configure(testItem.cfg)
 
 			if returnedErr != nil {
 				assert.EqualError(t, testItem.err, returnedErr.Error())
