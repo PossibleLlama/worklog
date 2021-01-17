@@ -137,7 +137,7 @@ For basic setup you can run `worklog configure`.
 This will provide an empty string for the author, and a
 duration of 15.
 
-For more advanced setup, `worklog configure defaults <FLAGS>`
+For more advanced setup, `worklog configure overrideDefaults <FLAGS>`
 will add provided flags into the configuration.
 
 - `--author "Alice"` String of the author's name.
@@ -148,7 +148,7 @@ will add provided flags into the configuration.
 ### Example configure
 
 ``` bash
-worklog configure defaults --author "Alice" --duration 30 --format "pretty"
+worklog configure overrideDefaults --author "Alice" --duration 30 --format "pretty"
 ```
 
 ### Example file

@@ -57,9 +57,9 @@ func configRun() error {
 }
 
 var overrideDefaultsCmd = &cobra.Command{
-	Use:   "defaults",
-	Short: "Default variables to be used",
-	Long: `Default variables to be used with the
+	Use:   "overrideDefaults",
+	Short: "Override the default variables",
+	Long: `Override the default variables to be used with the
 worklog application.`,
 	Args: OverrideDefaultsArgs,
 	RunE: ConfigRun,
