@@ -38,6 +38,9 @@ jobs:
     - name: Get dependencies
       run: make deps
 
+    - name: Create folders
+      run: mkdir ~/.worklog && touch ~/.worklog/config.yml
+
     - name: Test once
       run: make test
 
