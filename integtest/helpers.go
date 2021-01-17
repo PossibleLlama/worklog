@@ -13,6 +13,8 @@ import (
 
 const binaryName = "worklog"
 
+const length = 56
+
 func getActualConfig(t *testing.T) *model.Config {
 	var actualFile model.Config
 	home, err := homedir.Dir()
