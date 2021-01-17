@@ -1,16 +1,20 @@
 BIN_NAME=worklog
 
 test:
+	make build DIR="./integtest"
 	@echo "Running unit tests"
 	go clean -testcache ./...
 	go test ./...
 	@echo "Unit tests passed"
+	rm ./integtest/$(BIN_NAME)
 
 test-repeat:
+	make build DIR="./integtest"
 	@echo "Running unit tests multiple times"
 	go clean -testcache ./...
 	go test -count 100 ./...
 	@echo "Unit tests passed"
+	rm ./integtest/$(BIN_NAME)
 
 format:
 	@echo "Running format checks"
