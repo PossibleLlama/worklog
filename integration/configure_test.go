@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const overrideNoArgs = `Error: defaults requires at least one argument
+const overrideNoArgs = `Error: overrideDefaults requires at least one argument
 Usage:
   worklog configure overrideDefaults [flags]
 
@@ -25,7 +25,7 @@ Flags:
 Global Flags:
       --config string   config file (default is $HOME/.worklog/config.yml)
 
-defaults requires at least one argument
+overrideDefaults requires at least one argument
 `
 const overrideInvalidFormat = `Error: format is not valid
 Usage:

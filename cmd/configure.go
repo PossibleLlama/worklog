@@ -76,7 +76,7 @@ func overrideDefaultsArgs() error {
 	if configProvidedAuthor == "" &&
 		configProvidedFormat == "" &&
 		configProvidedDuration < 0 {
-		return errors.New("defaults requires at least one argument")
+		return errors.New("overrideDefaults requires at least one argument")
 	}
 	if configProvidedDuration < 0 {
 		configProvidedDuration = configDefaultDuration
