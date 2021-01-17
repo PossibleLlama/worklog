@@ -290,6 +290,8 @@ func TestPrintArgsFilter(t *testing.T) {
 func TestPrintArgsDates(t *testing.T) {
 	randString := helpers.RandString(shortLength)
 
+	var testMondayStartDate = helpers.GetPreviousMonday(now)
+
 	var tests = []struct {
 		name     string
 		sDate    string
@@ -340,6 +342,15 @@ func TestPrintArgsDates(t *testing.T) {
 			expEDate: testDefaultEndDate,
 			today:    true,
 			week:     false,
+			expErr:   nil,
+		}, {
+			name:     "Week sets start and end date",
+			sDate:    "",
+			expSDate: testMondayStartDate,
+			eDate:    "",
+			expEDate: testMondayStartDate.Add(7 * day),
+			today:    false,
+			week:     true,
 			expErr:   nil,
 		},
 	}
