@@ -1,4 +1,4 @@
-package integtest
+package integration
 
 import (
 	"fmt"
