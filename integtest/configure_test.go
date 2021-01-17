@@ -1,8 +1,6 @@
 package integtest
 
 import (
-	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
@@ -10,9 +8,6 @@ import (
 
 	"github.com/PossibleLlama/worklog/model"
 	"github.com/stretchr/testify/assert"
-	"gopkg.in/yaml.v2"
-
-	homedir "github.com/mitchellh/go-homedir"
 )
 
 func TestConfigure(t *testing.T) {
@@ -50,24 +45,8 @@ func TestConfigure(t *testing.T) {
 				t.Error(err)
 			}
 
-			var actualFile model.Config
-			home, err := homedir.Dir()
-			if err != nil {
-				t.Error(err)
-			}
-			file, err := ioutil.ReadFile(fmt.Sprintf("%s/.worklog/config.yml", home))
-			if err != nil {
-				t.Error(err)
-			}
-
-			actualOutput := string(output)
-			err = yaml.Unmarshal(file, &actualFile)
-			if err != nil {
-				t.Error(err)
-			}
-
-			assert.Equal(t, testItem.expOutput, actualOutput)
-			assert.Equal(t, testItem.expFile, actualFile)
+			assert.Equal(t, testItem.expOutput, string(output))
+			assert.Equal(t, testItem.expFile, *getActualConfig(t))
 		})
 	}
 }
