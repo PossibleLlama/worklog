@@ -60,13 +60,14 @@ func PrintRun(cmd *cobra.Command, args []string) error {
 
 func printRun(args ...string) error {
 	// Passing args through to allow for specifying ID's
-	filter := model.NewWork(
-		printFilterTitle,
-		printFilterDescription,
-		printFilterAuthor,
-		-1,
-		printFilterTags,
-		time.Time{})
+	filter := &model.Work{
+		Title:       printFilterTitle,
+		Description: printFilterDescription,
+		Author:      printFilterAuthor,
+		Duration:    -1,
+		Tags:        printFilterTags,
+		When:        time.Time{},
+		CreatedAt:   time.Time{}}
 	worklogs, code, err := wlService.GetWorklogsBetween(printStartDate, printEndDate, filter)
 	if err != nil {
 		return err
