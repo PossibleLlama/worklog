@@ -11,11 +11,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const (
-	shortLength = 30
-	longLength  = 256
-)
-
 func setProvidedConfigureValues(author, format string, duration int) {
 	configProvidedAuthor = author
 	configProvidedDuration = duration
