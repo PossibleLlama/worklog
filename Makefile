@@ -16,12 +16,13 @@ test-repeat:
 
 test-integration:
 	@echo "Running integration tests"
-	cp -a $(HOME)/.worklog/ $(HOME)/.worklog-backup/
+	cp -a $(HOME)/.worklog/* $(HOME)/.worklog-backup/
 	make build DIR="./integration"
 	go test ./integration
 	rm ./integration/$(BIN_NAME)
 	rm -f $(HOME)/.worklog/*
-	cp -a $(HOME)/.worklog-backup/ $(HOME)/.worklog/
+	cp -a $(HOME)/.worklog-backup/* $(HOME)/.worklog/
+	rm -f $(HOME)/.worklog-backup/*
 	@echo "Integration tests passed"
 
 format:
