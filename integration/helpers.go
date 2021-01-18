@@ -33,3 +33,22 @@ func getActualConfig(t *testing.T) *model.Config {
 
 	return &actualFile
 }
+
+func getActualWork(t *testing.T, name string) *model.Work {
+	var actualFile model.Work
+	home, err := homedir.Dir()
+	if err != nil {
+		t.Error(err)
+	}
+	file, err := ioutil.ReadFile(fmt.Sprintf("%s/.worklog/%s", home, name))
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = yaml.Unmarshal(file, &actualFile)
+	if err != nil {
+		t.Error(err)
+	}
+
+	return &actualFile
+}
