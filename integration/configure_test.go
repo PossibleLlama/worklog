@@ -165,7 +165,7 @@ func TestConfigure(t *testing.T) {
 			cmd := exec.Command(path.Join(dir, binaryName), testItem.args...)
 			output, err := cmd.CombinedOutput()
 
-			assert.Contains(t, testItem.expOutput, string(output))
+			assert.Contains(t, string(output), testItem.expOutput)
 			if testItem.success {
 				assert.Nil(t, err)
 				assert.Equal(t, testItem.expFile, getActualConfig(t))
