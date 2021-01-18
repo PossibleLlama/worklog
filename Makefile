@@ -1,26 +1,25 @@
 BIN_NAME=worklog
 
 test:
-	make build DIR="./integration"
-	@echo "Running unit tests"
 	go clean -testcache ./...
+	@echo "Running unit tests"
 	go test ./cmd ./helpers ./model ./repository ./service
 	@echo "Unit tests passed"
-	@echo "Running integration tests"
-	go test ./integration
-	@echo "Integration tests passed"
-	rm ./integration/$(BIN_NAME)
+	make test-integration
 
 test-repeat:
-	make build DIR="./integration"
-	@echo "Running unit tests multiple times"
 	go clean -testcache ./...
+	@echo "Running unit tests multiple times"
 	go test -count 100 ./cmd ./helpers ./model ./repository ./service
 	@echo "Unit tests passed"
+	make test-integration
+
+test-integration:
 	@echo "Running integration tests"
+	make build DIR="./integration"
 	go test ./integration
-	@echo "Integration tests passed"
 	rm ./integration/$(BIN_NAME)
+	@echo "Integration tests passed"
 
 format:
 	@echo "Running format checks"
