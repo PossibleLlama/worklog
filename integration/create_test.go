@@ -12,24 +12,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var createNoArgs = fmt.Sprintf(`Error: required flag(s) "title" not set
-Usage:
-  worklog create [flags]
-
-Flags:
-      --description string   A description of the work
-      --duration int         Length of time spent on the work (default -1)
-  -h, --help                 help for create
-      --tags string          Comma seperated list of tags this work relates to
-      --title string         A short description of the work done
-      --when string          When the work was worked in RFC3339 format (default "%s")
-
-Global Flags:
-      --config string   config file (default is $HOME/.worklog/config.yml)
-
-required flag(s) "title" not set
-`, time.Now().Format(time.RFC3339))
-
 func TestCreate(t *testing.T) {
 	var tests = []struct {
 		name      string
@@ -43,7 +25,7 @@ func TestCreate(t *testing.T) {
 		}, {
 			name:      "No arguments",
 			args:      []string{},
-			expOutput: createNoArgs,
+			expOutput: fmt.Sprintf("Error: required flag(s) \"title\" not set\nUsage:\n  worklog create [flags]\n\nFlags:\n      --description string   A description of the work\n      --duration int         Length of time spent on the work (default -1)\n  -h, --help                 help for create\n      --tags string          Comma seperated list of tags this work relates to\n      --title string         A short description of the work done\n      --when string          When the work was worked in RFC3339 format (default \"%s\")\n\nGlobal Flags:\n      --config string   config file (default is $HOME/.worklog/config.yml)\n\nrequired flag(s) \"title\" not set\n", time.Now().Format(time.RFC3339)),
 		}, {
 			name:      "Create with description",
 			args:      []string{"--title", helpers.RandString(length), "--description", helpers.RandString(length)},
