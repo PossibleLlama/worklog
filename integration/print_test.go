@@ -1,10 +1,12 @@
 package integration
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"path"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -34,7 +36,7 @@ one flag is required
 `
 
 func TestPrint(t *testing.T) {
-
+	tm := time.Now().Add(time.Hour * length * length * -1)
 	var tests = []struct {
 		name      string
 		args      []string
@@ -42,6 +44,11 @@ func TestPrint(t *testing.T) {
 		expOutput string
 	}{
 		{
+			name:      "Print with start and end dates pretty",
+			args:      []string{"--startDate", tm.Format(time.RFC3339), "--endDate", tm.Format(time.RFC3339), "--pretty"},
+			success:   true,
+			expOutput: fmt.Sprintf("No work found between %02d-%02d-%02d 00:00:00 +0000 UTC and %02d-%02d-%02d 23:59:59 +0000 UTC with the given filter\n", tm.Year(), int(tm.Month()), tm.Day(), tm.Year(), int(tm.Month()), tm.Day()),
+		}, {
 			name:      "No arguments",
 			args:      []string{},
 			success:   false,
