@@ -55,7 +55,7 @@ jobs:
       run: make deps
 
     - name: Create folders
-      run: mkdir ~/.worklog && touch ~/.worklog/config.yml && mkdir ~/.worklog-backup
+      run: mkdir ~/.worklog && mkdir ~/.worklog-backup
 
     - name: Test once
       run: make test
