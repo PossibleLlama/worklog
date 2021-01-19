@@ -2,17 +2,18 @@ BIN_NAME=worklog
 
 test:
 	go clean -testcache ./...
-	@echo "Running unit tests"
-	go test ./cmd ./helpers ./model ./repository ./service
-	@echo "Unit tests passed"
+	make test-unit
 	make test-integration
 
 test-repeat:
 	go clean -testcache ./...
-	@echo "Running unit tests multiple times"
-	go test -count 100 ./cmd ./helpers ./model ./repository ./service
-	@echo "Unit tests passed"
+	make test-unit ARGS="-count 100"
 	make test-integration
+
+test-unit:
+	@echo "Running unit tests"
+	go test $(ARGS) ./cmd ./helpers ./model ./repository ./service
+	@echo "Unit tests passed"
 
 test-integration:
 	@echo "Running integration tests"
