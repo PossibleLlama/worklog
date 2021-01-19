@@ -7,7 +7,7 @@ have done each day.
 
 ## Supported versions
 
-- v0.4.0
+- v0.5.0
 
 ## Installation
 
@@ -21,7 +21,7 @@ There is both a windows executeable, as well as a linux binary.
 ### Linux
 
 ```bash
-curl -L -O https://github.com/PossibleLlama/worklog/releases/download/v0.4.0/worklog-binary.zip
+curl -L -O https://github.com/PossibleLlama/worklog/releases/download/v0.5.0/worklog-binary.zip
 unzip worklog-binary.zip
 mv worklog /usr/bin/worklog
 rm worklog-binary.zip
