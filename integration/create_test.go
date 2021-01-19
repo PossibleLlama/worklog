@@ -120,9 +120,12 @@ func TestCreate(t *testing.T) {
 					strings.ReplaceAll(testItem.name, " ", "_")))
 				cfg := getActualConfig(t)
 
+				assert.NotEmpty(t, actualFile.ID)
+				assert.Len(t, actualFile.ID, 16)
 				assert.Equal(t, testItem.expFile.Title, actualFile.Title)
 				assert.NotEqual(t, time.Time{}, actualFile.CreatedAt)
 				assert.Equal(t, "", actualFile.Where)
+				assert.Equal(t, 1, actualFile.Revision)
 
 				if testItem.expFile.Description != "" {
 					assert.Equal(t, testItem.expFile.Description, actualFile.Description)

@@ -12,10 +12,14 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+const idLength = 16
+
 // Work data model.
 // stores information as to what
 // work was done by who and when.
 type Work struct {
+	ID          string    `json:"id" yaml:"id"`
+	Revision    int       `json:"revision" yaml:"revision"`
 	Title       string    `json:"title" yaml:"title"`
 	Description string    `json:"description,omitempty" yaml:"description,omitempty"`
 	Author      string    `json:"author,omitempty" yaml:"author,omitempty"`
@@ -27,6 +31,7 @@ type Work struct {
 }
 
 type prettyWork struct {
+	ID          string    `json:"id" yaml:"id"`
 	Title       string    `json:"title" yaml:"title"`
 	Description string    `json:"description,omitempty" yaml:"description,omitempty"`
 	Author      string    `json:"author,omitempty" yaml:"author,omitempty"`
@@ -40,6 +45,8 @@ func NewWork(title, description, author string, duration int, tags []string, whe
 	now, _ := helpers.GetStringAsDateTime(helpers.TimeFormat(time.Now()))
 	sort.Strings(tags)
 	return &Work{
+		ID:          helpers.RandString(idLength),
+		Revision:    1,
 		Title:       title,
 		Description: description,
 		Author:      author,
@@ -53,6 +60,7 @@ func NewWork(title, description, author string, duration int, tags []string, whe
 
 func workToPrettyWork(w Work) prettyWork {
 	return prettyWork{
+		ID:          w.ID,
 		Title:       w.Title,
 		Description: w.Description,
 		Author:      w.Author,
@@ -65,6 +73,12 @@ func workToPrettyWork(w Work) prettyWork {
 // String generates a stringified version of the Work
 func (w Work) String() string {
 	finalString := " "
+	if w.ID != "" {
+		finalString = fmt.Sprintf("%s ID: %s,", finalString, w.ID)
+	}
+	if w.Revision > 0 {
+		finalString = fmt.Sprintf("%s Revision: %d,", finalString, w.Revision)
+	}
 	if w.Title != "" {
 		finalString = fmt.Sprintf("%s Title: %s,", finalString, w.Title)
 	}
@@ -93,6 +107,9 @@ func (w Work) String() string {
 func (w Work) PrettyString() string {
 	pw := workToPrettyWork(w)
 	finalString := " "
+	if pw.ID != "" {
+		finalString = fmt.Sprintf("%sID: %s\n", finalString, pw.ID)
+	}
 	if pw.Title != "" {
 		finalString = fmt.Sprintf("%sTitle: %s\n", finalString, pw.Title)
 	}

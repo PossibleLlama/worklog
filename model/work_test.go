@@ -32,6 +32,7 @@ func genRandWork() *Work {
 }
 
 func TestNewWork(t *testing.T) {
+	length := 10
 	validDate, err := time.Parse(time.RFC3339, "1970-12-25T00:00:00Z")
 	if err != nil {
 		t.Error("Unable to parse initial date")
@@ -56,6 +57,8 @@ func TestNewWork(t *testing.T) {
 			wTags:        []string{"alpha", "beta"},
 			wWhen:        validDate,
 			expected: &Work{
+				ID:          helpers.RandString(length),
+				Revision:    1,
 				Title:       "title",
 				Description: "description",
 				Author:      "who",
@@ -74,6 +77,8 @@ func TestNewWork(t *testing.T) {
 			wTags:        []string{"4", "2", "1", "3"},
 			wWhen:        validDate,
 			expected: &Work{
+				ID:          helpers.RandString(length),
+				Revision:    1,
 				Title:       "title",
 				Description: "description",
 				Author:      "who",
@@ -96,7 +101,9 @@ func TestNewWork(t *testing.T) {
 				testItem.wWhen)
 			finished := time.Now()
 
-			// Instead of mocking time.Now(), just set the result of it to the expected value
+			// Instead of mocking ID and time.Now(), just set the
+			// result of it to the expected value
+			testItem.expected.ID = actual.ID
 			testItem.expected.CreatedAt = actual.CreatedAt
 
 			assert.Equal(t, testItem.expected, actual)
