@@ -190,7 +190,6 @@ func TestCreateRun(t *testing.T) {
 			Description: testItem.description,
 			Author:      defaultAuthor,
 			Duration:    testItem.duration,
-			Where:       "",
 			Tags:        testItem.tags,
 			When:        now,
 			CreatedAt:   now,

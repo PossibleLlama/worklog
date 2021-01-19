@@ -23,7 +23,6 @@ type Work struct {
 	Title       string    `json:"title" yaml:"title"`
 	Description string    `json:"description,omitempty" yaml:"description,omitempty"`
 	Author      string    `json:"author,omitempty" yaml:"author,omitempty"`
-	Where       string    `json:"where,omitempty" yaml:"where,omitempty"`
 	Duration    int       `json:"duration" yaml:"duration"`
 	Tags        []string  `json:"tags,flow,omitempty" yaml:"tags,flow,omitempty"`
 	When        time.Time `json:"when" yaml:"when"`
@@ -50,7 +49,6 @@ func NewWork(title, description, author string, duration int, tags []string, whe
 		Title:       title,
 		Description: description,
 		Author:      author,
-		Where:       "",
 		Duration:    duration,
 		Tags:        tags,
 		When:        when,
