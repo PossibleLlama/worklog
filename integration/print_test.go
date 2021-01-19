@@ -44,7 +44,7 @@ func TestPrint(t *testing.T) {
 		expOutput string
 	}{
 		{
-			name:      "Print with start and end dates pretty",
+			name:      "Print with start and end dates pretty, no wl",
 			args:      []string{"--startDate", tm.Format(time.RFC3339), "--endDate", tm.Format(time.RFC3339), "--pretty"},
 			success:   true,
 			expOutput: fmt.Sprintf("No work found between %02d-%02d-%02d 00:00:00 +0000 UTC and %02d-%02d-%02d 23:59:59 +0000 UTC with the given filter\n", tm.Year(), int(tm.Month()), tm.Day(), tm.Year(), int(tm.Month()), tm.Day()),
@@ -53,6 +53,14 @@ func TestPrint(t *testing.T) {
 			args:      []string{},
 			success:   false,
 			expOutput: printNoArgs,
+		},
+		// Relies on the create_test.go tests having been ran,
+		// and the wl's generated from that.
+		{
+			name:      "Print with start and end dates pretty, multiple wl",
+			args:      []string{"--startDate", time.Now().Format(time.RFC3339), "--endDate", time.Now().Format(time.RFC3339), "--pretty"},
+			success:   true,
+			expOutput: fmt.Sprintf("Title: Create new\nAuthor: %s\nDuration: 15\nTags: []\nWhen: ", getActualConfig(t).Author),
 		},
 	}
 
@@ -67,7 +75,7 @@ func TestPrint(t *testing.T) {
 			cmd := exec.Command(path.Join(dir, binaryName), testItem.args...)
 			output, err := cmd.CombinedOutput()
 
-			assert.Equal(t, testItem.expOutput, string(output))
+			assert.Contains(t, string(output), testItem.expOutput)
 			if testItem.success {
 				assert.Nil(t, err)
 			} else {
