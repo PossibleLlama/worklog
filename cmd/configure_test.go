@@ -102,7 +102,7 @@ func TestOverrideDefaultsArgs(t *testing.T) {
 			author:   "",
 			duration: -1,
 			format:   "",
-			expErr:   errors.New("defaults requires at least one argument"),
+			expErr:   errors.New("overrideDefaults requires at least one argument"),
 		}, {
 			name:     "Zero duration",
 			author:   "",
@@ -126,7 +126,7 @@ func TestOverrideDefaultsArgs(t *testing.T) {
 			author:   " ",
 			duration: -1,
 			format:   "",
-			expErr:   errors.New("defaults requires at least one argument"),
+			expErr:   errors.New("overrideDefaults requires at least one argument"),
 		}, {
 			name:     "yaml format",
 			author:   "",
@@ -156,7 +156,7 @@ func TestOverrideDefaultsArgs(t *testing.T) {
 			author:   "",
 			duration: -1,
 			format:   " ",
-			expErr:   errors.New("defaults requires at least one argument"),
+			expErr:   errors.New("overrideDefaults requires at least one argument"),
 		}, {
 			name:     "Invalid format",
 			author:   "",
