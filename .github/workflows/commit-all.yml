@@ -1,4 +1,4 @@
-name: Go
+name: "On commit"
 
 on: push
 
@@ -62,30 +62,3 @@ jobs:
 
     - name: Test multiple
       run: make test-repeat
-
-  store:
-    name: Store artifacts
-    runs-on: ubuntu-latest
-    needs: [build, test, format]
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-    - name: Set up Go 1.x
-      uses: actions/setup-go@v2
-      with:
-        go-version: ^1.13
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2
-
-    - name: Get dependencies
-      run: make deps
-
-    - name: Compile
-      run: make compile
-
-    - name: Archive production artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: worklog-binary
-        path: bin
