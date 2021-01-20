@@ -11,14 +11,17 @@ import (
 	"github.com/spf13/viper"
 )
 
-var createID string
-var createTitle string
-var createDescription string
-var createWhen time.Time
-var createWhenString string
-var createDuration int
-var createTags []string
-var createTagsString string
+var (
+	createID          string
+	createTitle       string
+	createDescription string
+	createAuthor      string
+	createWhen        time.Time
+	createWhenString  string
+	createDuration    int
+	createTags        []string
+	createTagsString  string
+)
 
 // createCmd represents the create command
 var createCmd = &cobra.Command{
@@ -41,6 +44,7 @@ func createArgs() error {
 	}
 	createTitle = strings.TrimSpace(createTitle)
 	createDescription = strings.TrimSpace(createDescription)
+	createAuthor = strings.TrimSpace(createAuthor)
 
 	for _, tag := range strings.Split(createTagsString, ",") {
 		createTags = append(createTags, strings.TrimSpace(tag))
@@ -65,7 +69,7 @@ func createRun() error {
 	wl := model.NewWork(
 		createTitle,
 		createDescription,
-		viper.GetString("author"),
+		createAuthor,
 		createDuration,
 		createTags,
 		createWhen)
@@ -89,6 +93,11 @@ func init() {
 		"description",
 		"",
 		"A description of the work")
+	createCmd.Flags().StringVar(
+		&createAuthor,
+		"author",
+		viper.GetString("author"),
+		"The author of the work")
 	createCmd.Flags().StringVar(
 		&createWhenString,
 		"when",

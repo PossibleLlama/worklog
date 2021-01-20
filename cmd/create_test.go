@@ -17,9 +17,10 @@ var (
 	defaultAuthor   = ""
 )
 
-func setProvidedCreateArgValues(title, description, when string, duration int, tags string) {
+func setProvidedCreateArgValues(title, description, author, when string, duration int, tags string) {
 	createTitle = title
 	createDescription = description
+	createAuthor = author
 	createDuration = duration
 	createTagsString = tags
 	createTags = []string{}
@@ -27,10 +28,11 @@ func setProvidedCreateArgValues(title, description, when string, duration int, t
 	createWhen = time.Time{}
 }
 
-func setProvidedCreateRunValues(id, title, description string, when time.Time, duration int, tags []string) {
+func setProvidedCreateRunValues(id, title, description, author string, when time.Time, duration int, tags []string) {
 	createID = id
 	createTitle = title
 	createDescription = description
+	createAuthor = author
 	createDuration = duration
 	createTagsString = strings.Join(tags, ",")
 	createTags = tags
@@ -44,6 +46,7 @@ func TestCreateArgs(t *testing.T) {
 		name        string
 		title       string
 		description string
+		author      string
 		duration    int
 		tagsString  string
 		tags        []string
@@ -55,6 +58,7 @@ func TestCreateArgs(t *testing.T) {
 			name:        "Variables take defaults",
 			title:       helpers.RandString(shortLength),
 			description: helpers.RandString(shortLength),
+			author:      helpers.RandString(shortLength),
 			duration:    shortLength,
 			tagsString:  "alpha, beta",
 			tags:        []string{"alpha", "beta"},
@@ -65,6 +69,7 @@ func TestCreateArgs(t *testing.T) {
 			name:        "Negative duration",
 			title:       helpers.RandString(shortLength),
 			description: helpers.RandString(shortLength),
+			author:      helpers.RandString(shortLength),
 			duration:    -1,
 			tagsString:  "1, 2",
 			tags:        []string{"1", "2"},
@@ -75,6 +80,7 @@ func TestCreateArgs(t *testing.T) {
 			name:        "Padded title",
 			title:       "\n" + helpers.RandString(shortLength),
 			description: helpers.RandString(shortLength),
+			author:      helpers.RandString(shortLength),
 			duration:    -1,
 			tagsString:  "1, 2",
 			tags:        []string{"1", "2"},
@@ -85,6 +91,18 @@ func TestCreateArgs(t *testing.T) {
 			name:        "Padded description",
 			title:       helpers.RandString(shortLength),
 			description: helpers.RandString(shortLength) + " ",
+			author:      helpers.RandString(shortLength),
+			duration:    longLength,
+			tagsString:  "1, 2",
+			tags:        []string{"1", "2"},
+			whenString:  now.Format(time.RFC3339),
+			when:        now,
+			expErr:      nil,
+		}, {
+			name:        "Padded author",
+			title:       helpers.RandString(shortLength),
+			description: helpers.RandString(shortLength),
+			author:      helpers.RandString(shortLength) + " ",
 			duration:    longLength,
 			tagsString:  "1, 2",
 			tags:        []string{"1", "2"},
@@ -95,6 +113,7 @@ func TestCreateArgs(t *testing.T) {
 			name:        "Padded when",
 			title:       helpers.RandString(shortLength),
 			description: helpers.RandString(shortLength),
+			author:      helpers.RandString(shortLength),
 			duration:    longLength,
 			tagsString:  "1, 2",
 			tags:        []string{"1", "2"},
@@ -105,6 +124,7 @@ func TestCreateArgs(t *testing.T) {
 			name:        "Invalid when",
 			title:       helpers.RandString(shortLength),
 			description: helpers.RandString(shortLength),
+			author:      helpers.RandString(shortLength),
 			duration:    longLength,
 			tagsString:  "1, 2",
 			tags:        []string{"1", "2"},
@@ -119,6 +139,7 @@ func TestCreateArgs(t *testing.T) {
 			setProvidedCreateArgValues(
 				testItem.title,
 				testItem.description,
+				testItem.author,
 				testItem.whenString,
 				testItem.duration,
 				testItem.tagsString)
@@ -133,6 +154,7 @@ func TestCreateArgs(t *testing.T) {
 
 			assert.Equal(t, strings.TrimSpace(testItem.title), createTitle)
 			assert.Equal(t, strings.TrimSpace(testItem.description), createDescription)
+			assert.Equal(t, strings.TrimSpace(testItem.author), createAuthor)
 
 			if testItem.duration >= 0 {
 				assert.Equal(t, testItem.duration, createDuration)
@@ -153,6 +175,7 @@ func TestCreateRun(t *testing.T) {
 		name        string
 		title       string
 		description string
+		author      string
 		duration    int
 		tags        []string
 		when        time.Time
@@ -162,6 +185,18 @@ func TestCreateRun(t *testing.T) {
 			name:        "Send to service",
 			title:       helpers.RandString(shortLength),
 			description: helpers.RandString(shortLength),
+			author:      helpers.RandString(shortLength),
+			duration:    longLength,
+			tags: []string{
+				helpers.RandString(shortLength),
+				helpers.RandString(shortLength)},
+			when:   now,
+			expErr: nil,
+		}, {
+			name:        "Default author is used",
+			title:       helpers.RandString(shortLength),
+			description: helpers.RandString(shortLength),
+			author:      "",
 			duration:    longLength,
 			tags: []string{
 				helpers.RandString(shortLength),
@@ -172,6 +207,7 @@ func TestCreateRun(t *testing.T) {
 			name:        "Error passed back",
 			title:       helpers.RandString(shortLength),
 			description: helpers.RandString(shortLength),
+			author:      helpers.RandString(shortLength),
 			duration:    longLength,
 			tags: []string{
 				helpers.RandString(shortLength),
@@ -183,16 +219,31 @@ func TestCreateRun(t *testing.T) {
 
 	for _, testItem := range tests {
 		id := helpers.RandString(shortLength)
-		w := &model.Work{
-			ID:          id,
-			Revision:    1,
-			Title:       testItem.title,
-			Description: testItem.description,
-			Author:      defaultAuthor,
-			Duration:    testItem.duration,
-			Tags:        testItem.tags,
-			When:        now,
-			CreatedAt:   now,
+		var w *model.Work
+		if testItem.author == "" {
+			w = &model.Work{
+				ID:          id,
+				Revision:    1,
+				Title:       testItem.title,
+				Description: testItem.description,
+				Author:      defaultAuthor,
+				Duration:    testItem.duration,
+				Tags:        testItem.tags,
+				When:        now,
+				CreatedAt:   now,
+			}
+		} else {
+			w = &model.Work{
+				ID:          id,
+				Revision:    1,
+				Title:       testItem.title,
+				Description: testItem.description,
+				Author:      testItem.author,
+				Duration:    testItem.duration,
+				Tags:        testItem.tags,
+				When:        now,
+				CreatedAt:   now,
+			}
 		}
 		mockService := new(service.MockService)
 		mockService.On("CreateWorklog", w).Return(0, testItem.expErr)
@@ -203,6 +254,7 @@ func TestCreateRun(t *testing.T) {
 				id,
 				testItem.title,
 				testItem.description,
+				testItem.author,
 				testItem.when,
 				testItem.duration,
 				testItem.tags)
