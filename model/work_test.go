@@ -32,6 +32,7 @@ func genRandWork() *Work {
 }
 
 func TestNewWork(t *testing.T) {
+	length := 10
 	validDate, err := time.Parse(time.RFC3339, "1970-12-25T00:00:00Z")
 	if err != nil {
 		t.Error("Unable to parse initial date")
@@ -56,10 +57,11 @@ func TestNewWork(t *testing.T) {
 			wTags:        []string{"alpha", "beta"},
 			wWhen:        validDate,
 			expected: &Work{
+				ID:          helpers.RandString(length),
+				Revision:    1,
 				Title:       "title",
 				Description: "description",
 				Author:      "who",
-				Where:       "",
 				Duration:    15,
 				Tags:        []string{"alpha", "beta"},
 				When:        validDate,
@@ -74,10 +76,11 @@ func TestNewWork(t *testing.T) {
 			wTags:        []string{"4", "2", "1", "3"},
 			wWhen:        validDate,
 			expected: &Work{
+				ID:          helpers.RandString(length),
+				Revision:    1,
 				Title:       "title",
 				Description: "description",
 				Author:      "who",
-				Where:       "",
 				Duration:    15,
 				Tags:        []string{"1", "2", "3", "4"},
 				When:        validDate,
@@ -96,13 +99,42 @@ func TestNewWork(t *testing.T) {
 				testItem.wWhen)
 			finished := time.Now()
 
-			// Instead of mocking time.Now(), just set the result of it to the expected value
+			// Instead of mocking ID and time.Now(), just set the
+			// result of it to the expected value
+			testItem.expected.ID = actual.ID
 			testItem.expected.CreatedAt = actual.CreatedAt
 
 			assert.Equal(t, testItem.expected, actual)
 			assert.True(t, finished.Add(time.Second*-1).Before(actual.CreatedAt))
 		})
 	}
+}
+
+func TestIncrementRevision(t *testing.T) {
+	wOg := genRandWork()
+	wCopy := Work{
+		ID:          wOg.ID,
+		Revision:    wOg.Revision,
+		Title:       wOg.Title,
+		Description: wOg.Description,
+		Author:      wOg.Author,
+		Duration:    wOg.Duration,
+		Tags:        wOg.Tags,
+		When:        wOg.When,
+		CreatedAt:   wOg.CreatedAt,
+	}
+	wOg.IncrementRevision()
+
+	assert.Equal(t, wCopy.ID, wOg.ID)
+	assert.NotEqual(t, wCopy.Revision, wOg.Revision)
+	assert.Equal(t, wCopy.Revision+1, wOg.Revision)
+	assert.Equal(t, wCopy.Title, wOg.Title)
+	assert.Equal(t, wCopy.Description, wOg.Description)
+	assert.Equal(t, wCopy.Author, wOg.Author)
+	assert.Equal(t, wCopy.Duration, wOg.Duration)
+	assert.Equal(t, wCopy.Tags, wOg.Tags)
+	assert.Equal(t, wCopy.When, wOg.When)
+	assert.Equal(t, wCopy.CreatedAt, wOg.CreatedAt)
 }
 
 func TestWorkToPrintWork(t *testing.T) {
@@ -118,7 +150,6 @@ func TestWorkToPrintWork(t *testing.T) {
 				Title:       "Title",
 				Description: "Description",
 				Author:      "Author",
-				Where:       "Where",
 				Duration:    60,
 				Tags:        []string{"1", "2"},
 				When:        tm,
@@ -155,7 +186,6 @@ func TestWorkToPrintWork(t *testing.T) {
 			w: Work{
 				Title:       "Title",
 				Description: "Description",
-				Where:       "Where",
 				Duration:    60,
 				When:        tm,
 				CreatedAt:   time.Now(),

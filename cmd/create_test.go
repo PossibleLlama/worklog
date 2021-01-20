@@ -27,7 +27,8 @@ func setProvidedCreateArgValues(title, description, when string, duration int, t
 	createWhen = time.Time{}
 }
 
-func setProvidedCreateRunValues(title, description string, when time.Time, duration int, tags []string) {
+func setProvidedCreateRunValues(id, title, description string, when time.Time, duration int, tags []string) {
+	createID = id
 	createTitle = title
 	createDescription = description
 	createDuration = duration
@@ -181,12 +182,14 @@ func TestCreateRun(t *testing.T) {
 	}
 
 	for _, testItem := range tests {
+		id := helpers.RandString(shortLength)
 		w := &model.Work{
+			ID:          id,
+			Revision:    1,
 			Title:       testItem.title,
 			Description: testItem.description,
 			Author:      defaultAuthor,
 			Duration:    testItem.duration,
-			Where:       "",
 			Tags:        testItem.tags,
 			When:        now,
 			CreatedAt:   now,
@@ -197,6 +200,7 @@ func TestCreateRun(t *testing.T) {
 
 		t.Run(testItem.name, func(t *testing.T) {
 			setProvidedCreateRunValues(
+				id,
 				testItem.title,
 				testItem.description,
 				testItem.when,

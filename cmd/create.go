@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+var createID string
 var createTitle string
 var createDescription string
 var createWhen time.Time
@@ -61,13 +62,17 @@ func CreateRun(cmd *cobra.Command, args []string) error {
 }
 
 func createRun() error {
-	_, err := wlService.CreateWorklog(model.NewWork(
+	wl := model.NewWork(
 		createTitle,
 		createDescription,
 		viper.GetString("author"),
 		createDuration,
 		createTags,
-		createWhen))
+		createWhen)
+	if createID != "" {
+		wl.ID = createID
+	}
+	_, err := wlService.CreateWorklog(wl)
 	return err
 }
 
