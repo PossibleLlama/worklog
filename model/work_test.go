@@ -110,6 +110,33 @@ func TestNewWork(t *testing.T) {
 	}
 }
 
+func TestIncrementRevision(t *testing.T) {
+	wOg := genRandWork()
+	wCopy := Work{
+		ID:          wOg.ID,
+		Revision:    wOg.Revision,
+		Title:       wOg.Title,
+		Description: wOg.Description,
+		Author:      wOg.Author,
+		Duration:    wOg.Duration,
+		Tags:        wOg.Tags,
+		When:        wOg.When,
+		CreatedAt:   wOg.CreatedAt,
+	}
+	wOg.IncrementRevision()
+
+	assert.Equal(t, wCopy.ID, wOg.ID)
+	assert.NotEqual(t, wCopy.Revision, wOg.Revision)
+	assert.Equal(t, wCopy.Revision+1, wOg.Revision)
+	assert.Equal(t, wCopy.Title, wOg.Title)
+	assert.Equal(t, wCopy.Description, wOg.Description)
+	assert.Equal(t, wCopy.Author, wOg.Author)
+	assert.Equal(t, wCopy.Duration, wOg.Duration)
+	assert.Equal(t, wCopy.Tags, wOg.Tags)
+	assert.Equal(t, wCopy.When, wOg.When)
+	assert.Equal(t, wCopy.CreatedAt, wOg.CreatedAt)
+}
+
 func TestWorkToPrintWork(t *testing.T) {
 	tm := time.Now()
 	var tests = []struct {

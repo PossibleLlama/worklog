@@ -56,6 +56,11 @@ func NewWork(title, description, author string, duration int, tags []string, whe
 	}
 }
 
+// IncrementRevision changes the revision to one greater
+func (w *Work) IncrementRevision() {
+	w.Revision = w.Revision + 1
+}
+
 func workToPrettyWork(w Work) prettyWork {
 	return prettyWork{
 		ID:          w.ID,
