@@ -120,44 +120,44 @@ func TestCreate(t *testing.T) {
 					strings.ReplaceAll(testItem.name, " ", "_")))
 				cfg := getActualConfig(t)
 
-				assert.NotEmpty(t, actualFile.ID)
-				assert.Len(t, actualFile.ID, 16)
-				assert.Equal(t, testItem.expFile.Title, actualFile.Title)
-				assert.NotEqual(t, time.Time{}, actualFile.CreatedAt)
-				assert.Equal(t, 1, actualFile.Revision)
+				assert.NotEmpty(t, actualFile.ID, "ID is empty")
+				assert.Len(t, actualFile.ID, 16, "ID is not of length 16")
+				assert.Equal(t, testItem.expFile.Title, actualFile.Title, "Title does not match")
+				assert.NotEqual(t, time.Time{}, actualFile.CreatedAt, "CreatedAt has defaulted")
+				assert.Equal(t, 1, actualFile.Revision, "Revision is not 1")
 
 				if testItem.expFile.Description != "" {
-					assert.Equal(t, testItem.expFile.Description, actualFile.Description)
+					assert.Equal(t, testItem.expFile.Description, actualFile.Description, "Description does not match")
 				}
 
 				if testItem.expFile.Duration > 0 {
-					assert.Equal(t, testItem.expFile.Duration, actualFile.Duration)
+					assert.Equal(t, testItem.expFile.Duration, actualFile.Duration, "Duration does not match provided")
 				} else {
 					if cfg.Defaults.Duration > 0 {
-						assert.Equal(t, cfg.Defaults.Duration, actualFile.Duration)
+						assert.Equal(t, cfg.Defaults.Duration, actualFile.Duration, "Description does not match config")
 					} else {
-						assert.Equal(t, 0, actualFile.Duration)
+						assert.Equal(t, 0, actualFile.Duration, "Duration does not match default")
 					}
 				}
 
 				if testItem.expFile.Author != "" {
-					assert.Equal(t, testItem.expFile.Author, actualFile.Author)
+					assert.Equal(t, testItem.expFile.Author, actualFile.Author, "Author does not match provided")
 				} else {
 					if cfg.Author != "" {
-						assert.Equal(t, cfg.Author, actualFile.Author)
+						assert.Equal(t, cfg.Author, actualFile.Author, "Author does not match config")
 					} else {
-						assert.Equal(t, "", actualFile.Author)
+						assert.Equal(t, "", actualFile.Author, "Author does not match default")
 					}
 				}
 
 				if !testItem.expFile.When.Equal(time.Time{}) {
-					assert.Equal(t, testItem.expFile.When, actualFile.When)
+					assert.Equal(t, testItem.expFile.When, actualFile.When, "When does not match provided")
 				} else {
-					assert.NotEqual(t, time.Time{}, actualFile.When)
+					assert.NotEqual(t, time.Time{}, actualFile.When, "When didn't default")
 				}
 
 				if len(testItem.expFile.Tags) != 0 {
-					assert.Equal(t, testItem.expFile.Tags, actualFile.Tags)
+					assert.Equal(t, testItem.expFile.Tags, actualFile.Tags, "Tags do not match")
 				}
 			}
 		})
