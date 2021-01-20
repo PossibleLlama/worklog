@@ -133,7 +133,18 @@ func TestCreateWorklog(t *testing.T) {
 func TestGetWorklogsBetween(t *testing.T) {
 	sTime := time.Now()
 	eTime := sTime.Add(time.Hour)
-	filterWl := genWl()
+	rev1Wl := genWl()
+	rev2Wl := &model.Work{
+		ID:          rev1Wl.ID,
+		Revision:    rev1Wl.Revision + 1,
+		Title:       rev1Wl.Title,
+		Description: rev1Wl.Description,
+		Author:      rev1Wl.Author,
+		Duration:    rev1Wl.Duration,
+		Tags:        rev1Wl.Tags,
+		When:        rev1Wl.When,
+		CreatedAt:   rev1Wl.CreatedAt,
+	}
 
 	var tests = []struct {
 		name   string
@@ -141,6 +152,7 @@ func TestGetWorklogsBetween(t *testing.T) {
 		eTime  time.Time
 		filter *model.Work
 		retWl  []*model.Work
+		expWl  []*model.Work
 		exCode int
 		err    error
 	}{
@@ -148,8 +160,9 @@ func TestGetWorklogsBetween(t *testing.T) {
 			name:   "Success found 1",
 			sTime:  sTime,
 			eTime:  eTime,
-			filter: filterWl,
-			retWl:  []*model.Work{filterWl},
+			filter: rev1Wl,
+			retWl:  []*model.Work{rev1Wl},
+			expWl:  []*model.Work{rev1Wl},
 			exCode: http.StatusOK,
 			err:    nil,
 		},
@@ -157,17 +170,29 @@ func TestGetWorklogsBetween(t *testing.T) {
 			name:   "Success found 0",
 			sTime:  sTime,
 			eTime:  eTime,
-			filter: filterWl,
+			filter: rev1Wl,
 			retWl:  []*model.Work{},
+			expWl:  []*model.Work{},
 			exCode: http.StatusNotFound,
+			err:    nil,
+		},
+		{
+			name:   "Success deduplicates only has latest revision",
+			sTime:  sTime,
+			eTime:  eTime,
+			filter: rev1Wl,
+			retWl:  []*model.Work{rev1Wl, rev2Wl},
+			expWl:  []*model.Work{rev2Wl},
+			exCode: http.StatusOK,
 			err:    nil,
 		},
 		{
 			name:   "Errored",
 			sTime:  sTime,
 			eTime:  eTime,
-			filter: filterWl,
+			filter: rev1Wl,
 			retWl:  []*model.Work{},
+			expWl:  []*model.Work{},
 			exCode: http.StatusInternalServerError,
 			err:    errors.New(helpers.RandString(strLength)),
 		},
@@ -195,8 +220,8 @@ func TestGetWorklogsBetween(t *testing.T) {
 				assert.Nil(t, returnedErr)
 			}
 			assert.Equal(t, testItem.exCode, returnedCode)
-			assert.Equal(t, len(testItem.retWl), len(returnedWls))
-			assert.Equal(t, testItem.retWl, returnedWls)
+			assert.Equal(t, len(testItem.expWl), len(returnedWls))
+			assert.Equal(t, testItem.expWl, returnedWls)
 			mockRepo.AssertExpectations(t)
 			mockRepo.AssertCalled(t,
 				"GetAllBetweenDates",
