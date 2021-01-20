@@ -61,14 +61,14 @@ func (*yamlFileRepo) Save(wl *model.Work) error {
 func generateFileName(wl *model.Work) string {
 	filePath := getWorklogDir()
 
-	fileName := fmt.Sprintf("%d-%02d-%02d_%02d:%02d_%s",
+	fileName := fmt.Sprintf("%d-%02d-%02dT%02d:%02d_%d_%s",
 		wl.When.Year(),
 		int(wl.When.Month()),
 		wl.When.Day(),
 		wl.When.Hour(),
 		wl.When.Minute(),
-		strings.ReplaceAll(
-			strings.TrimSpace(wl.Title), " ", "_"))
+		wl.Revision,
+		wl.ID)
 	return filePath + fileName + ".yml"
 }
 
@@ -135,7 +135,7 @@ func getAllFileNamesBetweenDates(startDate, endDate time.Time) ([]string, error)
 		}
 
 		splitFileName := strings.Split(path, "_")
-		filesDateAsString := fmt.Sprintf("%sT%s:00Z", splitFileName[0], splitFileName[1])
+		filesDateAsString := fmt.Sprintf("%s:00Z", splitFileName[0])
 		filesDate, err := helpers.GetStringAsDateTime(filesDateAsString)
 		if err != nil {
 			return err
