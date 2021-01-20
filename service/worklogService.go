@@ -44,22 +44,24 @@ func (*service) GetWorklogsBetween(start, end time.Time, filter *model.Work) ([]
 }
 
 func removeOldRevisions(wls []*model.Work) []*model.Work {
-	wls = reverse(wls)
-	keys := make(map[string]bool)
 	deDuplicated := []*model.Work{}
+	uniqueIDWls := make(map[string][]*model.Work)
 	for _, element := range wls {
-		if _, value := keys[element.ID]; !value {
-			keys[element.ID] = true
-			deDuplicated = append(deDuplicated, element)
+		uniqueIDWls[element.ID] = append(uniqueIDWls[element.ID], element)
+	}
+	for _, wls := range uniqueIDWls {
+		highestRevision := -1
+		for _, element := range wls {
+			if element.Revision > highestRevision {
+				highestRevision = element.Revision
+			}
+		}
+		for _, element := range wls {
+			if element.Revision == highestRevision {
+				deDuplicated = append(deDuplicated, element)
+				break
+			}
 		}
 	}
 	return deDuplicated
-}
-
-func reverse(wls []*model.Work) []*model.Work {
-	revList := []*model.Work{}
-	for i := len(wls) - 1; i >= 0; i-- {
-		revList = append(revList, wls[i])
-	}
-	return revList
 }

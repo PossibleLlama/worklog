@@ -145,6 +145,17 @@ func TestGetWorklogsBetween(t *testing.T) {
 		When:        rev1Wl.When,
 		CreatedAt:   rev1Wl.CreatedAt,
 	}
+	rev3Wl := &model.Work{
+		ID:          rev1Wl.ID,
+		Revision:    rev1Wl.Revision + 2,
+		Title:       rev1Wl.Title,
+		Description: rev1Wl.Description,
+		Author:      rev1Wl.Author,
+		Duration:    rev1Wl.Duration,
+		Tags:        rev1Wl.Tags,
+		When:        rev1Wl.When,
+		CreatedAt:   rev1Wl.CreatedAt,
+	}
 
 	var tests = []struct {
 		name   string
@@ -177,12 +188,22 @@ func TestGetWorklogsBetween(t *testing.T) {
 			err:    nil,
 		},
 		{
-			name:   "Success deduplicates only has latest revision",
+			name:   "Success deduplicates only has latest revision from ordered list",
 			sTime:  sTime,
 			eTime:  eTime,
 			filter: rev1Wl,
 			retWl:  []*model.Work{rev1Wl, rev2Wl},
 			expWl:  []*model.Work{rev2Wl},
+			exCode: http.StatusOK,
+			err:    nil,
+		},
+		{
+			name:   "Success deduplicates only has latest revision from list",
+			sTime:  sTime,
+			eTime:  eTime,
+			filter: rev1Wl,
+			retWl:  []*model.Work{rev3Wl, rev1Wl, rev2Wl},
+			expWl:  []*model.Work{rev3Wl},
 			exCode: http.StatusOK,
 			err:    nil,
 		},
