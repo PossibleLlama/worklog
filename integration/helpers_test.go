@@ -3,10 +3,13 @@ package integration
 import (
 	"fmt"
 	"io/ioutil"
+	"sort"
 	"testing"
 	"time"
 
+	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
+	"github.com/PossibleLlama/worklog/repository"
 	"gopkg.in/yaml.v2"
 
 	homedir "github.com/mitchellh/go-homedir"
@@ -54,21 +57,44 @@ func getActualConfig(t *testing.T) *model.Config {
 	return &actualFile
 }
 
-func getActualWork(t *testing.T, name string) *model.Work {
-	var actualFile model.Work
-	home, err := homedir.Dir()
-	if err != nil {
-		t.Error(err)
-	}
-	file, err := ioutil.ReadFile(fmt.Sprintf("%s/.worklog/%s", home, name))
-	if err != nil {
-		t.Error(err)
-	}
+type timeWork []model.Work
 
-	err = yaml.Unmarshal(file, &actualFile)
-	if err != nil {
-		t.Error(err)
-	}
+func (tw timeWork) Len() int {
+	return len(tw)
+}
 
-	return &actualFile
+func (tw timeWork) Less(i, j int) bool {
+	return tw[i].When.Before(tw[j].When)
+}
+
+func (tw timeWork) Swap(i, j int) {
+	tw[i], tw[j] = tw[j], tw[i]
+}
+
+func getActualWork(t *testing.T, exp *model.Work, cfg *model.Config) *model.Work {
+	if exp.Author == "" {
+		exp.Author = cfg.Author
+	}
+	ymlRepo := repository.NewYamlFileRepo()
+	wls, _ := ymlRepo.GetAllBetweenDates(helpers.Midnight(time.Now()), helpers.Midnight(time.Now()).Add(time.Hour*24), exp)
+
+	fmt.Printf("\n********\n%d WL's found for filter %s\n", len(wls), exp)
+
+	var actual *model.Work
+	switch len(wls) {
+	case 0:
+		t.Errorf("Unable to find work with filter %s", exp)
+		t.FailNow()
+	case 1:
+		actual = wls[0]
+	default:
+		fmt.Printf("Items\n%s\n", wls)
+		dateSortedWls := make(timeWork, 0, len(wls))
+		for _, d := range wls {
+			dateSortedWls = append(dateSortedWls, *d)
+		}
+		sort.Sort(dateSortedWls)
+		actual = wls[len(wls)-1]
+	}
+	return actual
 }

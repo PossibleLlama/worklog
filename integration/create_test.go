@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/exec"
 	"path"
-	"strings"
 	"testing"
 	"time"
 
@@ -110,15 +109,10 @@ func TestCreate(t *testing.T) {
 			output, err := cmd.CombinedOutput()
 
 			assert.Equal(t, testItem.expOutput, string(output))
+
+			cfg := getActualConfig(t)
 			if testItem.success {
-				actualFile := getActualWork(t, fmt.Sprintf("%d-%02d-%02d_%02d:%02d_%s.yml",
-					tm.Year(),
-					int(tm.Month()),
-					tm.Day(),
-					tm.Hour(),
-					tm.Minute(),
-					strings.ReplaceAll(testItem.name, " ", "_")))
-				cfg := getActualConfig(t)
+				actualFile := getActualWork(t, testItem.expFile, cfg)
 
 				assert.NotEmpty(t, actualFile.ID, "ID is empty")
 				assert.Len(t, actualFile.ID, 16, "ID is not of length 16")
