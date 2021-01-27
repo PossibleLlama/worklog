@@ -99,6 +99,17 @@ func TestCreateArgs(t *testing.T) {
 			when:        now,
 			expErr:      nil,
 		}, {
+			name:        "Empty author uses default",
+			title:       helpers.RandString(shortLength),
+			description: helpers.RandString(shortLength),
+			author:      "",
+			duration:    longLength,
+			tagsString:  "1, 2",
+			tags:        []string{"1", "2"},
+			whenString:  now.Format(time.RFC3339),
+			when:        now,
+			expErr:      nil,
+		}, {
 			name:        "Padded author",
 			title:       helpers.RandString(shortLength),
 			description: helpers.RandString(shortLength),
