@@ -46,6 +46,10 @@ func createArgs() error {
 	createDescription = strings.TrimSpace(createDescription)
 	createAuthor = strings.TrimSpace(createAuthor)
 
+	if createAuthor == "" {
+		createAuthor = viper.GetString("author")
+	}
+
 	for _, tag := range strings.Split(createTagsString, ",") {
 		createTags = append(createTags, strings.TrimSpace(tag))
 	}
@@ -96,7 +100,7 @@ func init() {
 	createCmd.Flags().StringVar(
 		&createAuthor,
 		"author",
-		viper.GetString("author"),
+		"",
 		"The author of the work")
 	createCmd.Flags().StringVar(
 		&createWhenString,
