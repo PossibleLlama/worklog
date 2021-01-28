@@ -44,7 +44,7 @@ func TestCreate(t *testing.T) {
 			name:      "No arguments",
 			args:      []string{},
 			success:   false,
-			expOutput: fmt.Sprintf("Error: required flag(s) \"title\" not set\nUsage:\n  worklog create [flags]\n\nFlags:\n      --description string   A description of the work\n      --duration int         Length of time spent on the work (default -1)\n  -h, --help                 help for create\n      --tags string          Comma seperated list of tags this work relates to\n      --title string         A short description of the work done\n      --when string          When the work was worked in RFC3339 format (default \"%s\")\n\nGlobal Flags:\n      --config string   config file (default is $HOME/.worklog/config.yml)\n\nrequired flag(s) \"title\" not set\n", time.Now().Format(time.RFC3339)),
+			expOutput: fmt.Sprintf("Error: required flag(s) \"title\" not set\nUsage:\n  worklog create [flags]\n\nFlags:\n      --author string        The author of the work\n      --description string   A description of the work\n      --duration int         Length of time spent on the work (default -1)\n  -h, --help                 help for create\n      --tags string          Comma seperated list of tags this work relates to\n      --title string         A short description of the work done\n      --when string          When the work was worked in RFC3339 format (default \"%s\")\n\nGlobal Flags:\n      --config string   config file (default is $HOME/.worklog/config.yml)\n\nrequired flag(s) \"title\" not set\n", time.Now().Format(time.RFC3339)),
 			expFile:   nil,
 		}, {
 			name:      "Create with description",
@@ -54,6 +54,15 @@ func TestCreate(t *testing.T) {
 			expFile: &model.Work{
 				Title:       "Create with description",
 				Description: randString,
+			},
+		}, {
+			name:      "Create with author",
+			args:      []string{"--title", "Create with author", "--author", randString},
+			success:   true,
+			expOutput: "Saving file...\nSaved file\n",
+			expFile: &model.Work{
+				Title:  "Create with author",
+				Author: randString,
 			},
 		}, {
 			name:      "Create with duration",
@@ -84,12 +93,13 @@ func TestCreate(t *testing.T) {
 			},
 		}, {
 			name:      "Create with all",
-			args:      []string{"--title", "Create with all", "--description", randString, "--duration", fmt.Sprintf("%d", length), "--tags", randString},
+			args:      []string{"--title", "Create with all", "--description", randString, "--duration", fmt.Sprintf("%d", length), "--tags", randString, "--author", randString},
 			success:   true,
 			expOutput: "Saving file...\nSaved file\n",
 			expFile: &model.Work{
 				Title:       "Create with all",
 				Description: randString,
+				Author:      randString,
 				Tags:        []string{randString},
 				When:        tm,
 				Duration:    length,
@@ -137,8 +147,8 @@ func TestCreate(t *testing.T) {
 				if testItem.expFile.Author != "" {
 					assert.Equal(t, testItem.expFile.Author, actualFile.Author, "Author does not match provided")
 				} else {
-					if cfg.Author != "" {
-						assert.Equal(t, cfg.Author, actualFile.Author, "Author does not match config")
+					if cfg.Defaults.Author != "" {
+						assert.Equal(t, cfg.Defaults.Author, actualFile.Author, "Author does not match config")
 					} else {
 						assert.Equal(t, "", actualFile.Author, "Author does not match default")
 					}

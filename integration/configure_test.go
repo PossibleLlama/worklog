@@ -59,8 +59,8 @@ func TestConfigure(t *testing.T) {
 			success:   true,
 			expOutput: "Successfully configured\n",
 			expFile: &model.Config{
-				Author: "",
 				Defaults: model.Defaults{
+					Author:   "",
 					Duration: 15,
 					Format:   "pretty",
 				},
@@ -77,8 +77,8 @@ func TestConfigure(t *testing.T) {
 			success:   true,
 			expOutput: "Successfully configured\n",
 			expFile: &model.Config{
-				Author: randString,
 				Defaults: model.Defaults{
+					Author:   randString,
 					Duration: 15,
 					Format:   "",
 				},
@@ -91,8 +91,8 @@ func TestConfigure(t *testing.T) {
 			success:   true,
 			expOutput: "Successfully configured\n",
 			expFile: &model.Config{
-				Author: "",
 				Defaults: model.Defaults{
+					Author:   "",
 					Duration: length,
 					Format:   "",
 				},
@@ -103,8 +103,8 @@ func TestConfigure(t *testing.T) {
 			success:   true,
 			expOutput: "Successfully configured\n",
 			expFile: &model.Config{
-				Author: "",
 				Defaults: model.Defaults{
+					Author:   "",
 					Duration: 15,
 					Format:   "pretty",
 				},
@@ -115,8 +115,8 @@ func TestConfigure(t *testing.T) {
 			success:   true,
 			expOutput: "Successfully configured\n",
 			expFile: &model.Config{
-				Author: "",
 				Defaults: model.Defaults{
+					Author:   "",
 					Duration: 15,
 					Format:   "yaml",
 				},
@@ -127,8 +127,8 @@ func TestConfigure(t *testing.T) {
 			success:   true,
 			expOutput: "Successfully configured\n",
 			expFile: &model.Config{
-				Author: "",
 				Defaults: model.Defaults{
+					Author:   "",
 					Duration: 15,
 					Format:   "json",
 				},
@@ -145,8 +145,8 @@ func TestConfigure(t *testing.T) {
 			success:   true,
 			expOutput: "Successfully configured\n",
 			expFile: &model.Config{
-				Author: randString,
 				Defaults: model.Defaults{
+					Author:   randString,
 					Duration: 15,
 					Format:   "json",
 				},

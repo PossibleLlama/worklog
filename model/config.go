@@ -8,13 +8,13 @@ import (
 
 // Defaults all options available as defaults in the configuration
 type Defaults struct {
+	Author   string `yaml:"author"`
 	Duration int    `yaml:"duration"`
 	Format   string `yaml:"format,omitempty"`
 }
 
 // Config all options available in the configuration
 type Config struct {
-	Author   string   `yaml:"author"`
 	Defaults Defaults `yaml:"default"`
 }
 
@@ -27,8 +27,8 @@ func NewConfig(author, format string, duration int) *Config {
 		format = ""
 	}
 	return &Config{
-		Author: author,
 		Defaults: Defaults{
+			Author:   author,
 			Duration: duration,
 			Format:   format,
 		},

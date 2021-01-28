@@ -22,8 +22,8 @@ func TestNewConfig(t *testing.T) {
 			format:   "pretty",
 			duration: 60,
 			expected: &Config{
-				Author: "Author",
 				Defaults: Defaults{
+					Author:   "Author",
 					Format:   "pretty",
 					Duration: 60,
 				},
@@ -34,8 +34,8 @@ func TestNewConfig(t *testing.T) {
 			format:   "yaml",
 			duration: 60,
 			expected: &Config{
-				Author: "Author",
 				Defaults: Defaults{
+					Author:   "Author",
 					Format:   "yaml",
 					Duration: 60,
 				},
@@ -46,8 +46,8 @@ func TestNewConfig(t *testing.T) {
 			format:   "yml",
 			duration: 60,
 			expected: &Config{
-				Author: "Author",
 				Defaults: Defaults{
+					Author:   "Author",
 					Format:   "yml",
 					Duration: 60,
 				},
@@ -58,8 +58,8 @@ func TestNewConfig(t *testing.T) {
 			format:   "json",
 			duration: 60,
 			expected: &Config{
-				Author: "Author",
 				Defaults: Defaults{
+					Author:   "Author",
 					Format:   "json",
 					Duration: 60,
 				},
@@ -70,8 +70,8 @@ func TestNewConfig(t *testing.T) {
 			format:   "foo",
 			duration: 60,
 			expected: &Config{
-				Author: "Author",
 				Defaults: Defaults{
+					Author:   "Author",
 					Format:   "",
 					Duration: 60,
 				},
@@ -82,8 +82,8 @@ func TestNewConfig(t *testing.T) {
 			format:   "",
 			duration: 60,
 			expected: &Config{
-				Author: "Author",
 				Defaults: Defaults{
+					Author:   "Author",
 					Format:   "",
 					Duration: 60,
 				},
@@ -94,8 +94,8 @@ func TestNewConfig(t *testing.T) {
 			format:   "yaml",
 			duration: 60,
 			expected: &Config{
-				Author: "",
 				Defaults: Defaults{
+					Author:   "",
 					Format:   "yaml",
 					Duration: 60,
 				},
@@ -106,8 +106,8 @@ func TestNewConfig(t *testing.T) {
 			format:   "yaml",
 			duration: 0,
 			expected: &Config{
-				Author: "Author",
 				Defaults: Defaults{
+					Author:   "Author",
 					Format:   "yaml",
 					Duration: 0,
 				},
@@ -118,8 +118,8 @@ func TestNewConfig(t *testing.T) {
 			format:   "",
 			duration: 0,
 			expected: &Config{
-				Author: "Author",
 				Defaults: Defaults{
+					Author:   "Author",
 					Format:   "",
 					Duration: 0,
 				},
@@ -130,8 +130,8 @@ func TestNewConfig(t *testing.T) {
 			format:   "yaml",
 			duration: 0,
 			expected: &Config{
-				Author: "",
 				Defaults: Defaults{
+					Author:   "",
 					Format:   "yaml",
 					Duration: 0,
 				},
@@ -142,8 +142,8 @@ func TestNewConfig(t *testing.T) {
 			format:   "",
 			duration: 60,
 			expected: &Config{
-				Author: "",
 				Defaults: Defaults{
+					Author:   "",
 					Format:   "",
 					Duration: 60,
 				},
@@ -169,8 +169,8 @@ func TestConfigWriteYaml(t *testing.T) {
 		{
 			name: "Full config",
 			cfg: &Config{
-				Author: helpers.RandString(shortLength),
 				Defaults: Defaults{
+					Author:   helpers.RandString(shortLength),
 					Format:   helpers.RandString(shortLength),
 					Duration: shortLength,
 				},
@@ -179,8 +179,8 @@ func TestConfigWriteYaml(t *testing.T) {
 		}, {
 			name: "Partial config",
 			cfg: &Config{
-				Author: helpers.RandString(shortLength),
 				Defaults: Defaults{
+					Author: helpers.RandString(shortLength),
 					Format: helpers.RandString(shortLength),
 				},
 			},
