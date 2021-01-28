@@ -158,7 +158,8 @@ worklog configure overrideDefaults --author "Alice" --duration 30 --format "pret
 ### Example file
 
 ``` yml
-author: "Alice"
 default:
+  author: "Alice"
   duration: 15
+  format: "pretty"
 ```

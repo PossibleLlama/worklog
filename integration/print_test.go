@@ -60,17 +60,17 @@ func TestPrint(t *testing.T) {
 			name:      "Print with start and end dates pretty, multiple wl",
 			args:      []string{"--startDate", time.Now().Format(time.RFC3339), "--endDate", time.Now().Format(time.RFC3339), "--pretty"},
 			success:   true,
-			expOutput: fmt.Sprintf("\nTitle: Create new\nAuthor: %s\nDuration: 15\nTags: []\nWhen: ", getActualConfig(t).Author),
+			expOutput: fmt.Sprintf("\nTitle: Create new\nAuthor: %s\nDuration: 15\nTags: []\nWhen: ", getActualConfig(t).Defaults.Author),
 		}, {
 			name:      "Print with start and end dates yaml, multiple wl",
 			args:      []string{"--startDate", time.Now().Format(time.RFC3339), "--endDate", time.Now().Format(time.RFC3339), "--yaml"},
 			success:   true,
-			expOutput: fmt.Sprintf("\n  title: Create new\n  author: %s\n  duration: 15\n  tags: [\"\"]\n  when: ", getActualConfig(t).Author),
+			expOutput: fmt.Sprintf("\n  title: Create new\n  author: %s\n  duration: 15\n  tags: [\"\"]\n  when: ", getActualConfig(t).Defaults.Author),
 		}, {
 			name:      "Print with start and end dates json, multiple wl",
 			args:      []string{"--startDate", time.Now().Format(time.RFC3339), "--endDate", time.Now().Format(time.RFC3339), "--json"},
 			success:   true,
-			expOutput: fmt.Sprintf("\",\"title\":\"Create new\",\"author\":\"%s\",\"duration\":15,\"tags\":[\"\"],\"when\":", getActualConfig(t).Author),
+			expOutput: fmt.Sprintf("\",\"title\":\"Create new\",\"author\":\"%s\",\"duration\":15,\"tags\":[\"\"],\"when\":", getActualConfig(t).Defaults.Author),
 		},
 	}
 

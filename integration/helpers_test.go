@@ -73,7 +73,7 @@ func (tw timeWork) Swap(i, j int) {
 
 func getActualWork(t *testing.T, exp *model.Work, cfg *model.Config) *model.Work {
 	if exp.Author == "" {
-		exp.Author = cfg.Author
+		exp.Author = cfg.Defaults.Author
 	}
 	ymlRepo := repository.NewYamlFileRepo()
 	wls, _ := ymlRepo.GetAllBetweenDates(helpers.Midnight(time.Now()), helpers.Midnight(time.Now()).Add(time.Hour*24), exp)

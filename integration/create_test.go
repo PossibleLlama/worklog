@@ -147,8 +147,8 @@ func TestCreate(t *testing.T) {
 				if testItem.expFile.Author != "" {
 					assert.Equal(t, testItem.expFile.Author, actualFile.Author, "Author does not match provided")
 				} else {
-					if cfg.Author != "" {
-						assert.Equal(t, cfg.Author, actualFile.Author, "Author does not match config")
+					if cfg.Defaults.Author != "" {
+						assert.Equal(t, cfg.Defaults.Author, actualFile.Author, "Author does not match config")
 					} else {
 						assert.Equal(t, "", actualFile.Author, "Author does not match default")
 					}
