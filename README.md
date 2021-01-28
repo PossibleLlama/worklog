@@ -49,8 +49,11 @@ You can specify further fields as you want to.
 
 - `--description "bar"` A longer description of the work done. This
   gives the details of the work done.
+- `--author "Alice"` The name of the person doing the work. This
+  will override the default value in the config file.
 - `--duration 30` How long the work took. This can be any unit of
-  measurement that suits you.
+  measurement that suits you. This will override the default value
+  in the config file.
 - `--tags "buzz, bang"` A comma seperate list of tags to describe
   the work.
 - `--when "2000/12/31"` Timestamp of when the work was done. This
@@ -63,8 +66,9 @@ You can specify further fields as you want to.
 ``` bash
 worklog create \
 --title "Wake up" \
---description "A detailed description of my morning routine."
---duration 60
+--description "A detailed description of my morning routine." \
+--author "Alice" \
+--duration 60 \
 --tags "morning"
 ```
 
