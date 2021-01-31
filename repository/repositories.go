@@ -12,5 +12,5 @@ type WorklogRepository interface {
 	Configure(cfg *model.Config) error
 	Save(wl *model.Work) error
 
-	GetAllBetweenDates(startDate, endDate time.Time, filter *model.Work) ([]*model.Work, error)
+	GetAllBetweenDates(startDate, endDate time.Time, filter *model.Work) (model.WorkList, error)
 }
