@@ -243,6 +243,9 @@ func TestGetWorklogsBetween(t *testing.T) {
 			assert.Equal(t, testItem.exCode, returnedCode)
 			assert.Equal(t, len(testItem.expWl), len(returnedWls))
 			assert.Equal(t, testItem.expWl, returnedWls)
+			for index := range testItem.expWl {
+				assert.Equal(t, testItem.expWl[index], returnedWls[index])
+			}
 			mockRepo.AssertExpectations(t)
 			mockRepo.AssertCalled(t,
 				"GetAllBetweenDates",
