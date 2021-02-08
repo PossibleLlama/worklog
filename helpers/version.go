@@ -2,5 +2,5 @@ package helpers
 
 const (
 	// Version keep track of the version of the application
-	Version string = "0.5.2"
+	Version string = "0.5.3"
 )
