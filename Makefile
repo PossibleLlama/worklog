@@ -7,7 +7,7 @@ test:
 
 test-repeat:
 	go clean -testcache ./...
-	make test-unit ARGS="-count 100"
+	make test-unit ARGS="-count 50"
 	make test-integration
 
 test-unit:
