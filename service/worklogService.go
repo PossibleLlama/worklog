@@ -37,11 +37,11 @@ func (*service) GetWorklogsBetween(start, end time.Time, filter *model.Work) ([]
 	if err != nil {
 		return worklogs, http.StatusInternalServerError, err
 	}
-	sort.Sort(worklogs)
 	worklogs = removeOldRevisions(worklogs)
 	if len(worklogs) == 0 {
 		return worklogs, http.StatusNotFound, err
 	}
+	worklogs = sortWorklogs(worklogs)
 	return worklogs, http.StatusOK, nil
 }
 
@@ -66,4 +66,14 @@ func removeOldRevisions(wls []*model.Work) []*model.Work {
 		}
 	}
 	return deDuplicated
+}
+
+func sortWorklogs(ogWls []*model.Work) []*model.Work {
+	sortedWls := make(model.WorkList, 0, len(ogWls))
+
+	for _, wl := range ogWls {
+		sortedWls = append(sortedWls, wl)
+	}
+	sort.Sort(sortedWls)
+	return sortedWls
 }
