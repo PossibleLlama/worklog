@@ -157,6 +157,13 @@ func TestGetWorklogsBetween(t *testing.T) {
 		CreatedAt:   rev1Wl.CreatedAt,
 	}
 
+	wl2 := genWl()
+	wl2.When = wl2.When.Add(time.Minute)
+	wl3 := genWl()
+	wl3.When = wl3.When.Add(time.Minute * 2)
+	wl4 := genWl()
+	wl4.When = wl4.When.Add(time.Minute * 3)
+
 	var tests = []struct {
 		name   string
 		sTime  time.Time
@@ -208,6 +215,16 @@ func TestGetWorklogsBetween(t *testing.T) {
 			err:    nil,
 		},
 		{
+			name:   "Success sorts into order",
+			sTime:  sTime,
+			eTime:  eTime,
+			filter: rev1Wl,
+			retWl:  []*model.Work{wl3, rev1Wl, wl4, wl2},
+			expWl:  []*model.Work{rev1Wl, wl2, wl3, wl4},
+			exCode: http.StatusOK,
+			err:    nil,
+		},
+		{
 			name:   "Errored",
 			sTime:  sTime,
 			eTime:  eTime,
@@ -243,6 +260,9 @@ func TestGetWorklogsBetween(t *testing.T) {
 			assert.Equal(t, testItem.exCode, returnedCode)
 			assert.Equal(t, len(testItem.expWl), len(returnedWls))
 			assert.Equal(t, testItem.expWl, returnedWls)
+			for index := range testItem.expWl {
+				assert.Equal(t, testItem.expWl[index], returnedWls[index])
+			}
 			mockRepo.AssertExpectations(t)
 			mockRepo.AssertCalled(t,
 				"GetAllBetweenDates",

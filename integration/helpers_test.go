@@ -57,20 +57,6 @@ func getActualConfig(t *testing.T) *model.Config {
 	return &actualFile
 }
 
-type timeWork []model.Work
-
-func (tw timeWork) Len() int {
-	return len(tw)
-}
-
-func (tw timeWork) Less(i, j int) bool {
-	return tw[i].When.Before(tw[j].When)
-}
-
-func (tw timeWork) Swap(i, j int) {
-	tw[i], tw[j] = tw[j], tw[i]
-}
-
 func getActualWork(t *testing.T, exp *model.Work, cfg *model.Config) *model.Work {
 	if exp.Author == "" {
 		exp.Author = cfg.Defaults.Author
@@ -89,9 +75,9 @@ func getActualWork(t *testing.T, exp *model.Work, cfg *model.Config) *model.Work
 		actual = wls[0]
 	default:
 		fmt.Printf("Items\n%s\n", wls)
-		dateSortedWls := make(timeWork, 0, len(wls))
+		dateSortedWls := make(model.WorkList, 0, len(wls))
 		for _, d := range wls {
-			dateSortedWls = append(dateSortedWls, *d)
+			dateSortedWls = append(dateSortedWls, d)
 		}
 		sort.Sort(dateSortedWls)
 		actual = wls[len(wls)-1]

@@ -2,6 +2,7 @@ package service
 
 import (
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/PossibleLlama/worklog/model"
@@ -32,14 +33,16 @@ func (*service) CreateWorklog(wl *model.Work) (int, error) {
 }
 
 func (*service) GetWorklogsBetween(start, end time.Time, filter *model.Work) ([]*model.Work, int, error) {
+	worklogs := make(model.WorkList, 0)
 	worklogs, err := repo.GetAllBetweenDates(start, end, filter)
-	worklogs = removeOldRevisions(worklogs)
 	if err != nil {
 		return worklogs, http.StatusInternalServerError, err
 	}
+	worklogs = removeOldRevisions(worklogs)
 	if len(worklogs) == 0 {
 		return worklogs, http.StatusNotFound, err
 	}
+	sort.Sort(worklogs)
 	return worklogs, http.StatusOK, nil
 }
 
