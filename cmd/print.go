@@ -68,7 +68,7 @@ func printRun(args ...string) error {
 		Tags:        printFilterTags,
 		When:        time.Time{},
 		CreatedAt:   time.Time{}}
-	worklogs, code, err := wlService.GetWorklogsBetween(printStartDate, printEndDate, filter)
+	worklogs, code, err := wlService.GetWorklogsBetween(printStartDate, printEndDate, filter, args...)
 	if err != nil {
 		return err
 	}

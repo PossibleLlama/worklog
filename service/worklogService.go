@@ -32,7 +32,7 @@ func (*service) CreateWorklog(wl *model.Work) (int, error) {
 	return http.StatusCreated, nil
 }
 
-func (*service) GetWorklogsBetween(start, end time.Time, filter *model.Work) ([]*model.Work, int, error) {
+func (*service) GetWorklogsBetween(start, end time.Time, filter *model.Work, ids ...string) ([]*model.Work, int, error) {
 	worklogs := make(model.WorkList, 0)
 	worklogs, err := repo.GetAllBetweenDates(start, end, filter)
 	if err != nil {

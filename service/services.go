@@ -10,5 +10,5 @@ import (
 type WorklogService interface {
 	Configure(cfg *model.Config) error
 	CreateWorklog(wl *model.Work) (int, error)
-	GetWorklogsBetween(start, end time.Time, filter *model.Work) ([]*model.Work, int, error)
+	GetWorklogsBetween(start, end time.Time, filter *model.Work, ids ...string) ([]*model.Work, int, error)
 }
