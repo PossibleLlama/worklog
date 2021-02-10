@@ -74,8 +74,12 @@ func printRun(args ...string) error {
 	}
 
 	if code == http.StatusNotFound && !printOutputJSON {
-		fmt.Printf("No work found between %s and %s with the given filter\n",
+		fmt.Printf("No work found between %s and %s with the given filter",
 			printStartDate, printEndDate.Add(time.Second*-1))
+		if len(args) > 0 {
+			fmt.Printf(" with id's %s", args)
+		}
+		fmt.Println()
 	} else if printOutputPretty {
 		model.WriteAllWorkToPrettyText(os.Stdout, worklogs)
 	} else if printOutputYAML {

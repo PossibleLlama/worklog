@@ -44,20 +44,35 @@ func TestPrintRun(t *testing.T) {
 		description string
 		author      string
 		tags        []string
+		ids         []string
 		startDate   time.Time
 		endDate     time.Time
 		expErr      error
 	}{
 		{
-			name:        "Successful return",
+			name:        "With only date",
 			title:       helpers.RandString(shortLength),
 			description: helpers.RandString(shortLength),
 			author:      helpers.RandString(shortLength),
 			tags: []string{
 				helpers.RandString(shortLength),
 				helpers.RandString(shortLength)},
+			ids:       []string{},
 			startDate: testDefaultStartDate,
 			endDate:   testDefaultEndDate,
+			expErr:    nil,
+		}, {
+			name:        "With only ID",
+			title:       helpers.RandString(shortLength),
+			description: helpers.RandString(shortLength),
+			author:      helpers.RandString(shortLength),
+			tags: []string{
+				helpers.RandString(shortLength),
+				helpers.RandString(shortLength)},
+			ids: []string{
+				helpers.RandString(shortLength)},
+			startDate: time.Time{},
+			endDate:   time.Time{},
 			expErr:    nil,
 		}, {
 			name:        "Error",
@@ -67,6 +82,7 @@ func TestPrintRun(t *testing.T) {
 			tags: []string{
 				helpers.RandString(shortLength),
 				helpers.RandString(shortLength)},
+			ids:       []string{},
 			startDate: testDefaultStartDate,
 			endDate:   testDefaultEndDate,
 			expErr:    errors.New(helpers.RandString(shortLength)),
@@ -108,7 +124,7 @@ func TestPrintRun(t *testing.T) {
 		wlService = mockService
 
 		t.Run(testItem.name, func(t *testing.T) {
-			actualErr := printRun()
+			actualErr := printRun(testItem.ids...)
 
 			mockService.AssertExpectations(t)
 			mockService.AssertCalled(t,
