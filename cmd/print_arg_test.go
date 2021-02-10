@@ -396,21 +396,48 @@ func TestPrintArgsIDs(t *testing.T) {
 		name    string
 		sDate   string
 		usedIDs []string
-		expIDs  []string
 		expErr  error
 	}{
 		{
 			name:    "No date, one ID has no error",
 			sDate:   "",
 			usedIDs: []string{randString},
-			expIDs:  []string{randString},
 			expErr:  nil,
+		}, {
+			name:    "Date with no ID has no error",
+			sDate:   helpers.TimeFormat(time.Now()),
+			usedIDs: []string{},
+			expErr:  nil,
+		}, {
+			name:    "Date and ID has no error",
+			sDate:   helpers.TimeFormat(time.Now()),
+			usedIDs: []string{randString},
+			expErr:  nil,
+		}, {
+			name:    "No date or ID has error",
+			sDate:   "",
+			usedIDs: []string{},
+			expErr:  errors.New("one flag is required"),
 		},
 	}
 
 	for _, testItem := range tests {
-		t.Run(testItem.name, func(t *testing.T) {
+		setProvidedPrintArgValues(
+			testDefaultFilter,
+			testDefaultFormat,
+			testItem.sDate,
+			"",
+			false,
+			false)
 
+		t.Run(testItem.name, func(t *testing.T) {
+			err := printArgs(testItem.usedIDs)
+
+			if testItem.expErr != nil {
+				assert.EqualError(t, err, testItem.expErr.Error(), fmt.Sprintf("Expected err '%s', but had '%s'", testItem.expErr.Error(), err))
+			} else {
+				assert.Nil(t, err)
+			}
 		})
 	}
 }
