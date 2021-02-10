@@ -203,6 +203,9 @@ func verifyDatesAndIDs(ids []string) error {
 }
 
 func verifyIDs(ids []string) error {
+	if len(ids) == 0 {
+		return errors.New("No ids provided")
+	}
 	return nil
 }
 
