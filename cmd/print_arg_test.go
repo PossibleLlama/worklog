@@ -174,7 +174,7 @@ func TestPrintArgsFormat(t *testing.T) {
 			false)
 
 		t.Run(testItem.name, func(t *testing.T) {
-			err := printArgs([]string{})
+			err := printArgs()
 
 			assert.Nil(t, err)
 			assert.Equal(t, testItem.expFormat.pretty, printOutputPretty)
@@ -275,7 +275,7 @@ func TestPrintArgsFilter(t *testing.T) {
 			false)
 
 		t.Run(testItem.name, func(t *testing.T) {
-			err := printArgs([]string{})
+			err := printArgs()
 
 			assert.Nil(t, err)
 			assert.Equal(t, testItem.expFilter.Title, printFilterTitle)
@@ -365,7 +365,7 @@ func TestPrintArgsDates(t *testing.T) {
 			testItem.week)
 
 		t.Run(testItem.name, func(t *testing.T) {
-			actualErr := printArgs([]string{})
+			actualErr := printArgs()
 
 			debugStringStartDate := fmt.Sprintf(
 				"Start: Exp: %s, Act: %s",
@@ -438,7 +438,7 @@ func TestPrintArgsIDs(t *testing.T) {
 			false)
 
 		t.Run(testItem.name, func(t *testing.T) {
-			err := printArgs(testItem.usedIDs)
+			err := printArgs(testItem.usedIDs...)
 
 			if testItem.expErr != nil {
 				assert.EqualError(t, err, testItem.expErr.Error(), fmt.Sprintf("Expected err '%s', but had '%s'", testItem.expErr.Error(), err))

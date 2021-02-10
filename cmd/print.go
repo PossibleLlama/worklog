@@ -44,10 +44,10 @@ been created between the dates provided.`,
 
 // PrintArgs public method to validate arguments
 func PrintArgs(cmd *cobra.Command, args []string) error {
-	return printArgs(args)
+	return printArgs(args...)
 }
 
-func printArgs(args []string) error {
+func printArgs(args ...string) error {
 	verifySingleFormat()
 	verifyFilters()
 	return verifyDatesAndIDs(args)
