@@ -174,7 +174,7 @@ func TestPrintArgsFormat(t *testing.T) {
 			false)
 
 		t.Run(testItem.name, func(t *testing.T) {
-			err := printArgs()
+			err := printArgs([]string{})
 
 			assert.Nil(t, err)
 			assert.Equal(t, testItem.expFormat.pretty, printOutputPretty)
@@ -275,7 +275,7 @@ func TestPrintArgsFilter(t *testing.T) {
 			false)
 
 		t.Run(testItem.name, func(t *testing.T) {
-			err := printArgs()
+			err := printArgs([]string{})
 
 			assert.Nil(t, err)
 			assert.Equal(t, testItem.expFilter.Title, printFilterTitle)
@@ -365,7 +365,7 @@ func TestPrintArgsDates(t *testing.T) {
 			testItem.week)
 
 		t.Run(testItem.name, func(t *testing.T) {
-			actualErr := printArgs()
+			actualErr := printArgs([]string{})
 
 			debugStringStartDate := fmt.Sprintf(
 				"Start: Exp: %s, Act: %s",
@@ -385,6 +385,32 @@ func TestPrintArgsDates(t *testing.T) {
 			// Check time values
 			assert.Equal(t, testItem.expSDate, printStartDate, debugStringStartDate)
 			assert.Equal(t, testItem.expEDate, printEndDate, debugStringEndDate)
+		})
+	}
+}
+
+func TestPrintArgsIDs(t *testing.T) {
+	randString := helpers.RandString(shortLength)
+
+	var tests = []struct {
+		name    string
+		sDate   string
+		usedIDs []string
+		expIDs  []string
+		expErr  error
+	}{
+		{
+			name:    "No date, one ID has no error",
+			sDate:   "",
+			usedIDs: []string{randString},
+			expIDs:  []string{randString},
+			expErr:  nil,
+		},
+	}
+
+	for _, testItem := range tests {
+		t.Run(testItem.name, func(t *testing.T) {
+
 		})
 	}
 }

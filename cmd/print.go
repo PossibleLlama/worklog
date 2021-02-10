@@ -44,13 +44,13 @@ been created between the dates provided.`,
 
 // PrintArgs public method to validate arguments
 func PrintArgs(cmd *cobra.Command, args []string) error {
-	return printArgs()
+	return printArgs(args)
 }
 
-func printArgs() error {
+func printArgs(args []string) error {
 	verifySingleFormat()
 	verifyFilters()
-	return verifyDates()
+	return verifyDatesAndIDs(args)
 }
 
 // PrintRun public method to run print
@@ -189,6 +189,21 @@ func verifyFilters() {
 			printFilterTags = append(printFilterTags, strings.TrimSpace(tag))
 		}
 	}
+}
+
+func verifyDatesAndIDs(ids []string) error {
+	errID := verifyIDs(ids)
+	errDates := verifyDates()
+	if errDates == nil {
+		return nil
+	} else if errID == nil {
+		return nil
+	}
+	return errDates
+}
+
+func verifyIDs(ids []string) error {
+	return nil
 }
 
 // verifyDates ensures the dates are valid
