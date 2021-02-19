@@ -62,6 +62,18 @@ func TestPrintRun(t *testing.T) {
 			endDate:   testDefaultEndDate,
 			expErr:    nil,
 		}, {
+			name:        "With only start date",
+			title:       helpers.RandString(shortLength),
+			description: helpers.RandString(shortLength),
+			author:      helpers.RandString(shortLength),
+			tags: []string{
+				helpers.RandString(shortLength),
+				helpers.RandString(shortLength)},
+			ids:       []string{},
+			startDate: testDefaultStartDate,
+			endDate:   time.Time{},
+			expErr:    nil,
+		}, {
 			name:        "With only ID",
 			title:       helpers.RandString(shortLength),
 			description: helpers.RandString(shortLength),
@@ -73,6 +85,19 @@ func TestPrintRun(t *testing.T) {
 				helpers.RandString(shortLength)},
 			startDate: time.Time{},
 			endDate:   time.Time{},
+			expErr:    nil,
+		}, {
+			name:        "With both date and ID",
+			title:       helpers.RandString(shortLength),
+			description: helpers.RandString(shortLength),
+			author:      helpers.RandString(shortLength),
+			tags: []string{
+				helpers.RandString(shortLength),
+				helpers.RandString(shortLength)},
+			ids: []string{
+				helpers.RandString(shortLength)},
+			startDate: testDefaultStartDate,
+			endDate:   testDefaultEndDate,
 			expErr:    nil,
 		}, {
 			name:        "Error",
