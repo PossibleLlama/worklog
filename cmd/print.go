@@ -58,7 +58,7 @@ func PrintRun(cmd *cobra.Command, args []string) error {
 	return printRun(args...)
 }
 
-func printRun(args ...string) error {
+func printRun(ids ...string) error {
 	// Passing args through to allow for specifying ID's
 	filter := &model.Work{
 		Title:       printFilterTitle,
@@ -68,7 +68,8 @@ func printRun(args ...string) error {
 		Tags:        printFilterTags,
 		When:        time.Time{},
 		CreatedAt:   time.Time{}}
-	worklogs, code, err := wlService.GetWorklogsBetween(printStartDate, printEndDate, filter, args...)
+
+	worklogs, code, err := wlService.GetWorklogsBetween(printStartDate, printEndDate, filter)
 	if err != nil {
 		return err
 	}
@@ -76,8 +77,8 @@ func printRun(args ...string) error {
 	if code == http.StatusNotFound && !printOutputJSON {
 		fmt.Printf("No work found between %s and %s with the given filter",
 			printStartDate, printEndDate.Add(time.Second*-1))
-		if len(args) > 0 {
-			fmt.Printf(" with id's %s", args)
+		if len(ids) > 0 {
+			fmt.Printf(" with id's %s", ids)
 		}
 		fmt.Println()
 	} else if printOutputPretty {
