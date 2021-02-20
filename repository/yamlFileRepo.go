@@ -135,10 +135,13 @@ func (*yamlFileRepo) GetByID(ID string, filter *model.Work) (*model.Work, error)
 		return nil, err
 	}
 
-	readWorklog, err := parseFileToWork(fileName)
+	if fileName == "" {
+		return nil, nil
+	}
+	wl, err = parseFileToWork(fileName)
 	if err != nil {
 		return nil, err
-	} else if workMatchesFilter(filter, readWorklog) {
+	} else if workMatchesFilter(filter, wl) {
 		return wl, nil
 	}
 	return nil, nil
@@ -179,7 +182,7 @@ func getFileByID(ID string) (string, error) {
 		}
 
 		splitFileName := strings.Split(path, "_")
-		if splitFileName[2] == ID {
+		if aInB(ID, splitFileName[2]) {
 			files = append(files, fullPath)
 		}
 		return nil
@@ -189,15 +192,21 @@ func getFileByID(ID string) (string, error) {
 		return "", err
 	}
 
-	indexOfMostRecentRevision := 0
+	indexOfMostRecentRevision := -1
+	highestRevision := 0
 	for index, fileName := range files {
 		split := strings.Split(fileName, "_")
-		currentRev, err := strconv.Atoi(split[2])
+		currentRev, err := strconv.Atoi(split[1])
 		if err != nil {
 			return "", err
-		} else if currentRev > indexOfMostRecentRevision {
+		} else if currentRev > highestRevision {
 			indexOfMostRecentRevision = index
+			highestRevision = currentRev
 		}
+	}
+
+	if indexOfMostRecentRevision == -1 {
+		return "", err
 	}
 
 	return files[indexOfMostRecentRevision], err

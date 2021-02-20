@@ -77,7 +77,9 @@ func (*service) GetWorklogsByID(filter *model.Work, ids ...string) ([]*model.Wor
 		if err != nil {
 			return worklogs, http.StatusInternalServerError, err
 		}
-		worklogs = append(worklogs, wl)
+		if wl != nil {
+			worklogs = append(worklogs, wl)
+		}
 	}
 	if len(worklogs) == 0 {
 		return worklogs, http.StatusNotFound, nil
