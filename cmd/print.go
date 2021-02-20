@@ -69,7 +69,16 @@ func printRun(ids ...string) error {
 		When:        time.Time{},
 		CreatedAt:   time.Time{}}
 
-	worklogs, code, err := wlService.GetWorklogsBetween(printStartDate, printEndDate, filter)
+	worklogs := make([]*model.Work, 0)
+	var code int
+	var err error
+
+	if len(ids) == 0 {
+		worklogs, code, err = wlService.GetWorklogsBetween(printStartDate, printEndDate, filter)
+	} else {
+		worklogs, code, err = wlService.GetWorklogsByID(filter, ids...)
+	}
+
 	if err != nil {
 		return err
 	}
