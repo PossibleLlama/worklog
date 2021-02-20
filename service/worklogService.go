@@ -71,5 +71,17 @@ func removeOldRevisions(wls []*model.Work) []*model.Work {
 
 func (*service) GetWorklogsByID(filter *model.Work, ids ...string) ([]*model.Work, int, error) {
 	worklogs := make(model.WorkList, 0)
-	return worklogs, http.StatusNotImplemented, nil
+	for _, ID := range ids {
+		// Implement using goroutines and channels
+		wl, err := repo.GetByID(ID, filter)
+		if err != nil {
+			return worklogs, http.StatusInternalServerError, err
+		}
+		worklogs = append(worklogs, wl)
+	}
+	if len(worklogs) == 0 {
+		return worklogs, http.StatusNotFound, nil
+	}
+	sort.Sort(worklogs)
+	return worklogs, http.StatusOK, nil
 }
