@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -126,6 +127,21 @@ func (*yamlFileRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *mo
 }
 
 func (*yamlFileRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
+	var wl *model.Work
+	var err error
+
+	fileName, err := getFileByID(ID)
+	if err != nil {
+		return nil, err
+	}
+
+	readWorklog, err := parseFileToWork(fileName)
+	if err != nil {
+		return nil, err
+	} else if workMatchesFilter(filter, readWorklog) {
+		return wl, nil
+	}
+	return nil, nil
 }
 
 func getAllFileNamesBetweenDates(startDate, endDate time.Time) ([]string, error) {
@@ -133,7 +149,7 @@ func getAllFileNamesBetweenDates(startDate, endDate time.Time) ([]string, error)
 
 	err := filepath.Walk(getWorklogDir(), func(fullPath string, info os.FileInfo, err error) error {
 		path := filepath.Base(fullPath)
-		if strings.Count(path, "_") < 1 {
+		if strings.Count(path, "_") < 2 {
 			return nil
 		}
 
@@ -151,6 +167,40 @@ func getAllFileNamesBetweenDates(startDate, endDate time.Time) ([]string, error)
 	})
 
 	return files, err
+}
+
+func getFileByID(ID string) (string, error) {
+	var files []string
+
+	err := filepath.Walk(getWorklogDir(), func(fullPath string, info os.FileInfo, err error) error {
+		path := filepath.Base(fullPath)
+		if strings.Count(path, "_") < 2 {
+			return nil
+		}
+
+		splitFileName := strings.Split(path, "_")
+		if splitFileName[2] == ID {
+			files = append(files, fullPath)
+		}
+		return nil
+	})
+
+	if err != nil || len(files) == 0 {
+		return "", err
+	}
+
+	indexOfMostRecentRevision := 0
+	for index, fileName := range files {
+		split := strings.Split(fileName, "_")
+		currentRev, err := strconv.Atoi(split[2])
+		if err != nil {
+			return "", err
+		} else if currentRev > indexOfMostRecentRevision {
+			indexOfMostRecentRevision = index
+		}
+	}
+
+	return files[indexOfMostRecentRevision], err
 }
 
 func parseFileToWork(filePath string) (*model.Work, error) {
