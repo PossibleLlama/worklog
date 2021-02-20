@@ -125,6 +125,9 @@ func (*yamlFileRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *mo
 	return worklogs, nil
 }
 
+func (*yamlFileRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
+}
+
 func getAllFileNamesBetweenDates(startDate, endDate time.Time) ([]string, error) {
 	var files []string
 
