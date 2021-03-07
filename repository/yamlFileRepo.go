@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -174,6 +175,8 @@ func getAllFileNamesBetweenDates(startDate, endDate time.Time) ([]string, error)
 
 func getFileByID(ID string) (string, error) {
 	var files []string
+	// TODO only use ids instead of files
+	ids := make(map[string]string)
 
 	err := filepath.Walk(getWorklogDir(), func(fullPath string, info os.FileInfo, err error) error {
 		path := filepath.Base(fullPath)
@@ -184,12 +187,16 @@ func getFileByID(ID string) (string, error) {
 		splitFileName := strings.Split(path, "_")
 		if aInB(ID, splitFileName[2]) {
 			files = append(files, fullPath)
+			ids[splitFileName[2]] = fullPath
 		}
 		return nil
 	})
 
 	if err != nil || len(files) == 0 {
 		return "", err
+	}
+	if len(ids) > 1 {
+		return "", errors.New("IDs are not unique")
 	}
 
 	indexOfMostRecentRevision := -1
