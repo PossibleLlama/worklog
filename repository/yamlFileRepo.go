@@ -174,8 +174,6 @@ func getAllFileNamesBetweenDates(startDate, endDate time.Time) ([]string, error)
 }
 
 func getFileByID(ID string) (string, error) {
-	var files []string
-	// TODO only use ids instead of files
 	ids := make(map[string]string)
 
 	err := filepath.Walk(getWorklogDir(), func(fullPath string, info os.FileInfo, err error) error {
@@ -186,37 +184,33 @@ func getFileByID(ID string) (string, error) {
 
 		splitFileName := strings.Split(path, "_")
 		if aInB(ID, splitFileName[2]) {
-			files = append(files, fullPath)
-			ids[splitFileName[2]] = fullPath
+			currentRev, err := strconv.Atoi(splitFileName[1])
+			if err != nil {
+				return err
+			} else if highestRevPath, ok := ids[splitFileName[2]]; ok {
+				highestRev, err := strconv.Atoi(strings.Split(highestRevPath, "_")[1])
+				if err != nil {
+					return err
+				} else if currentRev > highestRev {
+					ids[splitFileName[2]] = fullPath
+				}
+			} else {
+				ids[splitFileName[2]] = fullPath
+			}
 		}
 		return nil
 	})
 
-	if err != nil || len(files) == 0 {
+	if err != nil || len(ids) == 0 {
 		return "", err
-	}
-	if len(ids) > 1 {
+	} else if len(ids) > 1 {
 		return "", errors.New("IDs are not unique")
 	}
 
-	indexOfMostRecentRevision := -1
-	highestRevision := 0
-	for index, fileName := range files {
-		split := strings.Split(fileName, "_")
-		currentRev, err := strconv.Atoi(split[1])
-		if err != nil {
-			return "", err
-		} else if currentRev > highestRevision {
-			indexOfMostRecentRevision = index
-			highestRevision = currentRev
-		}
+	for _, v := range ids {
+		return v, nil
 	}
-
-	if indexOfMostRecentRevision == -1 {
-		return "", err
-	}
-
-	return files[indexOfMostRecentRevision], err
+	return "", errors.New("An unexpected error occurred")
 }
 
 func parseFileToWork(filePath string) (*model.Work, error) {
