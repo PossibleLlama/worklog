@@ -1,10 +1,10 @@
 name: "On commit to main"
 
 on:
-  push:
-    # workflows: ["On commit"]
-    # branches: [main]
-    # types: [completed]
+  workflow_run:
+    workflows: ["On commit"]
+    branches: [main]
+    types: [completed]
 
 jobs:
   store:
@@ -38,11 +38,10 @@ jobs:
     needs: [store]
 
     strategy:
-      binary:
-        - "32bit/worklog-freebsd"
-        - "64bit/worklog-freebsd"
-        - "32bit/worklog-linux"
-        - "64bit/worklog-linux"
+      matrix:
+        binary:
+          - "32bit/worklog-linux"
+          - "64bit/worklog-linux"
 
     steps:
     - name: Download
@@ -50,8 +49,11 @@ jobs:
       with:
         name: worklog-binary
 
+    - name: Permissions
+      run: "sudo chown -R $USER:$USER ./32bit ./64bit && sudo chmod +x 32bit/worklog-* 64bit/worklog-*"
+
     - name: Extract
-      run: "unzip ./worklog-binary && mv ./${{ matrix.binary }} ./worklog"
+      run: "mv ./${{ matrix.binary }} ./worklog"
 
     # TODO change to tests
     - name: Test
@@ -63,8 +65,9 @@ jobs:
     needs: [store]
 
     strategy:
-      binary:
-        - "64bit/worklog-darwin"
+      matrix:
+        binary:
+          - "64bit/worklog-darwin"
 
     steps:
     - name: Download
@@ -72,8 +75,11 @@ jobs:
       with:
         name: worklog-binary
 
+    - name: Permissions
+      run: "sudo chown -R $USER ./32bit ./64bit && sudo chmod +x 32bit/worklog-* 64bit/worklog-*"
+
     - name: Extract
-      run: "unzip ./worklog-binary && mv ./${{ matrix.binary }} ./worklog"
+      run: "mv ./${{ matrix.binary }} ./worklog"
 
     - name: Test
       run: "./worklog"
@@ -84,9 +90,10 @@ jobs:
     needs: [store]
 
     strategy:
-      binary:
-        - "32bit\\worklog-windows"
-        - "64bit\\worklog-windows"
+      matrix:
+        binary:
+          - "32bit\\worklog-windows"
+          - "64bit\\worklog-windows"
 
     steps:
     - name: Download
@@ -95,7 +102,7 @@ jobs:
         name: worklog-binary
 
     - name: Extract
-      run: "tar -xfz .\\worklog-binary && mv .\\${{ matrix.binary }} .\\worklog"
+      run: "move .\\${{ matrix.binary }} .\\worklog"
 
     - name: Test
       run: ".\\worklog"
