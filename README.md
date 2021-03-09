@@ -21,11 +21,11 @@ There is both a windows executeable, as well as a linux binary.
 ### Linux
 
 ```bash
-curl -L -O https://github.com/PossibleLlama/worklog/releases/download/v0.5.0/worklog-binary.zip
+curl -L -O $(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/possiblellama/worklog/releases | jq -r .[0].assets[0].browser_download_url)
 unzip worklog-binary.zip
-mv worklog /usr/bin/worklog
+mv 64bit/worklog-linux /usr/bin/worklog
+rm -rf 32bit 64bit
 rm worklog-binary.zip
-rm worklog.exe
 ```
 
 [GithubReleases]: https://github.com/PossibleLlama/worklog/releases
