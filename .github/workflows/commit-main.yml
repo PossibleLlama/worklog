@@ -31,3 +31,71 @@ jobs:
       with:
         name: worklog-binary
         path: bin
+
+  run-ubuntu:
+    name: Run-ubuntu
+    runs-on: ubuntu-latest
+    needs: [store]
+
+    strategy:
+      binary:
+        - "32bit/worklog-freebsd"
+        - "64bit/worklog-freebsd"
+        - "32bit/worklog-linux"
+        - "64bit/worklog-linux"
+
+    steps:
+    - name: Download
+      uses: actions/download-artifact@v2
+      with:
+        name: worklog-binary
+
+    - name: Extract
+      run: "unzip ./worklog-binary && mv ./${{ matrix.binary }} ./worklog"
+
+    # TODO change to tests
+    - name: Test
+      run: "./worklog"
+
+  run-mac:
+    name: Run-mac
+    runs-on: macos-latest
+    needs: [store]
+
+    strategy:
+      binary:
+        - "64bit/worklog-darwin"
+
+    steps:
+    - name: Download
+      uses: actions/download-artifact@v2
+      with:
+        name: worklog-binary
+
+    - name: Extract
+      run: "unzip ./worklog-binary && mv ./${{ matrix.binary }} ./worklog"
+
+    - name: Test
+      run: "./worklog"
+
+  run-windows:
+    name: Run-windows
+    runs-on: windows-latest
+    needs: [store]
+
+    strategy:
+      binary:
+        - "32bit\\worklog-windows"
+        - "64bit\\worklog-windows"
+
+    steps:
+    - name: Download
+      uses: actions/download-artifact@v2
+      with:
+        name: worklog-binary
+
+    - name: Extract
+      run: "tar -xfz .\\worklog-binary && mv .\\${{ matrix.binary }} .\\worklog"
+
+    - name: Test
+      run: ".\\worklog"
