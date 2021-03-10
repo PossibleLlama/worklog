@@ -1,10 +1,11 @@
 name: "On commit to main"
 
 on:
-  workflow_run:
-    workflows: ["On commit"]
-    branches: [main]
-    types: [completed]
+  push
+  # workflow_run:
+  #   workflows: ["On commit"]
+  #   branches: [main]
+  #   types: [completed]
 
 jobs:
   store:
@@ -92,8 +93,8 @@ jobs:
     strategy:
       matrix:
         binary:
-          - "32bit\\worklog-windows"
-          - "64bit\\worklog-windows"
+          - "32bit\\worklog-windows.exe"
+          - "64bit\\worklog-windows.exe"
 
     steps:
     - name: Download
@@ -102,7 +103,7 @@ jobs:
         name: worklog-binary
 
     - name: Extract
-      run: "move .\\${{ matrix.binary }} .\\worklog"
+      run: "move .\\${{ matrix.binary }} .\\worklog.exe"
 
     - name: Test
-      run: ".\\worklog"
+      run: ".\\worklog.exe"
