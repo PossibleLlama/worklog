@@ -170,8 +170,8 @@ func TestConfigWriteYaml(t *testing.T) {
 			name: "Full config",
 			cfg: &Config{
 				Defaults: Defaults{
-					Author:   helpers.RandString(shortLength),
-					Format:   helpers.RandString(shortLength),
+					Author:   helpers.RandAlphabeticString(shortLength),
+					Format:   helpers.RandAlphabeticString(shortLength),
 					Duration: shortLength,
 				},
 			},
@@ -180,8 +180,8 @@ func TestConfigWriteYaml(t *testing.T) {
 			name: "Partial config",
 			cfg: &Config{
 				Defaults: Defaults{
-					Author: helpers.RandString(shortLength),
-					Format: helpers.RandString(shortLength),
+					Author: helpers.RandAlphabeticString(shortLength),
+					Format: helpers.RandAlphabeticString(shortLength),
 				},
 			},
 			retErr: nil,

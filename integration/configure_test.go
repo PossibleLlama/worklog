@@ -44,7 +44,7 @@ format is not valid
 `
 
 func TestConfigure(t *testing.T) {
-	randString := helpers.RandString(length)
+	randString := helpers.RandAlphabeticString(length)
 
 	var tests = []struct {
 		name      string

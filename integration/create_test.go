@@ -14,7 +14,7 @@ import (
 )
 
 func TestCreate(t *testing.T) {
-	randString := helpers.RandString(length)
+	randString := helpers.RandAlphabeticString(length)
 	tm := time.Date(
 		time.Now().Year(),
 		time.Now().Month(),

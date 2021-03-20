@@ -31,11 +31,11 @@ func setProvidedPrintRunValues(fr format, title, description, author string, tag
 
 func TestPrintRun(t *testing.T) {
 	expWl := []*model.Work{model.NewWork(
-		helpers.RandString(shortLength),
-		helpers.RandString(shortLength),
-		helpers.RandString(shortLength),
+		helpers.RandAlphabeticString(shortLength),
+		helpers.RandAlphabeticString(shortLength),
+		helpers.RandAlphabeticString(shortLength),
 		shortLength,
-		[]string{helpers.RandString(shortLength)},
+		[]string{helpers.RandAlphabeticString(shortLength)},
 		time.Time{})}
 
 	var tests = []struct {
@@ -52,12 +52,12 @@ func TestPrintRun(t *testing.T) {
 	}{
 		{
 			name:        "With only date",
-			title:       helpers.RandString(shortLength),
-			description: helpers.RandString(shortLength),
-			author:      helpers.RandString(shortLength),
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength),
+			author:      helpers.RandAlphabeticString(shortLength),
 			tags: []string{
-				helpers.RandString(shortLength),
-				helpers.RandString(shortLength)},
+				helpers.RandAlphabeticString(shortLength),
+				helpers.RandAlphabeticString(shortLength)},
 			ids:       []string{},
 			startDate: testDefaultStartDate,
 			endDate:   testDefaultEndDate,
@@ -65,12 +65,12 @@ func TestPrintRun(t *testing.T) {
 			expErr:    nil,
 		}, {
 			name:        "With only start date",
-			title:       helpers.RandString(shortLength),
-			description: helpers.RandString(shortLength),
-			author:      helpers.RandString(shortLength),
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength),
+			author:      helpers.RandAlphabeticString(shortLength),
 			tags: []string{
-				helpers.RandString(shortLength),
-				helpers.RandString(shortLength)},
+				helpers.RandAlphabeticString(shortLength),
+				helpers.RandAlphabeticString(shortLength)},
 			ids:       []string{},
 			startDate: testDefaultStartDate,
 			endDate:   time.Time{},
@@ -78,45 +78,45 @@ func TestPrintRun(t *testing.T) {
 			expErr:    nil,
 		}, {
 			name:        "With only ID",
-			title:       helpers.RandString(shortLength),
-			description: helpers.RandString(shortLength),
-			author:      helpers.RandString(shortLength),
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength),
+			author:      helpers.RandAlphabeticString(shortLength),
 			tags: []string{
-				helpers.RandString(shortLength),
-				helpers.RandString(shortLength)},
+				helpers.RandAlphabeticString(shortLength),
+				helpers.RandAlphabeticString(shortLength)},
 			ids: []string{
-				helpers.RandString(shortLength)},
+				helpers.RandAlphabeticString(shortLength)},
 			startDate: time.Time{},
 			endDate:   time.Time{},
 			svcMethod: "GetWorklogsByID",
 			expErr:    nil,
 		}, {
 			name:        "With both date and ID",
-			title:       helpers.RandString(shortLength),
-			description: helpers.RandString(shortLength),
-			author:      helpers.RandString(shortLength),
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength),
+			author:      helpers.RandAlphabeticString(shortLength),
 			tags: []string{
-				helpers.RandString(shortLength),
-				helpers.RandString(shortLength)},
+				helpers.RandAlphabeticString(shortLength),
+				helpers.RandAlphabeticString(shortLength)},
 			ids: []string{
-				helpers.RandString(shortLength)},
+				helpers.RandAlphabeticString(shortLength)},
 			startDate: testDefaultStartDate,
 			endDate:   testDefaultEndDate,
 			svcMethod: "GetWorklogsByID",
 			expErr:    nil,
 		}, {
 			name:        "Error",
-			title:       helpers.RandString(shortLength),
-			description: helpers.RandString(shortLength),
-			author:      helpers.RandString(shortLength),
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength),
+			author:      helpers.RandAlphabeticString(shortLength),
 			tags: []string{
-				helpers.RandString(shortLength),
-				helpers.RandString(shortLength)},
+				helpers.RandAlphabeticString(shortLength),
+				helpers.RandAlphabeticString(shortLength)},
 			ids:       []string{},
 			startDate: testDefaultStartDate,
 			endDate:   testDefaultEndDate,
 			svcMethod: "GetWorklogsBetween",
-			expErr:    errors.New(helpers.RandString(shortLength)),
+			expErr:    errors.New(helpers.RandAlphabeticString(shortLength)),
 		},
 	}
 

@@ -29,7 +29,7 @@ const (
 
 func genCfg() *model.Config {
 	return model.NewConfig(
-		helpers.RandString(strLength),
+		helpers.RandAlphabeticString(strLength),
 		formats[rand.Intn(len(formats))],
 		int(src.Int63()))
 }
@@ -37,13 +37,13 @@ func genCfg() *model.Config {
 func genWl() *model.Work {
 	tags := make([]string, src.Intn(arrLength))
 	for index := range tags {
-		tags[index] = helpers.RandString(src.Intn(strLength))
+		tags[index] = helpers.RandAlphabeticString(src.Intn(strLength))
 	}
 
 	return model.NewWork(
-		helpers.RandString(strLength),
-		helpers.RandString(strLength),
-		helpers.RandString(strLength),
+		helpers.RandAlphabeticString(strLength),
+		helpers.RandAlphabeticString(strLength),
+		helpers.RandAlphabeticString(strLength),
 		int(src.Int63()),
 		tags,
 		time.Now(),
@@ -64,7 +64,7 @@ func TestConfigure(t *testing.T) {
 		{
 			name: "Errored",
 			cfg:  genCfg(),
-			err:  errors.New(helpers.RandString(strLength)),
+			err:  errors.New(helpers.RandAlphabeticString(strLength)),
 		},
 	}
 
@@ -105,7 +105,7 @@ func TestCreateWorklog(t *testing.T) {
 			name:   "Errored",
 			wl:     genWl(),
 			exCode: http.StatusInternalServerError,
-			err:    errors.New(helpers.RandString(strLength)),
+			err:    errors.New(helpers.RandAlphabeticString(strLength)),
 		},
 	}
 
@@ -232,7 +232,7 @@ func TestGetWorklogsBetween(t *testing.T) {
 			retWl:  []*model.Work{},
 			expWl:  []*model.Work{},
 			exCode: http.StatusInternalServerError,
-			err:    errors.New(helpers.RandString(strLength)),
+			err:    errors.New(helpers.RandAlphabeticString(strLength)),
 		},
 	}
 
