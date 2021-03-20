@@ -61,6 +61,13 @@ func TestPrint(t *testing.T) {
 			success:   true,
 			expOutput: "[]",
 		}, {
+			name:      "Print with valid ID pretty",
+			args:      []string{"a", "--pretty"},
+			success:   false,
+			expOutput: "Error: IDs are not unique",
+		},
+		// TODO give certainty to what ID's exist
+		{
 			name:      "No arguments",
 			args:      []string{},
 			success:   false,
