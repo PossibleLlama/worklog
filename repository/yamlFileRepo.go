@@ -204,7 +204,7 @@ func getFileByID(ID string) (string, error) {
 	if err != nil || len(ids) == 0 {
 		return "", err
 	} else if len(ids) > 1 {
-		return "", errors.New("IDs are not unique")
+		return "", fmt.Errorf("ID '%s' is not unique", ID)
 	}
 
 	for _, v := range ids {
