@@ -25,8 +25,7 @@ const length = 56
 func TestMain(m *testing.M) {
 	ran := false
 	for i := 0; i < 10; i++ {
-		now := time.Now()
-		if now.Second() == now.Round(time.Second).Second() {
+		if time.Now().Nanosecond() < 50 {
 			ran = true
 			m.Run()
 		}

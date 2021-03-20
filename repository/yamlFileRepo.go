@@ -1,11 +1,13 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -125,12 +127,33 @@ func (*yamlFileRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *mo
 	return worklogs, nil
 }
 
+func (*yamlFileRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
+	var wl *model.Work
+	var err error
+
+	fileName, err := getFileByID(ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if fileName == "" {
+		return nil, nil
+	}
+	wl, err = parseFileToWork(fileName)
+	if err != nil {
+		return nil, err
+	} else if workMatchesFilter(filter, wl) {
+		return wl, nil
+	}
+	return nil, nil
+}
+
 func getAllFileNamesBetweenDates(startDate, endDate time.Time) ([]string, error) {
 	var files []string
 
 	err := filepath.Walk(getWorklogDir(), func(fullPath string, info os.FileInfo, err error) error {
 		path := filepath.Base(fullPath)
-		if strings.Count(path, "_") < 1 {
+		if strings.Count(path, "_") < 2 {
 			return nil
 		}
 
@@ -148,6 +171,46 @@ func getAllFileNamesBetweenDates(startDate, endDate time.Time) ([]string, error)
 	})
 
 	return files, err
+}
+
+func getFileByID(ID string) (string, error) {
+	ids := make(map[string]string)
+
+	err := filepath.Walk(getWorklogDir(), func(fullPath string, info os.FileInfo, err error) error {
+		path := filepath.Base(fullPath)
+		if strings.Count(path, "_") < 2 {
+			return nil
+		}
+
+		splitFileName := strings.Split(path, "_")
+		if aInB(ID, splitFileName[2]) {
+			currentRev, err := strconv.Atoi(splitFileName[1])
+			if err != nil {
+				return err
+			} else if highestRevPath, ok := ids[splitFileName[2]]; ok {
+				highestRev, err := strconv.Atoi(strings.Split(highestRevPath, "_")[1])
+				if err != nil {
+					return err
+				} else if currentRev > highestRev {
+					ids[splitFileName[2]] = fullPath
+				}
+			} else {
+				ids[splitFileName[2]] = fullPath
+			}
+		}
+		return nil
+	})
+
+	if err != nil || len(ids) == 0 {
+		return "", err
+	} else if len(ids) > 1 {
+		return "", fmt.Errorf("ID '%s' is not unique", ID)
+	}
+
+	for _, v := range ids {
+		return v, nil
+	}
+	return "", errors.New("An unexpected error occurred")
 }
 
 func parseFileToWork(filePath string) (*model.Work, error) {

@@ -8,6 +8,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -37,6 +38,7 @@ one flag is required
 
 func TestPrint(t *testing.T) {
 	tm := time.Now().Add(time.Hour * length * length * -1)
+	randStr := helpers.RandString(20)
 	var tests = []struct {
 		name      string
 		args      []string
@@ -49,6 +51,23 @@ func TestPrint(t *testing.T) {
 			success:   true,
 			expOutput: fmt.Sprintf("No work found between %02d-%02d-%02d 00:00:00 +0000 UTC and %02d-%02d-%02d 23:59:59 +0000 UTC with the given filter\n", tm.Year(), int(tm.Month()), tm.Day(), tm.Year(), int(tm.Month()), tm.Day()),
 		}, {
+			name:      "Print with invalid ID pretty",
+			args:      []string{randStr, "--pretty"},
+			success:   true,
+			expOutput: fmt.Sprintf("No work found between 0001-01-01 00:00:00 +0000 UTC and 0000-12-31 23:59:59 +0000 UTC with the given filter with id's [%s]", randStr),
+		}, {
+			name:      "Print with invalid ID json",
+			args:      []string{randStr, "--json"},
+			success:   true,
+			expOutput: "[]",
+		}, {
+			name:      "Print with valid ID pretty",
+			args:      []string{"a", "--pretty"},
+			success:   false,
+			expOutput: "Error: ID 'a' is not unique",
+		},
+		// TODO give certainty to what ID's exist
+		{
 			name:      "No arguments",
 			args:      []string{},
 			success:   false,

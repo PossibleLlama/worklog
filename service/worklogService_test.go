@@ -272,3 +272,65 @@ func TestGetWorklogsBetween(t *testing.T) {
 		})
 	}
 }
+
+func TestGetWorklogByID(t *testing.T) {
+	wl1 := genWl()
+
+	var tests = []struct {
+		name   string
+		ids    []string
+		filter *model.Work
+		retWl  []*model.Work
+		expWl  []*model.Work
+		exCode int
+		err    error
+	}{
+		{
+			name:   "Single ID calls repo once",
+			ids:    []string{wl1.ID},
+			filter: wl1,
+			retWl:  []*model.Work{wl1},
+			expWl:  []*model.Work{wl1},
+			exCode: http.StatusOK,
+			err:    nil,
+		},
+	}
+
+	for _, testItem := range tests {
+		assert.Equal(t, len(testItem.ids), len(testItem.retWl), "Number of IDs and returned WL's must match")
+		mockRepo := new(repository.MockRepo)
+		for index := range testItem.ids {
+			mockRepo.On(
+				"GetByID",
+				testItem.ids[index],
+				testItem.filter).
+				Return(testItem.retWl[index], testItem.err)
+		}
+		svc := NewWorklogService(mockRepo)
+
+		t.Run(testItem.name, func(t *testing.T) {
+			returnedWls, returnedCode, returnedErr := svc.GetWorklogsByID(
+				testItem.filter,
+				testItem.ids...)
+
+			if returnedErr != nil {
+				assert.EqualError(t, testItem.err, returnedErr.Error())
+			} else {
+				assert.Nil(t, testItem.err)
+			}
+			assert.Equal(t, testItem.exCode, returnedCode)
+			assert.Equal(t, len(testItem.expWl), len(returnedWls))
+			assert.Equal(t, testItem.expWl, returnedWls)
+			for index := range testItem.expWl {
+				assert.Equal(t, testItem.expWl[index], returnedWls[index])
+			}
+			mockRepo.AssertExpectations(t)
+			for _, ID := range testItem.ids {
+				mockRepo.AssertCalled(t,
+					"GetByID",
+					ID,
+					testItem.filter)
+			}
+		})
+	}
+}

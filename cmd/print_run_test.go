@@ -44,20 +44,65 @@ func TestPrintRun(t *testing.T) {
 		description string
 		author      string
 		tags        []string
+		ids         []string
 		startDate   time.Time
 		endDate     time.Time
+		svcMethod   string
 		expErr      error
 	}{
 		{
-			name:        "Successful return",
+			name:        "With only date",
 			title:       helpers.RandString(shortLength),
 			description: helpers.RandString(shortLength),
 			author:      helpers.RandString(shortLength),
 			tags: []string{
 				helpers.RandString(shortLength),
 				helpers.RandString(shortLength)},
+			ids:       []string{},
 			startDate: testDefaultStartDate,
 			endDate:   testDefaultEndDate,
+			svcMethod: "GetWorklogsBetween",
+			expErr:    nil,
+		}, {
+			name:        "With only start date",
+			title:       helpers.RandString(shortLength),
+			description: helpers.RandString(shortLength),
+			author:      helpers.RandString(shortLength),
+			tags: []string{
+				helpers.RandString(shortLength),
+				helpers.RandString(shortLength)},
+			ids:       []string{},
+			startDate: testDefaultStartDate,
+			endDate:   time.Time{},
+			svcMethod: "GetWorklogsBetween",
+			expErr:    nil,
+		}, {
+			name:        "With only ID",
+			title:       helpers.RandString(shortLength),
+			description: helpers.RandString(shortLength),
+			author:      helpers.RandString(shortLength),
+			tags: []string{
+				helpers.RandString(shortLength),
+				helpers.RandString(shortLength)},
+			ids: []string{
+				helpers.RandString(shortLength)},
+			startDate: time.Time{},
+			endDate:   time.Time{},
+			svcMethod: "GetWorklogsByID",
+			expErr:    nil,
+		}, {
+			name:        "With both date and ID",
+			title:       helpers.RandString(shortLength),
+			description: helpers.RandString(shortLength),
+			author:      helpers.RandString(shortLength),
+			tags: []string{
+				helpers.RandString(shortLength),
+				helpers.RandString(shortLength)},
+			ids: []string{
+				helpers.RandString(shortLength)},
+			startDate: testDefaultStartDate,
+			endDate:   testDefaultEndDate,
+			svcMethod: "GetWorklogsByID",
 			expErr:    nil,
 		}, {
 			name:        "Error",
@@ -67,8 +112,10 @@ func TestPrintRun(t *testing.T) {
 			tags: []string{
 				helpers.RandString(shortLength),
 				helpers.RandString(shortLength)},
+			ids:       []string{},
 			startDate: testDefaultStartDate,
 			endDate:   testDefaultEndDate,
+			svcMethod: "GetWorklogsBetween",
 			expErr:    errors.New(helpers.RandString(shortLength)),
 		},
 	}
@@ -97,25 +144,46 @@ func TestPrintRun(t *testing.T) {
 		}
 
 		mockService := new(service.MockService)
-		mockService.
-			On("GetWorklogsBetween",
-				testItem.startDate,
-				testItem.endDate,
-				expFilter).
-			Return(expWl,
-				0,
-				testItem.expErr)
+		if testItem.svcMethod == "GetWorklogsBetween" {
+			mockService.
+				On(testItem.svcMethod,
+					testItem.startDate,
+					testItem.endDate,
+					expFilter).
+				Return(expWl,
+					0,
+					testItem.expErr)
+		} else {
+			mockService.
+				On(testItem.svcMethod,
+					expFilter,
+					testItem.ids).
+				Return(expWl,
+					0,
+					testItem.expErr)
+		}
 		wlService = mockService
 
 		t.Run(testItem.name, func(t *testing.T) {
-			actualErr := printRun()
+			actualErr := printRun(testItem.ids...)
 
 			mockService.AssertExpectations(t)
-			mockService.AssertCalled(t,
-				"GetWorklogsBetween",
-				testItem.startDate,
-				testItem.endDate,
-				expFilter)
+
+			if testItem.svcMethod == "GetWorklogsBetween" {
+				mockService.AssertCalled(t,
+					testItem.svcMethod,
+					testItem.startDate,
+					testItem.endDate,
+					expFilter)
+			} else {
+				mockService.
+					On(testItem.svcMethod,
+						expFilter,
+						testItem.ids).
+					Return(expWl,
+						0,
+						testItem.expErr)
+			}
 			assert.Equal(t, testItem.expErr, actualErr)
 		})
 	}

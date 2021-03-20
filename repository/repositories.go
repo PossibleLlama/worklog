@@ -13,4 +13,5 @@ type WorklogRepository interface {
 	Save(wl *model.Work) error
 
 	GetAllBetweenDates(startDate, endDate time.Time, filter *model.Work) ([]*model.Work, error)
+	GetByID(id string, filter *model.Work) (*model.Work, error)
 }

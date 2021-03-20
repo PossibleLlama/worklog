@@ -44,13 +44,13 @@ been created between the dates provided.`,
 
 // PrintArgs public method to validate arguments
 func PrintArgs(cmd *cobra.Command, args []string) error {
-	return printArgs()
+	return printArgs(args...)
 }
 
-func printArgs() error {
+func printArgs(args ...string) error {
 	verifySingleFormat()
 	verifyFilters()
-	return verifyDates()
+	return verifyDatesAndIDs(args)
 }
 
 // PrintRun public method to run print
@@ -58,7 +58,7 @@ func PrintRun(cmd *cobra.Command, args []string) error {
 	return printRun(args...)
 }
 
-func printRun(args ...string) error {
+func printRun(ids ...string) error {
 	// Passing args through to allow for specifying ID's
 	filter := &model.Work{
 		Title:       printFilterTitle,
@@ -68,14 +68,28 @@ func printRun(args ...string) error {
 		Tags:        printFilterTags,
 		When:        time.Time{},
 		CreatedAt:   time.Time{}}
-	worklogs, code, err := wlService.GetWorklogsBetween(printStartDate, printEndDate, filter)
+
+	worklogs := make([]*model.Work, 0)
+	var code int
+	var err error
+
+	if len(ids) == 0 {
+		worklogs, code, err = wlService.GetWorklogsBetween(printStartDate, printEndDate, filter)
+	} else {
+		worklogs, code, err = wlService.GetWorklogsByID(filter, ids...)
+	}
+
 	if err != nil {
 		return err
 	}
 
 	if code == http.StatusNotFound && !printOutputJSON {
-		fmt.Printf("No work found between %s and %s with the given filter\n",
+		fmt.Printf("No work found between %s and %s with the given filter",
 			printStartDate, printEndDate.Add(time.Second*-1))
+		if len(ids) > 0 {
+			fmt.Printf(" with id's %s", ids)
+		}
+		fmt.Println()
 	} else if printOutputPretty {
 		model.WriteAllWorkToPrettyText(os.Stdout, worklogs)
 	} else if printOutputYAML {
@@ -189,6 +203,24 @@ func verifyFilters() {
 			printFilterTags = append(printFilterTags, strings.TrimSpace(tag))
 		}
 	}
+}
+
+func verifyDatesAndIDs(ids []string) error {
+	errID := verifyIDs(ids)
+	errDates := verifyDates()
+	if errDates == nil {
+		return nil
+	} else if errID == nil {
+		return nil
+	}
+	return errDates
+}
+
+func verifyIDs(ids []string) error {
+	if len(ids) == 0 {
+		return errors.New("No ids provided")
+	}
+	return nil
 }
 
 // verifyDates ensures the dates are valid

@@ -29,3 +29,9 @@ func (m *MockRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *mode
 	args := m.Called(startDate, endDate, filter)
 	return args.Get(0).([]*model.Work), args.Error(1)
 }
+
+// GetByID WorklogRepository method for testing
+func (m *MockRepo) GetByID(id string, filter *model.Work) (*model.Work, error) {
+	args := m.Called(id, filter)
+	return args.Get(0).(*model.Work), args.Error(1)
+}
