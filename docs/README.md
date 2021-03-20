@@ -75,7 +75,7 @@ worklog create \
 ## Reading worklogs
 
 ``` bash
-worklog print <DATE> <FILTERS> <FORMAT>
+worklog print <DATE> <FILTERS> <FORMAT> <IDS>
 ```
 
 Printing all worklogs to the console that match your criteria.
@@ -123,10 +123,19 @@ the output is formatted.
 - `--yaml` Output format is yaml.
 - `--json` Output format is json.
 
+### IDs
+
+Id's of the specific worklogs that should be printed.
+This overrides the DATE and FILTERS flags.
+
+If any of the IDs is not unique, an error will be thrown.
+If the ID does not exist, a message will be printed to that affect.
+
 ### Example print
 
 ``` bash
 worklog print --today --json --tags "morning"
+worklog print "abc" "def"
 ```
 
 ## Configuration
