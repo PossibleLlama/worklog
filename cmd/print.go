@@ -32,6 +32,8 @@ var printOutputPretty bool
 var printOutputYAML bool
 var printOutputJSON bool
 
+var printAllFields bool
+
 // printCmd represents the print command
 var printCmd = &cobra.Command{
 	Use:   "print",
@@ -168,6 +170,14 @@ func init() {
 		"",
 		false,
 		"Output in a json format")
+
+	// Misc
+	printCmd.Flags().BoolVarP(
+		&printAllFields,
+		"all",
+		"a",
+		false,
+		"Output all fields of the worklog")
 }
 
 // verifySingleFormat ensures that there is only 1 output format used.

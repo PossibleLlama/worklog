@@ -17,6 +17,7 @@ Usage:
   worklog print [flags]
 
 Flags:
+  -a, --all                  Output all fields of the worklog
       --author string        Filter by work including author
       --description string   Filter by work including description
       --endDate string       Date till which to find worklogs. Only functions in conjunction with startDate
