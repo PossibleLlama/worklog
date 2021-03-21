@@ -125,7 +125,7 @@ func TestCreate(t *testing.T) {
 				actualFile := getActualWork(t, testItem.expFile, cfg)
 
 				assert.NotEmpty(t, actualFile.ID, "ID is empty")
-				assert.Len(t, actualFile.ID, 16, "ID is not of length 16")
+				assert.Len(t, actualFile.ID, 20, "ID is not of length 20")
 				assert.Equal(t, testItem.expFile.Title, actualFile.Title, "Title does not match")
 				assert.NotEqual(t, time.Time{}, actualFile.CreatedAt, "CreatedAt has defaulted")
 				assert.Equal(t, 1, actualFile.Revision, "Revision is not 1")

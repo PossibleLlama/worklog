@@ -12,7 +12,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-const idLength = 16
+const idLength = 20
 
 // Work data model.
 // stores information as to what
