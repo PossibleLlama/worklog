@@ -12,7 +12,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-const idLength = 16
+const idLength = 20
 
 // Work data model.
 // stores information as to what
@@ -44,7 +44,7 @@ func NewWork(title, description, author string, duration int, tags []string, whe
 	now, _ := helpers.GetStringAsDateTime(helpers.TimeFormat(time.Now()))
 	sort.Strings(tags)
 	return &Work{
-		ID:          helpers.RandString(idLength),
+		ID:          helpers.RandHexAlphaNumericString(idLength),
 		Revision:    1,
 		Title:       title,
 		Description: description,

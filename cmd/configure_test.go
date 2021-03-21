@@ -28,7 +28,7 @@ func TestConfigArgs(t *testing.T) {
 
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
-			setProvidedConfigureValues(helpers.RandString(shortLength), helpers.RandString(shortLength), shortLength)
+			setProvidedConfigureValues(helpers.RandAlphabeticString(shortLength), helpers.RandAlphabeticString(shortLength), shortLength)
 
 			configArgs()
 
@@ -49,16 +49,16 @@ func TestConfigRun(t *testing.T) {
 	}{
 		{
 			name:     "Sends model to service",
-			author:   helpers.RandString(shortLength),
+			author:   helpers.RandAlphabeticString(shortLength),
 			duration: shortLength,
 			format:   "yaml",
 			expErr:   nil,
 		}, {
 			name:     "Error propogated",
-			author:   helpers.RandString(shortLength),
+			author:   helpers.RandAlphabeticString(shortLength),
 			duration: shortLength,
 			format:   "yaml",
-			expErr:   errors.New(helpers.RandString(shortLength)),
+			expErr:   errors.New(helpers.RandAlphabeticString(shortLength)),
 		},
 	}
 
@@ -93,7 +93,7 @@ func TestOverrideDefaultsArgs(t *testing.T) {
 	}{
 		{
 			name:     "Override all variables",
-			author:   helpers.RandString(shortLength),
+			author:   helpers.RandAlphabeticString(shortLength),
 			duration: shortLength,
 			format:   "yaml",
 			expErr:   nil,
@@ -111,13 +111,13 @@ func TestOverrideDefaultsArgs(t *testing.T) {
 			expErr:   nil,
 		}, {
 			name:     "Non empty author",
-			author:   helpers.RandString(shortLength),
+			author:   helpers.RandAlphabeticString(shortLength),
 			duration: -1,
 			format:   "",
 			expErr:   nil,
 		}, {
 			name:     "Padded author",
-			author:   " " + helpers.RandString(shortLength),
+			author:   " " + helpers.RandAlphabeticString(shortLength),
 			duration: -1,
 			format:   "",
 			expErr:   nil,
@@ -161,7 +161,7 @@ func TestOverrideDefaultsArgs(t *testing.T) {
 			name:     "Invalid format",
 			author:   "",
 			duration: -1,
-			format:   helpers.RandString(shortLength),
+			format:   helpers.RandAlphabeticString(shortLength),
 			expErr:   errors.New("format is not valid"),
 		},
 	}

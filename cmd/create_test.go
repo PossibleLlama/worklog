@@ -56,9 +56,9 @@ func TestCreateArgs(t *testing.T) {
 	}{
 		{
 			name:        "Variables take defaults",
-			title:       helpers.RandString(shortLength),
-			description: helpers.RandString(shortLength),
-			author:      helpers.RandString(shortLength),
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength),
+			author:      helpers.RandAlphabeticString(shortLength),
 			duration:    shortLength,
 			tagsString:  "alpha, beta",
 			tags:        []string{"alpha", "beta"},
@@ -67,9 +67,9 @@ func TestCreateArgs(t *testing.T) {
 			expErr:      nil,
 		}, {
 			name:        "Negative duration",
-			title:       helpers.RandString(shortLength),
-			description: helpers.RandString(shortLength),
-			author:      helpers.RandString(shortLength),
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength),
+			author:      helpers.RandAlphabeticString(shortLength),
 			duration:    -1,
 			tagsString:  "1, 2",
 			tags:        []string{"1", "2"},
@@ -78,9 +78,9 @@ func TestCreateArgs(t *testing.T) {
 			expErr:      nil,
 		}, {
 			name:        "Padded title",
-			title:       "\n" + helpers.RandString(shortLength),
-			description: helpers.RandString(shortLength),
-			author:      helpers.RandString(shortLength),
+			title:       "\n" + helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength),
+			author:      helpers.RandAlphabeticString(shortLength),
 			duration:    -1,
 			tagsString:  "1, 2",
 			tags:        []string{"1", "2"},
@@ -89,9 +89,9 @@ func TestCreateArgs(t *testing.T) {
 			expErr:      nil,
 		}, {
 			name:        "Padded description",
-			title:       helpers.RandString(shortLength),
-			description: helpers.RandString(shortLength) + " ",
-			author:      helpers.RandString(shortLength),
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength) + " ",
+			author:      helpers.RandAlphabeticString(shortLength),
 			duration:    longLength,
 			tagsString:  "1, 2",
 			tags:        []string{"1", "2"},
@@ -100,8 +100,8 @@ func TestCreateArgs(t *testing.T) {
 			expErr:      nil,
 		}, {
 			name:        "Empty author uses default",
-			title:       helpers.RandString(shortLength),
-			description: helpers.RandString(shortLength),
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength),
 			author:      "",
 			duration:    longLength,
 			tagsString:  "1, 2",
@@ -111,9 +111,9 @@ func TestCreateArgs(t *testing.T) {
 			expErr:      nil,
 		}, {
 			name:        "Padded author",
-			title:       helpers.RandString(shortLength),
-			description: helpers.RandString(shortLength),
-			author:      helpers.RandString(shortLength) + " ",
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength),
+			author:      helpers.RandAlphabeticString(shortLength) + " ",
 			duration:    longLength,
 			tagsString:  "1, 2",
 			tags:        []string{"1", "2"},
@@ -122,9 +122,9 @@ func TestCreateArgs(t *testing.T) {
 			expErr:      nil,
 		}, {
 			name:        "Padded when",
-			title:       helpers.RandString(shortLength),
-			description: helpers.RandString(shortLength),
-			author:      helpers.RandString(shortLength),
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength),
+			author:      helpers.RandAlphabeticString(shortLength),
 			duration:    longLength,
 			tagsString:  "1, 2",
 			tags:        []string{"1", "2"},
@@ -133,13 +133,13 @@ func TestCreateArgs(t *testing.T) {
 			expErr:      nil,
 		}, {
 			name:        "Invalid when",
-			title:       helpers.RandString(shortLength),
-			description: helpers.RandString(shortLength),
-			author:      helpers.RandString(shortLength),
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength),
+			author:      helpers.RandAlphabeticString(shortLength),
 			duration:    longLength,
 			tagsString:  "1, 2",
 			tags:        []string{"1", "2"},
-			whenString:  helpers.RandString(shortLength),
+			whenString:  helpers.RandAlphabeticString(shortLength),
 			when:        time.Time{},
 			expErr:      errors.New("unable to parse string as date. 'parsing time"),
 		},
@@ -194,42 +194,42 @@ func TestCreateRun(t *testing.T) {
 	}{
 		{
 			name:        "Send to service",
-			title:       helpers.RandString(shortLength),
-			description: helpers.RandString(shortLength),
-			author:      helpers.RandString(shortLength),
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength),
+			author:      helpers.RandAlphabeticString(shortLength),
 			duration:    longLength,
 			tags: []string{
-				helpers.RandString(shortLength),
-				helpers.RandString(shortLength)},
+				helpers.RandAlphabeticString(shortLength),
+				helpers.RandAlphabeticString(shortLength)},
 			when:   now,
 			expErr: nil,
 		}, {
 			name:        "Default author is used",
-			title:       helpers.RandString(shortLength),
-			description: helpers.RandString(shortLength),
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength),
 			author:      "",
 			duration:    longLength,
 			tags: []string{
-				helpers.RandString(shortLength),
-				helpers.RandString(shortLength)},
+				helpers.RandAlphabeticString(shortLength),
+				helpers.RandAlphabeticString(shortLength)},
 			when:   now,
 			expErr: nil,
 		}, {
 			name:        "Error passed back",
-			title:       helpers.RandString(shortLength),
-			description: helpers.RandString(shortLength),
-			author:      helpers.RandString(shortLength),
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength),
+			author:      helpers.RandAlphabeticString(shortLength),
 			duration:    longLength,
 			tags: []string{
-				helpers.RandString(shortLength),
-				helpers.RandString(shortLength)},
+				helpers.RandAlphabeticString(shortLength),
+				helpers.RandAlphabeticString(shortLength)},
 			when:   now,
 			expErr: nil,
 		},
 	}
 
 	for _, testItem := range tests {
-		id := helpers.RandString(shortLength)
+		id := helpers.RandAlphabeticString(shortLength)
 		var w *model.Work
 		if testItem.author == "" {
 			w = &model.Work{

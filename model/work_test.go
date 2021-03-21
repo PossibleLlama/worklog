@@ -20,13 +20,13 @@ const (
 
 func genRandWork() *Work {
 	return NewWork(
-		helpers.RandString(shortLength),
-		helpers.RandString(longLength),
-		helpers.RandString(shortLength),
+		helpers.RandAlphabeticString(shortLength),
+		helpers.RandAlphabeticString(longLength),
+		helpers.RandAlphabeticString(shortLength),
 		shortLength,
 		[]string{
-			helpers.RandString(longLength),
-			helpers.RandString(longLength),
+			helpers.RandAlphabeticString(longLength),
+			helpers.RandAlphabeticString(longLength),
 		},
 		time.Now())
 }
@@ -57,7 +57,7 @@ func TestNewWork(t *testing.T) {
 			wTags:        []string{"alpha", "beta"},
 			wWhen:        validDate,
 			expected: &Work{
-				ID:          helpers.RandString(length),
+				ID:          helpers.RandAlphabeticString(length),
 				Revision:    1,
 				Title:       "title",
 				Description: "description",
@@ -76,7 +76,7 @@ func TestNewWork(t *testing.T) {
 			wTags:        []string{"4", "2", "1", "3"},
 			wWhen:        validDate,
 			expected: &Work{
-				ID:          helpers.RandString(length),
+				ID:          helpers.RandAlphabeticString(length),
 				Revision:    1,
 				Title:       "title",
 				Description: "description",
@@ -644,7 +644,7 @@ func TestWriteText(t *testing.T) {
 		}, {
 			name:   "Erroring",
 			work:   genRandWork(),
-			retErr: errors.New(helpers.RandString(shortLength)),
+			retErr: errors.New(helpers.RandAlphabeticString(shortLength)),
 		},
 	}
 
@@ -680,7 +680,7 @@ func TestWritePrettyText(t *testing.T) {
 		}, {
 			name:   "Erroring",
 			work:   genRandWork(),
-			retErr: errors.New(helpers.RandString(shortLength)),
+			retErr: errors.New(helpers.RandAlphabeticString(shortLength)),
 		},
 	}
 
@@ -724,7 +724,7 @@ func TestWriteAllToPrettyText(t *testing.T) {
 		}, {
 			name:   "Erroring",
 			work:   []*Work{genRandWork()},
-			retErr: errors.New(helpers.RandString(shortLength)),
+			retErr: errors.New(helpers.RandAlphabeticString(shortLength)),
 		},
 	}
 
@@ -770,7 +770,7 @@ func TestWriteYaml(t *testing.T) {
 		}, {
 			name:   "Erroring",
 			work:   genRandWork(),
-			retErr: errors.New(helpers.RandString(shortLength)),
+			retErr: errors.New(helpers.RandAlphabeticString(shortLength)),
 		},
 	}
 
@@ -863,7 +863,7 @@ func TestWritePrettyYaml(t *testing.T) {
 		}, {
 			name:   "Erroring",
 			work:   genRandWork(),
-			retErr: errors.New(helpers.RandString(shortLength)),
+			retErr: errors.New(helpers.RandAlphabeticString(shortLength)),
 		},
 	}
 
@@ -905,7 +905,7 @@ func TestWriteAllToPrettyYaml(t *testing.T) {
 		}, {
 			name:   "Erroring",
 			work:   []*Work{genRandWork()},
-			retErr: errors.New(helpers.RandString(shortLength)),
+			retErr: errors.New(helpers.RandAlphabeticString(shortLength)),
 		},
 	}
 
@@ -942,7 +942,7 @@ func TestWriteJson(t *testing.T) {
 		}, {
 			name:   "Erroring",
 			work:   genRandWork(),
-			retErr: errors.New(helpers.RandString(shortLength)),
+			retErr: errors.New(helpers.RandAlphabeticString(shortLength)),
 		},
 	}
 
@@ -976,7 +976,7 @@ func TestWritePrettyJson(t *testing.T) {
 		}, {
 			name:   "Erroring",
 			work:   genRandWork(),
-			retErr: errors.New(helpers.RandString(shortLength)),
+			retErr: errors.New(helpers.RandAlphabeticString(shortLength)),
 		},
 	}
 
@@ -1018,7 +1018,7 @@ func TestWriteAllToPrettyJson(t *testing.T) {
 		}, {
 			name:   "Erroring",
 			work:   []*Work{genRandWork()},
-			retErr: errors.New(helpers.RandString(shortLength)),
+			retErr: errors.New(helpers.RandAlphabeticString(shortLength)),
 		},
 	}
 

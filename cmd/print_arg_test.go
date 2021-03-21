@@ -185,7 +185,7 @@ func TestPrintArgsFormat(t *testing.T) {
 }
 
 func TestPrintArgsFilter(t *testing.T) {
-	randString := helpers.RandString(shortLength)
+	randString := helpers.RandAlphabeticString(shortLength)
 
 	var tests = []struct {
 		name       string
@@ -288,7 +288,7 @@ func TestPrintArgsFilter(t *testing.T) {
 }
 
 func TestPrintArgsDates(t *testing.T) {
-	randString := helpers.RandString(shortLength)
+	randString := helpers.RandAlphabeticString(shortLength)
 
 	var testMondayStartDate = helpers.GetPreviousMonday(now)
 
@@ -400,14 +400,14 @@ func TestPrintArgsIDs(t *testing.T) {
 			name:  "No date, one ID has no error",
 			sDate: "",
 			usedIDs: []string{
-				helpers.RandString(shortLength)},
+				helpers.RandAlphabeticString(shortLength)},
 			expErr: nil,
 		}, {
 			name:  "No date, two ID's has no error",
 			sDate: "",
 			usedIDs: []string{
-				helpers.RandString(shortLength),
-				helpers.RandString(shortLength)},
+				helpers.RandAlphabeticString(shortLength),
+				helpers.RandAlphabeticString(shortLength)},
 			expErr: nil,
 		}, {
 			name:    "Date with no ID has no error",
@@ -418,7 +418,7 @@ func TestPrintArgsIDs(t *testing.T) {
 			name:  "Date and ID has no error",
 			sDate: helpers.TimeFormat(time.Now()),
 			usedIDs: []string{
-				helpers.RandString(shortLength)},
+				helpers.RandAlphabeticString(shortLength)},
 			expErr: nil,
 		}, {
 			name:    "No date or ID has error",

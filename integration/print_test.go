@@ -38,7 +38,7 @@ one flag is required
 
 func TestPrint(t *testing.T) {
 	tm := time.Now().Add(time.Hour * length * length * -1)
-	randStr := helpers.RandString(20)
+	randStr := helpers.RandAlphabeticString(20)
 	var tests = []struct {
 		name      string
 		args      []string
