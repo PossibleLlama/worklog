@@ -93,11 +93,23 @@ func printRun(ids ...string) error {
 		}
 		fmt.Println()
 	} else if printOutputPretty {
-		model.WriteAllWorkToPrettyText(os.Stdout, worklogs)
+		if printAllFields {
+			model.WriteAllWorkToText(os.Stdout, worklogs)
+		} else {
+			model.WriteAllWorkToPrettyText(os.Stdout, worklogs)
+		}
 	} else if printOutputYAML {
-		model.WriteAllWorkToPrettyYAML(os.Stdout, worklogs)
+		if printAllFields {
+			model.WriteAllWorkToYAML(os.Stdout, worklogs)
+		} else {
+			model.WriteAllWorkToPrettyYAML(os.Stdout, worklogs)
+		}
 	} else {
-		model.WriteAllWorkToPrettyJSON(os.Stdout, worklogs)
+		if printAllFields {
+			model.WriteAllWorkToJSON(os.Stdout, worklogs)
+		} else {
+			model.WriteAllWorkToPrettyJSON(os.Stdout, worklogs)
+		}
 	}
 	return nil
 }
