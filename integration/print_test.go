@@ -22,14 +22,14 @@ Flags:
       --description string   Filter by work including description
       --endDate string       Date till which to find worklogs. Only functions in conjunction with startDate
   -h, --help                 help for print
-      --json                 Output in a json format
-      --pretty               Output in a text format
+  -j, --json                 Output in a json format
+  -p, --pretty               Output in a text format
       --startDate string     Date from which to find worklogs
       --tags string          Filter by work including all tags
-      --thisWeek             Prints this weeks work
+  -w, --thisWeek             Prints this weeks work
       --title string         Filter by work including title
-      --today                Print today's work
-      --yaml                 Output in a yaml format
+  -t, --today                Print today's work
+  -y, --yaml                 Output in a yaml format
 
 Global Flags:
       --config string   config file (default is $HOME/.worklog/config.yml)

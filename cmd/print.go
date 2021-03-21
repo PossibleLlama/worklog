@@ -119,13 +119,13 @@ func init() {
 	printCmd.Flags().BoolVarP(
 		&printToday,
 		"today",
-		"",
+		"t",
 		false,
 		"Print today's work")
 	printCmd.Flags().BoolVarP(
 		&printThisWeek,
 		"thisWeek",
-		"",
+		"w",
 		false,
 		"Prints this weeks work")
 
@@ -155,19 +155,19 @@ func init() {
 	printCmd.Flags().BoolVarP(
 		&printOutputPretty,
 		"pretty",
-		"",
+		"p",
 		false,
 		"Output in a text format")
 	printCmd.Flags().BoolVarP(
 		&printOutputYAML,
 		"yaml",
-		"",
+		"y",
 		false,
 		"Output in a yaml format")
 	printCmd.Flags().BoolVarP(
 		&printOutputJSON,
 		"json",
-		"",
+		"j",
 		false,
 		"Output in a json format")
 
