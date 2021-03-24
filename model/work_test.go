@@ -652,7 +652,7 @@ func TestWriteText(t *testing.T) {
 		t.Run(testItem.name, func(t *testing.T) {
 			writer := new(mockWriter)
 			writer.
-				On("Write", []byte(testItem.work.String())).
+				On("Write", []byte(testItem.work.StringNewLine())).
 				Return(1, testItem.retErr)
 
 			actualErr := testItem.work.WriteText(writer)
@@ -660,7 +660,7 @@ func TestWriteText(t *testing.T) {
 			writer.AssertExpectations(t)
 			writer.AssertCalled(t,
 				"Write",
-				[]byte(testItem.work.String()),
+				[]byte(testItem.work.StringNewLine()),
 			)
 			assert.Equal(t, testItem.retErr, actualErr)
 		})

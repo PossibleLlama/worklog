@@ -106,6 +106,39 @@ func (w Work) String() string {
 	return strings.TrimSpace(finalString[:len(finalString)-1])
 }
 
+// StringNewLine generates a stringified version of the Work
+func (w Work) StringNewLine() string {
+	finalString := " "
+	if w.ID != "" {
+		finalString = fmt.Sprintf("%sID: %s\n", finalString, w.ID)
+	}
+	if w.Revision > 0 {
+		finalString = fmt.Sprintf("%sRevision: %d\n", finalString, w.Revision)
+	}
+	if w.Title != "" {
+		finalString = fmt.Sprintf("%sTitle: %s\n", finalString, w.Title)
+	}
+	if w.Description != "" {
+		finalString = fmt.Sprintf("%sDescription: %s\n", finalString, w.Description)
+	}
+	if w.Author != "" {
+		finalString = fmt.Sprintf("%sAuthor: %s\n", finalString, w.Author)
+	}
+	if w.Duration != 0 {
+		finalString = fmt.Sprintf("%sDuration: %d\n", finalString, w.Duration)
+	}
+	if len(w.Tags) > 0 {
+		finalString = fmt.Sprintf("%sTags: [%s]\n", finalString, strings.Join(w.Tags, ", "))
+	}
+	if !w.When.Equal(time.Time{}) {
+		finalString = fmt.Sprintf("%sWhen: %s\n", finalString, helpers.TimeFormat(w.When))
+	}
+	if !w.CreatedAt.Equal(time.Time{}) {
+		finalString = fmt.Sprintf("%sCreatedAt: %s\n", finalString, helpers.TimeFormat(w.CreatedAt))
+	}
+	return strings.TrimSpace(finalString[:len(finalString)-1])
+}
+
 // PrettyString works like string, but with greater spacing and line breaks
 func (w Work) PrettyString() string {
 	pw := workToPrettyWork(w)
@@ -136,7 +169,7 @@ func (w Work) PrettyString() string {
 
 // WriteText takes a writer and outputs a text representation of Work to it
 func (w Work) WriteText(writer io.Writer) error {
-	_, err := writer.Write([]byte(w.String()))
+	_, err := writer.Write([]byte(w.StringNewLine()))
 	return err
 }
 
