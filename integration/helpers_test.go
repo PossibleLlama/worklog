@@ -7,7 +7,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
 	"github.com/PossibleLlama/worklog/repository"
 	"gopkg.in/yaml.v2"
@@ -19,23 +18,7 @@ const binaryName = "worklog"
 
 const length = 56
 
-// If we are in the first half of the second.
-// Will hopefully cut out the failures when a second rolls over
-// and causes values to not match.
-func TestMain(m *testing.M) {
-	ran := false
-	for i := 0; i < 10; i++ {
-		if time.Now().Nanosecond() < 50 {
-			ran = true
-			m.Run()
-		}
-		time.Sleep(time.Millisecond * 100)
-	}
-	if !ran {
-		fmt.Print("Didn't pause correctly")
-		m.Run()
-	}
-}
+var tm = time.Date(1974, time.May, 19, 1, 2, 3, 0, time.Now().Location())
 
 func getActualConfig(t *testing.T) *model.Config {
 	var actualFile model.Config
@@ -61,7 +44,7 @@ func getActualWork(t *testing.T, exp *model.Work, cfg *model.Config) *model.Work
 		exp.Author = cfg.Defaults.Author
 	}
 	ymlRepo := repository.NewYamlFileRepo()
-	wls, _ := ymlRepo.GetAllBetweenDates(helpers.Midnight(time.Now()), helpers.Midnight(time.Now()).Add(time.Hour*24), exp)
+	wls, _ := ymlRepo.GetAllBetweenDates(tm.Add(time.Hour*1*-1), tm.Add(time.Hour*1), exp)
 
 	fmt.Printf("\n********\n%d WL's found for filter %s\n", len(wls), exp)
 

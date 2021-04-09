@@ -8,6 +8,8 @@ import (
 	"testing"
 	"time"
 
+	"bou.ke/monkey"
+
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/stretchr/testify/assert"
 )
@@ -38,7 +40,11 @@ one flag is required
 `
 
 func TestPrint(t *testing.T) {
-	tm := time.Now().Add(time.Hour * length * length * -1)
+	patch := monkey.Patch(time.Now, func() time.Time { return tm })
+	defer patch.Unpatch()
+
+	unusedDate := time.Date(1980, time.February, 10, 1, 2, 3, 0, time.Now().Location())
+
 	randStr := helpers.RandAlphabeticString(20)
 	var tests = []struct {
 		name      string
@@ -48,9 +54,9 @@ func TestPrint(t *testing.T) {
 	}{
 		{
 			name:      "Print with start and end dates pretty, no wl",
-			args:      []string{"--startDate", tm.Format(time.RFC3339), "--endDate", tm.Format(time.RFC3339), "--pretty"},
+			args:      []string{"--startDate", unusedDate.Format(time.RFC3339), "--endDate", unusedDate.Format(time.RFC3339), "--pretty"},
 			success:   true,
-			expOutput: fmt.Sprintf("No work found between %02d-%02d-%02d 00:00:00 +0000 UTC and %02d-%02d-%02d 23:59:59 +0000 UTC with the given filter\n", tm.Year(), int(tm.Month()), tm.Day(), tm.Year(), int(tm.Month()), tm.Day()),
+			expOutput: fmt.Sprintf("No work found between %02d-%02d-%02d 00:00:00 +0000 UTC and %02d-%02d-%02d 23:59:59 +0000 UTC with the given filter\n", unusedDate.Year(), int(unusedDate.Month()), unusedDate.Day(), unusedDate.Year(), int(unusedDate.Month()), unusedDate.Day()),
 		}, {
 			name:      "Print with invalid ID pretty",
 			args:      []string{randStr, "--pretty"},
@@ -78,19 +84,19 @@ func TestPrint(t *testing.T) {
 		// and the wl's generated from that.
 		{
 			name:      "Print with start and end dates pretty, multiple wl",
-			args:      []string{"--startDate", time.Now().Format(time.RFC3339), "--endDate", time.Now().Format(time.RFC3339), "--pretty"},
+			args:      []string{"--startDate", tm.Format(time.RFC3339), "--endDate", tm.Format(time.RFC3339), "--pretty"},
 			success:   true,
-			expOutput: fmt.Sprintf("\nTitle: Create new\nAuthor: %s\nDuration: 15\nTags: []\nWhen: ", getActualConfig(t).Defaults.Author),
+			expOutput: fmt.Sprintf("\nTitle: Create new\nAuthor: %s\nDuration: %d\nTags: []\nWhen: ", getActualConfig(t).Defaults.Author, getActualConfig(t).Defaults.Duration),
 		}, {
 			name:      "Print with start and end dates yaml, multiple wl",
-			args:      []string{"--startDate", time.Now().Format(time.RFC3339), "--endDate", time.Now().Format(time.RFC3339), "--yaml"},
+			args:      []string{"--startDate", tm.Format(time.RFC3339), "--endDate", tm.Format(time.RFC3339), "--yaml"},
 			success:   true,
-			expOutput: fmt.Sprintf("\n  title: Create new\n  author: %s\n  duration: 15\n  tags: [\"\"]\n  when: ", getActualConfig(t).Defaults.Author),
+			expOutput: fmt.Sprintf("\n  title: Create new\n  author: %s\n  duration: %d\n  tags: [\"\"]\n  when: ", getActualConfig(t).Defaults.Author, getActualConfig(t).Defaults.Duration),
 		}, {
 			name:      "Print with start and end dates json, multiple wl",
-			args:      []string{"--startDate", time.Now().Format(time.RFC3339), "--endDate", time.Now().Format(time.RFC3339), "--json"},
+			args:      []string{"--startDate", tm.Format(time.RFC3339), "--endDate", tm.Format(time.RFC3339), "--json"},
 			success:   true,
-			expOutput: fmt.Sprintf("\",\"title\":\"Create new\",\"author\":\"%s\",\"duration\":15,\"tags\":[\"\"],\"when\":", getActualConfig(t).Defaults.Author),
+			expOutput: fmt.Sprintf("\",\"title\":\"Create new\",\"author\":\"%s\",\"duration\":%d,\"tags\":[\"\"],\"when\":", getActualConfig(t).Defaults.Author, getActualConfig(t).Defaults.Duration),
 		},
 	}
 
