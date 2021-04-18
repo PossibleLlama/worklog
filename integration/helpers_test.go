@@ -18,7 +18,10 @@ const binaryName = "worklog"
 
 const length = 56
 
-var tm = time.Date(1974, time.May, 19, 1, 2, 3, 0, time.Now().Location())
+var now = time.Now()
+var tmZoneEurope, _ = time.LoadLocation("Europe/Berlin")
+var tmUTC = time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(), 0, time.UTC)
+var tmEurope = time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(), 0, tmZoneEurope)
 
 func getActualConfig(t *testing.T) *model.Config {
 	var actualFile model.Config
@@ -44,9 +47,7 @@ func getActualWork(t *testing.T, exp *model.Work, cfg *model.Config) *model.Work
 		exp.Author = cfg.Defaults.Author
 	}
 	ymlRepo := repository.NewYamlFileRepo()
-	wls, _ := ymlRepo.GetAllBetweenDates(tm.Add(time.Hour*1*-1), tm.Add(time.Hour*1), exp)
-
-	fmt.Printf("\n********\n%d WL's found for filter %s\n", len(wls), exp)
+	wls, _ := ymlRepo.GetAllBetweenDates(tmUTC.Add(time.Hour*1*-1), tmUTC.Add(time.Hour*1), exp)
 
 	var actual *model.Work
 	switch len(wls) {
