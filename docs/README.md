@@ -80,6 +80,9 @@ worklog print <DATE> <FILTERS> <FORMAT> <IDS>
 
 Printing all worklogs to the console that match your criteria.
 
+By default a subset of fields will be displayed, however the `--all`
+flag can be used to show all of them.
+
 ### Date
 
 One of the following must be provided within the flags.
@@ -88,9 +91,9 @@ One of the following must be provided within the flags.
   date.
 - `--endDate "2001/01/01"` Print all work between `startDate` and
   `endDate`. Must be used in conjunction with `--startDate`.
-- `--today` Print all work complete since midnight. This is not the
+- `--today`, `-t` Print all work complete since midnight. This is not the
   last 24 hours.
-- `--thisWeek` Print all work completed since midnight on the last
+- `--thisWeek`, `-w` Print all work completed since midnight on the last
   Monday. This is not the last 168 hours.
 
 ### Filters
@@ -119,9 +122,15 @@ Valid arguments are:
 Optionally, you can provide 1 of the following which will change how
 the output is formatted.
 
-- `--pretty` Output format is text. (Default)
-- `--yaml` Output format is yaml.
-- `--json` Output format is json.
+- `--pretty`, `-p` Output format is text. (Default)
+- `--yaml`, `-y` Output format is yaml.
+- `--json`, `-j` Output format is json.
+
+### Misc
+
+Other fields that can additionally be used.
+
+- `--all`, `-a` Output all fields.
 
 ### IDs
 
