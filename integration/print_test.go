@@ -78,6 +78,16 @@ func TestPrint(t *testing.T) {
 		// Relies on the create_test.go tests having been ran,
 		// and the wl's generated from that.
 		{
+			name:      "Print all fields",
+			args:      []string{"--startDate", tmUTC.Format(time.RFC3339), "--endDate", tmUTC.Format(time.RFC3339), "--all", "--pretty"},
+			success:   true,
+			expOutput: fmt.Sprintf("\nRevision: 1\nTitle: Create new\nAuthor: %s\nDuration: %d\nTags: []\nWhen: ", getActualConfig(t).Defaults.Author, getActualConfig(t).Defaults.Duration),
+		}, {
+			name:      "Print all fields, shorthand",
+			args:      []string{"--startDate", tmUTC.Format(time.RFC3339), "--endDate", tmUTC.Format(time.RFC3339), "-ap"},
+			success:   true,
+			expOutput: fmt.Sprintf("\nRevision: 1\nTitle: Create new\nAuthor: %s\nDuration: %d\nTags: []\nWhen: ", getActualConfig(t).Defaults.Author, getActualConfig(t).Defaults.Duration),
+		}, {
 			name:      "Print with start and end dates pretty, multiple wl",
 			args:      []string{"--startDate", tmUTC.Format(time.RFC3339), "--endDate", tmUTC.Format(time.RFC3339), "--pretty"},
 			success:   true,
