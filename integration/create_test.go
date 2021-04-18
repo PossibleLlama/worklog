@@ -14,16 +14,6 @@ import (
 )
 
 func TestCreate(t *testing.T) {
-	realNow := time.Date(
-		time.Now().Year(),
-		time.Now().Month(),
-		time.Now().Day(),
-		time.Now().Hour(),
-		time.Now().Minute(),
-		time.Now().Second(),
-		0,
-		time.Now().Location())
-
 	randString := helpers.RandAlphabeticString(length)
 
 	var tests = []struct {
@@ -45,7 +35,7 @@ func TestCreate(t *testing.T) {
 			name:      "No arguments",
 			args:      []string{},
 			success:   false,
-			expOutput: fmt.Sprintf("Error: required flag(s) \"title\" not set\nUsage:\n  worklog create [flags]\n\nFlags:\n      --author string        The author of the work\n      --description string   A description of the work\n      --duration int         Length of time spent on the work (default -1)\n  -h, --help                 help for create\n      --tags string          Comma seperated list of tags this work relates to\n      --title string         A short description of the work done\n      --when string          When the work was worked in RFC3339 format (default \"%s\")\n\nGlobal Flags:\n      --config string   config file (default is $HOME/.worklog/config.yml)\n\nrequired flag(s) \"title\" not set\n", realNow.Format(time.RFC3339)),
+			expOutput: fmt.Sprintf("Error: required flag(s) \"title\" not set\nUsage:\n  worklog create [flags]\n\nFlags:\n      --author string        The author of the work\n      --description string   A description of the work\n      --duration int         Length of time spent on the work (default -1)\n  -h, --help                 help for create\n      --tags string          Comma seperated list of tags this work relates to\n      --title string         A short description of the work done\n      --when string          When the work was worked in RFC3339 format (default \"%s\")\n\nGlobal Flags:\n      --config string   config file (default is $HOME/.worklog/config.yml)\n\nrequired flag(s) \"title\" not set\n", time.Now().Format(time.RFC3339)),
 			expFile:   nil,
 		}, {
 			name:      "Create with description",
