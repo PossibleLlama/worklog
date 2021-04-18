@@ -8,8 +8,6 @@ import (
 	"testing"
 	"time"
 
-	"bou.ke/monkey"
-
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/stretchr/testify/assert"
 )
@@ -40,9 +38,6 @@ one flag is required
 `
 
 func TestPrint(t *testing.T) {
-	patch := monkey.Patch(time.Now, func() time.Time { return tm })
-	defer patch.Unpatch()
-
 	unusedDate := time.Date(1980, time.February, 10, 1, 2, 3, 0, time.Now().Location())
 
 	randStr := helpers.RandAlphabeticString(20)

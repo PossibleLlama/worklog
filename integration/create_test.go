@@ -8,8 +8,6 @@ import (
 	"testing"
 	"time"
 
-	"bou.ke/monkey"
-
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
 	"github.com/stretchr/testify/assert"
@@ -25,9 +23,6 @@ func TestCreate(t *testing.T) {
 		time.Now().Second(),
 		0,
 		time.Now().Location())
-
-	patch := monkey.Patch(time.Now, func() time.Time { return tm })
-	defer patch.Unpatch()
 
 	randString := helpers.RandAlphabeticString(length)
 
