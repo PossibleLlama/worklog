@@ -106,6 +106,39 @@ func (w Work) String() string {
 	return strings.TrimSpace(finalString[:len(finalString)-1])
 }
 
+// StringNewLine generates a stringified version of the Work
+func (w Work) StringNewLine() string {
+	finalString := " "
+	if w.ID != "" {
+		finalString = fmt.Sprintf("%sID: %s\n", finalString, w.ID)
+	}
+	if w.Revision > 0 {
+		finalString = fmt.Sprintf("%sRevision: %d\n", finalString, w.Revision)
+	}
+	if w.Title != "" {
+		finalString = fmt.Sprintf("%sTitle: %s\n", finalString, w.Title)
+	}
+	if w.Description != "" {
+		finalString = fmt.Sprintf("%sDescription: %s\n", finalString, w.Description)
+	}
+	if w.Author != "" {
+		finalString = fmt.Sprintf("%sAuthor: %s\n", finalString, w.Author)
+	}
+	if w.Duration != 0 {
+		finalString = fmt.Sprintf("%sDuration: %d\n", finalString, w.Duration)
+	}
+	if len(w.Tags) > 0 {
+		finalString = fmt.Sprintf("%sTags: [%s]\n", finalString, strings.Join(w.Tags, ", "))
+	}
+	if !w.When.Equal(time.Time{}) {
+		finalString = fmt.Sprintf("%sWhen: %s\n", finalString, helpers.TimeFormat(w.When))
+	}
+	if !w.CreatedAt.Equal(time.Time{}) {
+		finalString = fmt.Sprintf("%sCreatedAt: %s\n", finalString, helpers.TimeFormat(w.CreatedAt))
+	}
+	return strings.TrimSpace(finalString[:len(finalString)-1])
+}
+
 // PrettyString works like string, but with greater spacing and line breaks
 func (w Work) PrettyString() string {
 	pw := workToPrettyWork(w)
@@ -136,17 +169,35 @@ func (w Work) PrettyString() string {
 
 // WriteText takes a writer and outputs a text representation of Work to it
 func (w Work) WriteText(writer io.Writer) error {
-	_, err := writer.Write([]byte(w.String()))
+	_, err := writer.Write([]byte(w.StringNewLine()))
 	return err
 }
 
-// WritePrettyText takes a writer and outputs a text representation of Work to it
+// WritePrettyText takes a writer and outputs a text representation of Work to
+// it
 func (w Work) WritePrettyText(writer io.Writer) error {
 	_, err := writer.Write([]byte(w.PrettyString()))
 	return err
 }
 
-// WriteAllWorkToPrettyText takes a writer and list of work, and outputs a text representation of Work to the writer
+// WriteAllWorkToText takes a writer and a list of work, and outputs a text
+// representation of the full Work to the writer
+func WriteAllWorkToText(writer io.Writer, w []*Work) error {
+	for index, work := range w {
+		err := work.WriteText(writer)
+		if err != nil {
+			return err
+		}
+		if index != len(w)-1 {
+			writer.Write([]byte("\n"))
+		}
+		writer.Write([]byte("\n"))
+	}
+	return nil
+}
+
+// WriteAllWorkToPrettyText takes a writer and list of work, and outputs a text
+// representation of Work to the writer
 func WriteAllWorkToPrettyText(writer io.Writer, w []*Work) error {
 	for index, work := range w {
 		err := work.WritePrettyText(writer)
@@ -178,7 +229,8 @@ func ReadYAML(input []byte) (*Work, error) {
 	return &w, yaml.Unmarshal(input, &w)
 }
 
-// WritePrettyYAML takes a writer and outputs a YAML representation of Work to it
+// WritePrettyYAML takes a writer and outputs a YAML representation of Work to
+// it
 func (w Work) WritePrettyYAML(writer io.Writer) error {
 	b, err := yaml.Marshal(workToPrettyWork(w))
 	if err != nil {
@@ -189,7 +241,20 @@ func (w Work) WritePrettyYAML(writer io.Writer) error {
 	return err
 }
 
-// WriteAllWorkToPrettyYAML takes a writer and list of work, and outputs a YAML representation of Work to the writer
+// WriteAllWorkToYAML takes a writer and list of work, and outputs a YAML
+// representation of the full Work to the writer
+func WriteAllWorkToYAML(writer io.Writer, w []*Work) error {
+	b, err := yaml.Marshal(w)
+	if err != nil {
+		return err
+	}
+
+	_, err = writer.Write(b)
+	return err
+}
+
+// WriteAllWorkToPrettyYAML takes a writer and list of work, and outputs a YAML
+// representation of Work to the writer
 func WriteAllWorkToPrettyYAML(writer io.Writer, w []*Work) error {
 	pw := []prettyWork{}
 	for _, work := range w {
@@ -216,7 +281,8 @@ func (w Work) WriteJSON(writer io.Writer) error {
 	return err
 }
 
-// WritePrettyJSON takes a writer and outputs a JSON representation of Work to it
+// WritePrettyJSON takes a writer and outputs a JSON representation of Work to
+// it
 func (w Work) WritePrettyJSON(writer io.Writer) error {
 	b, err := json.Marshal(workToPrettyWork(w))
 	if err != nil {
@@ -227,7 +293,20 @@ func (w Work) WritePrettyJSON(writer io.Writer) error {
 	return err
 }
 
-// WriteAllWorkToPrettyJSON takes a writer and list of work, and outputs a JSON representation of Work to the writer
+// WriteAllWorkToJSON takes a writer and list of work, and outputs a JSON
+// representation of the full Work to the writer
+func WriteAllWorkToJSON(writer io.Writer, w []*Work) error {
+	b, err := json.Marshal(w)
+	if err != nil {
+		return err
+	}
+
+	_, err = writer.Write(b)
+	return err
+}
+
+// WriteAllWorkToPrettyJSON takes a writer and list of work, and outputs a JSON
+// representation of Work to the writer
 func WriteAllWorkToPrettyJSON(writer io.Writer, w []*Work) error {
 	pw := []prettyWork{}
 	for _, work := range w {

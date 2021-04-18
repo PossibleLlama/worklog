@@ -15,15 +15,6 @@ import (
 
 func TestCreate(t *testing.T) {
 	randString := helpers.RandAlphabeticString(length)
-	tm := time.Date(
-		time.Now().Year(),
-		time.Now().Month(),
-		time.Now().Day(),
-		time.Now().Hour(),
-		time.Now().Minute(),
-		time.Now().Second(),
-		0,
-		time.UTC)
 
 	var tests = []struct {
 		name      string
@@ -84,12 +75,12 @@ func TestCreate(t *testing.T) {
 			},
 		}, {
 			name:      "Create with when",
-			args:      []string{"--title", "Create with when", "--when", tm.Format(time.RFC3339)},
+			args:      []string{"--title", "Create with when", "--when", tmUTC.Format(time.RFC3339)},
 			success:   true,
 			expOutput: "Saving file...\nSaved file\n",
 			expFile: &model.Work{
 				Title: "Create with when",
-				When:  tm,
+				When:  tmUTC,
 			},
 		}, {
 			name:      "Create with all",
@@ -101,7 +92,7 @@ func TestCreate(t *testing.T) {
 				Description: randString,
 				Author:      randString,
 				Tags:        []string{randString},
-				When:        tm,
+				When:        tmUTC,
 				Duration:    length,
 			},
 		},
@@ -155,7 +146,11 @@ func TestCreate(t *testing.T) {
 				}
 
 				if !testItem.expFile.When.Equal(time.Time{}) {
-					assert.Equal(t, testItem.expFile.When, actualFile.When, "When does not match provided")
+					assert.Equal(t, testItem.expFile.When.Year(), actualFile.When.Year(), "When's year does not match provided")
+					assert.Equal(t, testItem.expFile.When.Month(), actualFile.When.Month(), "When's month does not match provided")
+					assert.Equal(t, testItem.expFile.When.Day(), actualFile.When.Day(), "When's day does not match provided")
+					assert.Equal(t, testItem.expFile.When.Hour(), actualFile.When.Hour(), "When's hour does not match provided")
+					assert.Equal(t, testItem.expFile.When.Minute(), actualFile.When.Minute(), "When's minute does not match provided")
 				} else {
 					assert.NotEqual(t, time.Time{}, actualFile.When, "When didn't default")
 				}

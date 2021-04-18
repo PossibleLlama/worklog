@@ -32,6 +32,8 @@ var printOutputPretty bool
 var printOutputYAML bool
 var printOutputJSON bool
 
+var printAllFields bool
+
 // printCmd represents the print command
 var printCmd = &cobra.Command{
 	Use:   "print",
@@ -91,11 +93,23 @@ func printRun(ids ...string) error {
 		}
 		fmt.Println()
 	} else if printOutputPretty {
-		model.WriteAllWorkToPrettyText(os.Stdout, worklogs)
+		if printAllFields {
+			model.WriteAllWorkToText(os.Stdout, worklogs)
+		} else {
+			model.WriteAllWorkToPrettyText(os.Stdout, worklogs)
+		}
 	} else if printOutputYAML {
-		model.WriteAllWorkToPrettyYAML(os.Stdout, worklogs)
+		if printAllFields {
+			model.WriteAllWorkToYAML(os.Stdout, worklogs)
+		} else {
+			model.WriteAllWorkToPrettyYAML(os.Stdout, worklogs)
+		}
 	} else {
-		model.WriteAllWorkToPrettyJSON(os.Stdout, worklogs)
+		if printAllFields {
+			model.WriteAllWorkToJSON(os.Stdout, worklogs)
+		} else {
+			model.WriteAllWorkToPrettyJSON(os.Stdout, worklogs)
+		}
 	}
 	return nil
 }
@@ -117,13 +131,13 @@ func init() {
 	printCmd.Flags().BoolVarP(
 		&printToday,
 		"today",
-		"",
+		"t",
 		false,
 		"Print today's work")
 	printCmd.Flags().BoolVarP(
 		&printThisWeek,
 		"thisWeek",
-		"",
+		"w",
 		false,
 		"Prints this weeks work")
 
@@ -153,21 +167,29 @@ func init() {
 	printCmd.Flags().BoolVarP(
 		&printOutputPretty,
 		"pretty",
-		"",
+		"p",
 		false,
 		"Output in a text format")
 	printCmd.Flags().BoolVarP(
 		&printOutputYAML,
 		"yaml",
-		"",
+		"y",
 		false,
 		"Output in a yaml format")
 	printCmd.Flags().BoolVarP(
 		&printOutputJSON,
 		"json",
-		"",
+		"j",
 		false,
 		"Output in a json format")
+
+	// Misc
+	printCmd.Flags().BoolVarP(
+		&printAllFields,
+		"all",
+		"a",
+		false,
+		"Output all fields of the worklog")
 }
 
 // verifySingleFormat ensures that there is only 1 output format used.
