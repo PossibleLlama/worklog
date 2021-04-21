@@ -5,7 +5,7 @@
 Contributions are made to this repo via [Issues][RepoIssues] and
 [Pull Requests (PRs)][PRs].
 
-All commits to this repo are required to be signed.
+Commits to this repo are not required to be signed, however it is recommended.
 For more information on how to do this, please visit [git][GitSigning] to sign
 commits, and [Github][GithubSigning] to verify them.
 
