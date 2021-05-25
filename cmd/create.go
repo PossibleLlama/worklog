@@ -51,7 +51,9 @@ func createArgs() error {
 	}
 
 	for _, tag := range strings.Split(createTagsString, ",") {
-		createTags = append(createTags, strings.TrimSpace(tag))
+		if strings.TrimSpace(tag) != "" {
+			createTags = append(createTags, strings.TrimSpace(tag))
+		}
 	}
 
 	whenDate, err := helpers.GetStringAsDateTime(
