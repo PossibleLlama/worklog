@@ -9,6 +9,7 @@ import (
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
 	"github.com/PossibleLlama/worklog/service"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -174,7 +175,7 @@ func TestCreateArgs(t *testing.T) {
 			tags:        []string{"1", "2"},
 			whenString:  helpers.RandAlphabeticString(shortLength),
 			when:        time.Time{},
-			expErr:      errors.New("unable to parse string as date. 'parsing time"),
+			expErr:      errors.New("unable to parse string as date"),
 		},
 	}
 
