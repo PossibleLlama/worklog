@@ -24,6 +24,11 @@ func (m *MockService) CreateWorklog(wl *model.Work) (int, error) {
 	return args.Int(0), args.Error(1)
 }
 
+func (m *MockService) EditWorklog(id string, newWl *model.Work) (int, error) {
+	args := m.Called(id, newWl)
+	return args.Int(0), args.Error(1)
+}
+
 // GetWorklogsBetween WorklogService method for testing
 func (m *MockService) GetWorklogsBetween(startDate, endDate time.Time, filter *model.Work) ([]*model.Work, int, error) {
 	args := m.Called(startDate, endDate, filter)
