@@ -60,9 +60,12 @@ func editArgs(args []string) error {
 
 	whenDate, err := helpers.GetStringAsDateTime(
 		strings.TrimSpace(editWhenString))
+	if err != nil {
+		return err
+	}
 	editWhen = whenDate
 
-	return err
+	return nil
 }
 
 func EditRun(cmd *cobra.Command, args []string) error {
