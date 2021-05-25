@@ -58,12 +58,9 @@ func createArgs() error {
 
 	whenDate, err := helpers.GetStringAsDateTime(
 		strings.TrimSpace(createWhenString))
-	if err != nil {
-		return err
-	}
 	createWhen = whenDate
 
-	return nil
+	return err
 }
 
 // CreateRun public method to run create
