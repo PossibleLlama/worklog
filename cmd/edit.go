@@ -1,10 +1,11 @@
 package cmd
 
 import (
-	"fmt"
+	"errors"
 	"strings"
 	"time"
 
+	e "github.com/PossibleLlama/worklog/errors"
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
 
@@ -38,7 +39,7 @@ func EditArgs(cmd *cobra.Command, args []string) error {
 
 func editArgs(args []string) error {
 	if len(args) != 1 {
-		return fmt.Errorf("The edit function requires an ID of an existing worklog")
+		return errors.New(e.EditID)
 	}
 	if editDuration <= -1 {
 		editDuration = viper.GetInt("default.duration")

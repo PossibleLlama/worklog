@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	e "github.com/PossibleLlama/worklog/errors"
 	"github.com/PossibleLlama/worklog/model"
 
 	"github.com/spf13/cobra"
@@ -76,7 +77,7 @@ func overrideDefaultsArgs() error {
 	if configProvidedAuthor == "" &&
 		configProvidedFormat == "" &&
 		configProvidedDuration < 0 {
-		return errors.New("overrideDefaults requires at least one argument")
+		return errors.New(e.ConfigureArgsMinimum)
 	}
 	if configProvidedDuration < 0 {
 		configProvidedDuration = configDefaultDuration
@@ -85,7 +86,7 @@ func overrideDefaultsArgs() error {
 		configProvidedFormat != "pretty" &&
 		configProvidedFormat != "json" &&
 		configProvidedFormat != "yaml" {
-		return errors.New("format is not valid")
+		return errors.New(e.Format)
 	}
 	return nil
 }
