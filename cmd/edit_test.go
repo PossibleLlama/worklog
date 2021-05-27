@@ -46,14 +46,6 @@ func TestEditArgs(t *testing.T) {
 
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
-			setProvidedEditValues(
-				helpers.RandAlphabeticString(shortLength),
-				helpers.RandAlphabeticString(shortLength),
-				shortLength,
-				helpers.RandAlphabeticString(shortLength),
-				"2020-01-01T13:24:50Z",
-				helpers.RandAlphabeticString(shortLength))
-
 			retErr := editArgs(testItem.ids)
 
 			if testItem.err == nil {
