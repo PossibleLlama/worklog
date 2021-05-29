@@ -25,7 +25,10 @@ func setProvidedEditValues(title, description string, duration int, author, when
 
 func TestEditArgs(t *testing.T) {
 	id := helpers.RandAlphabeticString(shortLength)
+	title := helpers.RandHexAlphaNumericString(shortLength)
+	description := helpers.RandHexAlphaNumericString(longLength)
 	now := time.Date(2020, time.January, 30, 23, 59, 0, 0, time.UTC)
+	tag := helpers.RandHexAlphaNumericString(longLength)
 
 	var tests = []struct {
 		name     string
@@ -80,6 +83,23 @@ func TestEditArgs(t *testing.T) {
 				Duration:    -1,
 				When:        now,
 				Tags:        []string{},
+			},
+		}, {
+			name: "Filled parameters are used correctly",
+			ids:  []string{id},
+			provided: &model.Work{
+				Title:       title,
+				Description: description,
+				Duration:    longLength,
+				When:        time.Date(2021, time.February, 10, 21, 56, 45, 0, time.UTC),
+				Tags:        []string{tag},
+			},
+			expected: &model.Work{
+				Title:       title,
+				Description: description,
+				Duration:    longLength,
+				When:        time.Date(2021, time.February, 10, 21, 56, 45, 0, time.UTC),
+				Tags:        []string{tag},
 			},
 		},
 	}
