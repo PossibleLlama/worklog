@@ -10,7 +10,6 @@ import (
 	"github.com/PossibleLlama/worklog/model"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var (
@@ -41,16 +40,11 @@ func editArgs(args []string) error {
 	if len(args) != 1 {
 		return errors.New(e.EditID)
 	}
-	if editDuration <= -1 {
-		editDuration = viper.GetInt("default.duration")
-	}
+
 	editTitle = strings.TrimSpace(editTitle)
 	editDescription = strings.TrimSpace(editDescription)
 	editAuthor = strings.TrimSpace(editAuthor)
-
-	if editAuthor == "" {
-		editAuthor = viper.GetString("default.author")
-	}
+	editTags = []string{}
 
 	for _, tag := range strings.Split(editTagsString, ",") {
 		if strings.TrimSpace(tag) != "" {
