@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"net/http"
 	"sort"
 	"time"
@@ -32,15 +33,27 @@ func (*service) CreateWorklog(wl *model.Work) (int, error) {
 	return http.StatusCreated, nil
 }
 
-func (*service) EditWorklog(id string, newWl *model.Work) (int, error) {
+func (s *service) EditWorklog(id string, newWl *model.Work) (int, error) {
 	// Get Wl of passed ID
+	wls, code, err := s.GetWorklogsByID(&model.Work{}, id)
+	if err != nil {
+		return code, err
+	}
 	// Verify single Wl of that ID
+	if len(wls) == 0 {
+		return http.StatusNotFound, nil
+	} else if len(wls) > 1 {
+		return http.StatusConflict, fmt.Errorf("More than 1 worklog of ID '%s'", id)
+	}
 	// Use retrieved Wl
-	// Update revision
-	// Update createdAt
+	wl := wls[0]
+	wl.Update(*newWl)
 	// Update any passed fields
 	// Save updateWl
-	return http.StatusNotImplemented, nil
+	if err := repo.Save(wl); err != nil {
+		return http.StatusInternalServerError, err
+	}
+	return http.StatusOK, nil
 }
 
 func (*service) GetWorklogsBetween(start, end time.Time, filter *model.Work) ([]*model.Work, int, error) {
