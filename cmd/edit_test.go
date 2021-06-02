@@ -136,6 +136,7 @@ func TestEditArgs(t *testing.T) {
 				assert.Nil(t, retErr)
 
 				if testItem.provided != nil {
+					assert.Equal(t, testItem.ids[0], editID)
 					assert.Equal(t, testItem.expected.Title, editTitle)
 					assert.Equal(t, testItem.expected.Description, editDescription)
 					assert.Equal(t, testItem.expected.Duration, editDuration)

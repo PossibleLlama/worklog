@@ -41,6 +41,7 @@ func editArgs(args []string) error {
 		return errors.New(e.EditID)
 	}
 
+	editID = args[0]
 	editTitle = strings.TrimSpace(editTitle)
 	editDescription = strings.TrimSpace(editDescription)
 	editAuthor = strings.TrimSpace(editAuthor)
