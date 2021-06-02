@@ -258,7 +258,7 @@ func TestCreateRun(t *testing.T) {
 				helpers.RandAlphabeticString(shortLength),
 				helpers.RandAlphabeticString(shortLength)},
 			when:   now,
-			expErr: nil,
+			expErr: errors.New(helpers.RandAlphabeticString(shortLength)),
 		},
 	}
 

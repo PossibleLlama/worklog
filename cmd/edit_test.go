@@ -23,6 +23,13 @@ func setProvidedEditValues(title, description string, duration int, author, when
 	editTagsString = tags
 }
 
+func setProvidedEditValuesRun(id, title, description string, duration int, author string, when time.Time, tags []string) {
+	setProvidedEditValues(title, description, duration, author, "", "")
+	editID = id
+	editWhen = when
+	editTags = tags
+}
+
 func TestEditArgs(t *testing.T) {
 	id := helpers.RandAlphabeticString(shortLength)
 	title := helpers.RandHexAlphaNumericString(shortLength)
@@ -142,45 +149,73 @@ func TestEditArgs(t *testing.T) {
 }
 
 func TestEditRun(t *testing.T) {
+	now, _ := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	tm := time.Date(2021, time.February, 10, 21, 56, 45, 0, time.UTC)
+
 	var tests = []struct {
 		name     string
-		author   string
-		duration int
-		format   string
-		expErr   error
+		provided model.Work
+		err      error
 	}{
 		{
-			name:     "Sends model to service",
-			author:   helpers.RandAlphabeticString(shortLength),
-			duration: shortLength,
-			format:   "yaml",
-			expErr:   nil,
+			name: "Sends model to service",
+			provided: model.Work{
+				ID:          helpers.RandAlphabeticString(shortLength),
+				Revision:    1,
+				Title:       helpers.RandAlphabeticString(shortLength),
+				Description: helpers.RandAlphabeticString(longLength),
+				Author:      helpers.RandAlphabeticString(shortLength),
+				Duration:    longLength,
+				When:        tm,
+				Tags: []string{
+					helpers.RandAlphabeticString(shortLength),
+					helpers.RandAlphabeticString(shortLength),
+				},
+				CreatedAt: now,
+			},
+			err: nil,
 		}, {
-			name:     "Error propogated",
-			author:   helpers.RandAlphabeticString(shortLength),
-			duration: shortLength,
-			format:   "yaml",
-			expErr:   errors.New(helpers.RandAlphabeticString(shortLength)),
+			name: "Error passed back",
+			provided: model.Work{
+				ID:          helpers.RandAlphabeticString(shortLength),
+				Revision:    1,
+				Title:       helpers.RandAlphabeticString(shortLength),
+				Description: helpers.RandAlphabeticString(longLength),
+				Author:      helpers.RandAlphabeticString(shortLength),
+				Duration:    longLength,
+				When:        tm,
+				Tags: []string{
+					helpers.RandAlphabeticString(shortLength),
+					helpers.RandAlphabeticString(shortLength),
+				},
+				CreatedAt: now,
+			},
+			err: errors.New(helpers.RandAlphabeticString(shortLength)),
 		},
 	}
 
 	for _, testItem := range tests {
-		cfg := model.NewConfig(testItem.author, testItem.format, testItem.duration)
-
 		mockService := new(service.MockService)
-		mockService.On("Configure", cfg).Return(testItem.expErr)
+		mockService.On("EditWorklog", testItem.provided.ID, &testItem.provided).Return(0, testItem.err)
 		wlService = mockService
 
 		t.Run(testItem.name, func(t *testing.T) {
-			setProvidedConfigureValues(testItem.author, testItem.format, testItem.duration)
-
-			actualErr := configRun()
+			setProvidedEditValuesRun(
+				testItem.provided.ID,
+				testItem.provided.Title,
+				testItem.provided.Description,
+				testItem.provided.Duration,
+				testItem.provided.Author,
+				testItem.provided.When,
+				testItem.provided.Tags)
+			retErr := editRun([]string{})
 
 			mockService.AssertExpectations(t)
 			mockService.AssertCalled(t,
-				"Configure",
-				cfg)
-			assert.Equal(t, testItem.expErr, actualErr)
+				"EditWorklog",
+				testItem.provided.ID,
+				&testItem.provided)
+			assert.Equal(t, testItem.err, retErr)
 		})
 	}
 }

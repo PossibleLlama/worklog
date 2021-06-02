@@ -74,6 +74,7 @@ func editRun(args []string) error {
 		editDuration,
 		editTags,
 		editWhen)
+	newWl.ID = editID
 	_, err := wlService.EditWorklog(editID, newWl)
 	return err
 }
