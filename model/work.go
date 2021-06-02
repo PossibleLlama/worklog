@@ -56,9 +56,27 @@ func NewWork(title, description, author string, duration int, tags []string, whe
 	}
 }
 
-// IncrementRevision changes the revision to one greater
-func (w *Work) IncrementRevision() {
+// Update changes the revision to one greater
+func (w *Work) Update(new Work) {
+	now, _ := helpers.GetStringAsDateTime(helpers.TimeFormat(time.Now()))
 	w.Revision = w.Revision + 1
+	w.CreatedAt = now
+
+	if new.Title != "" {
+		w.Title = new.Title
+	}
+	if new.Description != "" {
+		w.Description = new.Description
+	}
+	if new.Author != "" {
+		w.Author = new.Author
+	}
+	if new.Duration > 0 {
+		w.Duration = new.Duration
+	}
+	if len(new.Tags) != 0 {
+		w.Tags = new.Tags
+	}
 }
 
 func workToPrettyWork(w Work) prettyWork {
