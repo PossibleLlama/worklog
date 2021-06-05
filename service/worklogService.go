@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"net/http"
 	"sort"
 	"time"
@@ -40,10 +39,10 @@ func (s *service) EditWorklog(id string, newWl *model.Work) (int, error) {
 		return code, err
 	}
 	// Verify single Wl of that ID
+	// The get returns 1 WL per ID, as we are only
+	// passing one ID, there is only one possible WL
 	if len(wls) == 0 {
 		return http.StatusNotFound, nil
-	} else if len(wls) > 1 {
-		return http.StatusConflict, fmt.Errorf("More than 1 worklog of ID '%s'", id)
 	}
 	// Use retrieved Wl
 	wl := wls[0]

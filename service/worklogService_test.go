@@ -130,6 +130,93 @@ func TestCreateWorklog(t *testing.T) {
 	}
 }
 
+func TestEditWorklog(t *testing.T) {
+	id := helpers.RandHexAlphaNumericString(strLength)
+	wl := genWl()
+	var tests = []struct {
+		name     string
+		newWl    *model.Work
+		getWl    *model.Work
+		getErr   error
+		callSave bool
+		saveErr  error
+		expCode  int
+		expErr   error
+	}{
+		{
+			name:     "Success",
+			newWl:    genWl(),
+			getWl:    wl,
+			getErr:   nil,
+			callSave: true,
+			saveErr:  nil,
+			expCode:  http.StatusOK,
+			expErr:   nil,
+		}, {
+			name:     "No found wl's",
+			newWl:    genWl(),
+			getWl:    nil,
+			getErr:   nil,
+			callSave: false,
+			saveErr:  nil,
+			expCode:  http.StatusNotFound,
+			expErr:   nil,
+		}, {
+			name:     "Error from save",
+			newWl:    genWl(),
+			getWl:    wl,
+			getErr:   nil,
+			callSave: true,
+			saveErr:  errors.New(id),
+			expCode:  http.StatusInternalServerError,
+			expErr:   errors.New(id),
+		},
+	}
+
+	for _, testItem := range tests {
+		expWl := &model.Work{
+			ID:          wl.ID,
+			Revision:    wl.Revision + 1,
+			Title:       testItem.newWl.Title,
+			Description: testItem.newWl.Description,
+			Author:      testItem.newWl.Author,
+			Duration:    testItem.newWl.Duration,
+			Tags:        testItem.newWl.Tags,
+			When:        wl.When,
+			CreatedAt:   testItem.newWl.CreatedAt}
+
+		mockRepo := new(repository.MockRepo)
+		mockRepo.On(
+			"GetByID",
+			id,
+			&model.Work{}).
+			Return(testItem.getWl, testItem.getErr)
+		if testItem.callSave {
+			mockRepo.On(
+				"Save",
+				expWl).Return(testItem.saveErr)
+		}
+
+		svc := NewWorklogService(mockRepo)
+
+		t.Run(testItem.name, func(t *testing.T) {
+			returnedCode, returnedErr := svc.EditWorklog(id, testItem.newWl)
+
+			if returnedErr != nil {
+				assert.EqualError(t, testItem.expErr, returnedErr.Error())
+			} else {
+				assert.Nil(t, returnedErr)
+			}
+			assert.Equal(t, testItem.expCode, returnedCode)
+			mockRepo.AssertExpectations(t)
+			mockRepo.AssertCalled(t, "GetByID", id, &model.Work{})
+			if testItem.callSave {
+				mockRepo.AssertCalled(t, "Save", expWl)
+			}
+		})
+	}
+}
+
 func TestGetWorklogsBetween(t *testing.T) {
 	sTime := time.Now()
 	eTime := sTime.Add(time.Hour)
