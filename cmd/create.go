@@ -119,6 +119,6 @@ func init() {
 		&createTagsString,
 		"tags",
 		"",
-		"Comma seperated list of tags this work relates to")
+		"Comma separated list of tags this work relates to")
 	createCmd.MarkFlagRequired("title")
 }
