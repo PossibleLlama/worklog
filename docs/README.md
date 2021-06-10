@@ -1,6 +1,8 @@
 # Worklog
 
-![Go](https://github.com/PossibleLlama/worklog/workflows/Go/badge.svg)
+![Build](https://github.com/PossibleLlama/worklog/workflows/Go/badge.svg)
+
+[![Go Report Card](https://goreportcard.com/badge/github.com/PossibleLlama/worklog)](https://goreportcard.com/report/github.com/PossibleLlama/worklog)
 
 Intented to be a quick productivity CLI tool, to track what you
 have done each day.
