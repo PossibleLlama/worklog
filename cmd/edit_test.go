@@ -45,18 +45,6 @@ func TestEditArgs(t *testing.T) {
 		err      error
 	}{
 		{
-			name:     "Single ID",
-			ids:      []string{id},
-			provided: nil,
-			expected: &model.Work{
-				Title:       "",
-				Description: "",
-				Duration:    0,
-				When:        time.Time{},
-				Tags:        []string{},
-			},
-			err: nil,
-		}, {
 			name:     "No args throws error",
 			ids:      []string{},
 			provided: nil,
@@ -91,6 +79,7 @@ func TestEditArgs(t *testing.T) {
 				When:        now,
 				Tags:        []string{},
 			},
+			err: nil,
 		}, {
 			name: "Filled parameters are used correctly",
 			ids:  []string{id},
@@ -108,6 +97,7 @@ func TestEditArgs(t *testing.T) {
 				When:        time.Date(2021, time.February, 10, 21, 56, 45, 0, time.UTC),
 				Tags:        []string{tag},
 			},
+			err: nil,
 		},
 	}
 

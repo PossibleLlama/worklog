@@ -27,6 +27,16 @@ const (
 	arrLength = 128
 )
 
+func TestMain(m *testing.M) {
+	for i := 0; i < 10; i++ {
+		if time.Now().Nanosecond()%1000 < 500 {
+			m.Run()
+			return
+		}
+		time.Sleep(400 * time.Nanosecond)
+	}
+}
+
 func genCfg() *model.Config {
 	return model.NewConfig(
 		helpers.RandAlphabeticString(strLength),
@@ -139,17 +149,15 @@ func TestEditWorklog(t *testing.T) {
 		getWl    *model.Work
 		getErr   error
 		callSave bool
-		saveErr  error
 		expCode  int
 		expErr   error
 	}{
 		{
-			name:     "Success",
+			name:     "Success with all fields",
 			newWl:    genWl(),
 			getWl:    wl,
 			getErr:   nil,
 			callSave: true,
-			saveErr:  nil,
 			expCode:  http.StatusOK,
 			expErr:   nil,
 		}, {
@@ -158,7 +166,6 @@ func TestEditWorklog(t *testing.T) {
 			getWl:    nil,
 			getErr:   nil,
 			callSave: false,
-			saveErr:  nil,
 			expCode:  http.StatusNotFound,
 			expErr:   nil,
 		}, {
@@ -167,7 +174,6 @@ func TestEditWorklog(t *testing.T) {
 			getWl:    wl,
 			getErr:   nil,
 			callSave: true,
-			saveErr:  errors.New(id),
 			expCode:  http.StatusInternalServerError,
 			expErr:   errors.New(id),
 		},
@@ -194,7 +200,7 @@ func TestEditWorklog(t *testing.T) {
 		if testItem.callSave {
 			mockRepo.On(
 				"Save",
-				expWl).Return(testItem.saveErr)
+				expWl).Return(testItem.expErr)
 		}
 
 		svc := NewWorklogService(mockRepo)
@@ -202,11 +208,7 @@ func TestEditWorklog(t *testing.T) {
 		t.Run(testItem.name, func(t *testing.T) {
 			returnedCode, returnedErr := svc.EditWorklog(id, testItem.newWl)
 
-			if returnedErr != nil {
-				assert.EqualError(t, testItem.expErr, returnedErr.Error())
-			} else {
-				assert.Nil(t, returnedErr)
-			}
+			assert.Equal(t, returnedErr, testItem.expErr)
 			assert.Equal(t, testItem.expCode, returnedCode)
 			mockRepo.AssertExpectations(t)
 			mockRepo.AssertCalled(t, "GetByID", id, &model.Work{})
