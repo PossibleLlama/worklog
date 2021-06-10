@@ -126,6 +126,7 @@ func TestUpdate(t *testing.T) {
 	}
 	wOg.Update(Work{})
 
+	// Update with no additional fields expected being updated
 	assert.Equal(t, wCopy.ID, wOg.ID)
 	assert.NotEqual(t, wCopy.Revision, wOg.Revision)
 	assert.Equal(t, wCopy.Revision+1, wOg.Revision)
@@ -141,6 +142,7 @@ func TestUpdate(t *testing.T) {
 	new := genRandWork()
 	wOg.Update(*new)
 
+	// Update with all new fields
 	assert.Equal(t, wCopy.ID, wOg.ID)
 	assert.NotEqual(t, wCopy.Revision, wOg.Revision)
 	assert.Equal(t, wCopy.Revision+2, wOg.Revision)
