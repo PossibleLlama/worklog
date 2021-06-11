@@ -33,22 +33,19 @@ func (*service) CreateWorklog(wl *model.Work) (int, error) {
 }
 
 func (s *service) EditWorklog(id string, newWl *model.Work) (int, error) {
-	// Get Wl of passed ID
 	wls, code, err := s.GetWorklogsByID(&model.Work{}, id)
 	if err != nil {
 		return code, err
 	}
-	// Verify single Wl of that ID
 	// The get returns 1 WL per ID, as we are only
 	// passing one ID, there is only one possible WL
 	if len(wls) == 0 {
 		return http.StatusNotFound, nil
 	}
-	// Use retrieved Wl
+
 	wl := wls[0]
 	wl.Update(*newWl)
-	// Update any passed fields
-	// Save updateWl
+
 	if err := repo.Save(wl); err != nil {
 		return http.StatusInternalServerError, err
 	}
