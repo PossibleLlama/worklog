@@ -94,6 +94,11 @@ editing and can't be specified.
 Any specified fields will be merged into the existing work overwritting
 previous fields.
 
+Any blank `--title ""` fields will be ignored, and all strings have
+whitespace removed from both ends.
+This does mean that you will be unable to update a field to an empty
+state.
+
 You can specify further fields as you want to.
 
 - `--title "foo"` The title of the work done. This is a summary of
