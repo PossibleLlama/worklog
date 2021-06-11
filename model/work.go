@@ -24,7 +24,7 @@ type Work struct {
 	Description string    `json:"description,omitempty" yaml:"description,omitempty"`
 	Author      string    `json:"author,omitempty" yaml:"author,omitempty"`
 	Duration    int       `json:"duration" yaml:"duration"`
-	Tags        []string  `json:"tags,flow,omitempty" yaml:"tags,flow,omitempty"`
+	Tags        []string  `json:"tags,omitempty" yaml:"tags,omitempty"`
 	When        time.Time `json:"when" yaml:"when"`
 	CreatedAt   time.Time `json:"createdAt" yaml:"createdAt"`
 }
@@ -35,7 +35,7 @@ type prettyWork struct {
 	Description string    `json:"description,omitempty" yaml:"description,omitempty"`
 	Author      string    `json:"author,omitempty" yaml:"author,omitempty"`
 	Duration    int       `json:"duration" yaml:"duration"`
-	Tags        []string  `json:"tags,flow,omitempty" yaml:"tags,flow,omitempty"`
+	Tags        []string  `json:"tags,omitempty" yaml:"tags,omitempty"`
 	When        time.Time `json:"when" yaml:"when"`
 }
 
