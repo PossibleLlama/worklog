@@ -8,8 +8,10 @@ import (
 	"strings"
 	"time"
 
+	e "github.com/PossibleLlama/worklog/errors"
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -240,7 +242,7 @@ func verifyDatesAndIDs(ids []string) error {
 
 func verifyIDs(ids []string) error {
 	if len(ids) == 0 {
-		return errors.New("No ids provided")
+		return errors.New(e.PrintID)
 	}
 	return nil
 }
@@ -267,7 +269,7 @@ func verifyDates() error {
 		printStartDate = helpers.GetPreviousMonday(time.Now())
 		printEndDate = printStartDate.AddDate(0, 0, 7)
 	} else {
-		return errors.New("one flag is required")
+		return errors.New(e.PrintArgsMinimum)
 	}
 	return nil
 }

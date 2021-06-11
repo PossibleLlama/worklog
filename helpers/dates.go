@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"strings"
@@ -27,7 +28,7 @@ func GetStringAsDateTime(rawElement string) (time.Time, error) {
 	isDateTime, dateTimeErr := regexp.MatchString(`^`+dateRegex+`[\sT]`+timeRegex+`Z?$`, element)
 
 	if dateErr != nil || dateTimeErr != nil {
-		return time.Now(), fmt.Errorf("unable to parse string as date")
+		return time.Now(), errors.New("unable to parse string as date")
 	}
 
 	if isDateTime {

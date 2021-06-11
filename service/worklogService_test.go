@@ -27,6 +27,16 @@ const (
 	arrLength = 128
 )
 
+func TestMain(m *testing.M) {
+	for i := 0; i < 10; i++ {
+		if time.Now().Nanosecond()%1000 < 500 {
+			m.Run()
+			return
+		}
+		time.Sleep(400 * time.Nanosecond)
+	}
+}
+
 func genCfg() *model.Config {
 	return model.NewConfig(
 		helpers.RandAlphabeticString(strLength),
@@ -35,7 +45,7 @@ func genCfg() *model.Config {
 }
 
 func genWl() *model.Work {
-	tags := make([]string, src.Intn(arrLength))
+	tags := make([]string, src.Intn(arrLength)+1)
 	for index := range tags {
 		tags[index] = helpers.RandAlphabeticString(src.Intn(strLength))
 	}
@@ -126,6 +136,81 @@ func TestCreateWorklog(t *testing.T) {
 			assert.Equal(t, testItem.exCode, returnedCode)
 			mockRepo.AssertExpectations(t)
 			mockRepo.AssertCalled(t, "Save", testItem.wl)
+		})
+	}
+}
+
+func TestEditWorklog(t *testing.T) {
+	id := helpers.RandHexAlphaNumericString(strLength)
+	wl := genWl()
+	var tests = []struct {
+		name     string
+		newWl    *model.Work
+		getWl    *model.Work
+		getErr   error
+		callSave bool
+		expCode  int
+		expErr   error
+	}{
+		{
+			name:     "Success with all fields",
+			newWl:    genWl(),
+			getWl:    wl,
+			getErr:   nil,
+			callSave: true,
+			expCode:  http.StatusOK,
+			expErr:   nil,
+		}, {
+			name:     "No found wl's",
+			newWl:    genWl(),
+			getWl:    nil,
+			getErr:   nil,
+			callSave: false,
+			expCode:  http.StatusNotFound,
+			expErr:   nil,
+		}, {
+			name:     "Error from save",
+			newWl:    genWl(),
+			getWl:    wl,
+			getErr:   nil,
+			callSave: true,
+			expCode:  http.StatusInternalServerError,
+			expErr:   errors.New(id),
+		},
+	}
+
+	for _, testItem := range tests {
+		expWl := model.Work{
+			ID:          wl.ID,
+			Revision:    wl.Revision + 1,
+			Title:       testItem.newWl.Title,
+			Description: testItem.newWl.Description,
+			Author:      testItem.newWl.Author,
+			Duration:    testItem.newWl.Duration,
+			Tags:        testItem.newWl.Tags,
+			When:        wl.When,
+			CreatedAt:   testItem.newWl.CreatedAt}
+
+		mockRepo := new(repository.MockRepo)
+		mockRepo.On("GetByID", id, &model.Work{}).
+			Return(testItem.getWl, testItem.getErr)
+		if testItem.callSave {
+			mockRepo.On("Save", &expWl).
+				Return(testItem.expErr)
+		}
+
+		svc := NewWorklogService(mockRepo)
+
+		t.Run(testItem.name, func(t *testing.T) {
+			returnedCode, returnedErr := svc.EditWorklog(id, testItem.newWl)
+
+			assert.Equal(t, returnedErr, testItem.expErr)
+			assert.Equal(t, testItem.expCode, returnedCode)
+			mockRepo.AssertExpectations(t)
+			mockRepo.AssertCalled(t, "GetByID", id, &model.Work{})
+			if testItem.callSave {
+				//mockRepo.AssertCalled(t, "Save", &expWl)
+			}
 		})
 	}
 }

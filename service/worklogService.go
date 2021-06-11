@@ -32,6 +32,26 @@ func (*service) CreateWorklog(wl *model.Work) (int, error) {
 	return http.StatusCreated, nil
 }
 
+func (s *service) EditWorklog(id string, newWl *model.Work) (int, error) {
+	wls, code, err := s.GetWorklogsByID(&model.Work{}, id)
+	if err != nil {
+		return code, err
+	}
+	// The get returns 1 WL per ID, as we are only
+	// passing one ID, there is only one possible WL
+	if len(wls) == 0 {
+		return http.StatusNotFound, nil
+	}
+
+	wl := wls[0]
+	wl.Update(*newWl)
+
+	if err := repo.Save(wl); err != nil {
+		return http.StatusInternalServerError, err
+	}
+	return http.StatusOK, nil
+}
+
 func (*service) GetWorklogsBetween(start, end time.Time, filter *model.Work) ([]*model.Work, int, error) {
 	worklogs := make(model.WorkList, 0)
 	worklogs, err := repo.GetAllBetweenDates(start, end, filter)

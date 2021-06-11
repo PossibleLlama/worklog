@@ -24,6 +24,7 @@ Usage:
 Available Commands:
   configure   Setup configuration for the application
   create      Create a new record of work
+  edit        Edit an existing record of work
   help        Help about any command
   print       Print all worklogs since provided date
 

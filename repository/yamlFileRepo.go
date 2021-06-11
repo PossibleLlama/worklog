@@ -11,8 +11,10 @@ import (
 	"strings"
 	"time"
 
+	e "github.com/PossibleLlama/worklog/errors"
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
+
 	homedir "github.com/mitchellh/go-homedir"
 )
 
@@ -26,16 +28,16 @@ func NewYamlFileRepo() WorklogRepository {
 
 func (*yamlFileRepo) Configure(cfg *model.Config) error {
 	if err := createDirectory(getWorklogDir()); err != nil {
-		return fmt.Errorf("Unable to create directory %s. %s", getWorklogDir(), err.Error())
+		return fmt.Errorf("%s %s. %s", e.RepoCreateDirectory, getWorklogDir(), err.Error())
 	}
 	file, err := createFile(getWorklogDir() + "config.yml")
 	defer file.Close()
 	if err != nil {
-		return fmt.Errorf("unable to create configuration file. %s", err.Error())
+		return fmt.Errorf("%s. %s", e.RepoConfigFileCreate, err.Error())
 	}
 
 	if err := cfg.WriteYAML(file); err != nil {
-		return fmt.Errorf("unable to save config. %s", err.Error())
+		return fmt.Errorf("%s. %s", e.RepoConfigFileSave, err.Error())
 	}
 	file.Sync()
 
@@ -48,11 +50,11 @@ func (*yamlFileRepo) Save(wl *model.Work) error {
 	file, err := createFile(generateFileName(wl))
 	defer file.Close()
 	if err != nil {
-		return fmt.Errorf("unable to save worklog. %s", err.Error())
+		return fmt.Errorf("%s. %s", e.RepoSaveFile, err.Error())
 	}
 
 	if err := wl.WriteYAML(file); err != nil {
-		return fmt.Errorf("unable to save worklog. %s", err.Error())
+		return fmt.Errorf("%s. %s", e.RepoSaveFile, err.Error())
 	}
 	file.Sync()
 
@@ -89,7 +91,7 @@ func createDirectory(filePath string) error {
 		if os.IsExist(err) {
 			return nil
 		}
-		return fmt.Errorf("unable to create directory '%s'. %s", filePath, err.Error())
+		return fmt.Errorf("%s '%s'. %s", e.RepoCreateDirectory, filePath, err.Error())
 	}
 	return nil
 }
@@ -97,7 +99,7 @@ func createDirectory(filePath string) error {
 func createFile(fileName string) (*os.File, error) {
 	file, err := os.Create(fileName)
 	if err != nil {
-		return nil, fmt.Errorf("unable to create file %s. %s",
+		return nil, fmt.Errorf("%s %s. %s", e.RepoCreateFile,
 			fileName, err.Error())
 	}
 	return file, nil
@@ -121,7 +123,7 @@ func (*yamlFileRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *mo
 		}
 	}
 	if len(errors) != 0 {
-		return worklogs, fmt.Errorf("unable to get all files. %s",
+		return worklogs, fmt.Errorf("%s. %s", e.RepoGetFiles,
 			strings.Join(errors, ", "))
 	}
 	return worklogs, nil
@@ -210,13 +212,13 @@ func getFileByID(ID string) (string, error) {
 	for _, v := range ids {
 		return v, nil
 	}
-	return "", errors.New("An unexpected error occurred")
+	return "", errors.New(e.Unexpected)
 }
 
 func parseFileToWork(filePath string) (*model.Work, error) {
 	yamlFile, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		return nil, fmt.Errorf("error reading file %s. %e", filePath, err)
+		return nil, fmt.Errorf("%s %s. %e", e.RepoGetFilesRead, filePath, err)
 	}
 	worklog, err := model.ReadYAML(yamlFile)
 	if err == nil {

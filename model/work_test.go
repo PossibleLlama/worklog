@@ -110,8 +110,9 @@ func TestNewWork(t *testing.T) {
 	}
 }
 
-func TestIncrementRevision(t *testing.T) {
+func TestUpdate(t *testing.T) {
 	wOg := genRandWork()
+	wOg.CreatedAt = time.Date(2020, time.January, 30, 23, 59, 0, 0, time.UTC)
 	wCopy := Work{
 		ID:          wOg.ID,
 		Revision:    wOg.Revision,
@@ -123,8 +124,9 @@ func TestIncrementRevision(t *testing.T) {
 		When:        wOg.When,
 		CreatedAt:   wOg.CreatedAt,
 	}
-	wOg.IncrementRevision()
+	wOg.Update(Work{})
 
+	// Update with no additional fields expected being updated
 	assert.Equal(t, wCopy.ID, wOg.ID)
 	assert.NotEqual(t, wCopy.Revision, wOg.Revision)
 	assert.Equal(t, wCopy.Revision+1, wOg.Revision)
@@ -134,7 +136,21 @@ func TestIncrementRevision(t *testing.T) {
 	assert.Equal(t, wCopy.Duration, wOg.Duration)
 	assert.Equal(t, wCopy.Tags, wOg.Tags)
 	assert.Equal(t, wCopy.When, wOg.When)
-	assert.Equal(t, wCopy.CreatedAt, wOg.CreatedAt)
+	assert.NotEqual(t, wCopy.CreatedAt, wOg.CreatedAt)
+	assert.True(t, wCopy.CreatedAt.Before(wOg.CreatedAt))
+
+	new := genRandWork()
+	wOg.Update(*new)
+
+	// Update with all new fields
+	assert.Equal(t, wCopy.ID, wOg.ID)
+	assert.NotEqual(t, wCopy.Revision, wOg.Revision)
+	assert.Equal(t, wCopy.Revision+2, wOg.Revision)
+	assert.Equal(t, new.Title, wOg.Title)
+	assert.Equal(t, new.Description, wOg.Description)
+	assert.Equal(t, new.Duration, wOg.Duration)
+	assert.Equal(t, new.Author, wOg.Author)
+	assert.Equal(t, new.Tags, wOg.Tags)
 }
 
 func TestWorkToPrintWork(t *testing.T) {

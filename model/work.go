@@ -24,7 +24,7 @@ type Work struct {
 	Description string    `json:"description,omitempty" yaml:"description,omitempty"`
 	Author      string    `json:"author,omitempty" yaml:"author,omitempty"`
 	Duration    int       `json:"duration" yaml:"duration"`
-	Tags        []string  `json:"tags,flow,omitempty" yaml:"tags,flow,omitempty"`
+	Tags        []string  `json:"tags,omitempty" yaml:"tags,omitempty"`
 	When        time.Time `json:"when" yaml:"when"`
 	CreatedAt   time.Time `json:"createdAt" yaml:"createdAt"`
 }
@@ -35,7 +35,7 @@ type prettyWork struct {
 	Description string    `json:"description,omitempty" yaml:"description,omitempty"`
 	Author      string    `json:"author,omitempty" yaml:"author,omitempty"`
 	Duration    int       `json:"duration" yaml:"duration"`
-	Tags        []string  `json:"tags,flow,omitempty" yaml:"tags,flow,omitempty"`
+	Tags        []string  `json:"tags,omitempty" yaml:"tags,omitempty"`
 	When        time.Time `json:"when" yaml:"when"`
 }
 
@@ -56,9 +56,27 @@ func NewWork(title, description, author string, duration int, tags []string, whe
 	}
 }
 
-// IncrementRevision changes the revision to one greater
-func (w *Work) IncrementRevision() {
+// Update changes the revision to one greater
+func (w *Work) Update(new Work) {
+	now, _ := helpers.GetStringAsDateTime(helpers.TimeFormat(time.Now()))
 	w.Revision = w.Revision + 1
+	w.CreatedAt = now
+
+	if new.Title != "" {
+		w.Title = new.Title
+	}
+	if new.Description != "" {
+		w.Description = new.Description
+	}
+	if new.Author != "" {
+		w.Author = new.Author
+	}
+	if new.Duration > 0 {
+		w.Duration = new.Duration
+	}
+	if len(new.Tags) != 0 {
+		w.Tags = new.Tags
+	}
 }
 
 func workToPrettyWork(w Work) prettyWork {

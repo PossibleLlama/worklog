@@ -9,7 +9,7 @@ have done each day.
 
 ## Supported versions
 
-- v0.5.7
+- v0.5.8
 
 ## Installation
 
@@ -49,6 +49,8 @@ All other fields will be left blank.
 
 You can specify further fields as you want to.
 
+- `--title "foo"` The title of the work done. This is a summary of
+  the work.
 - `--description "bar"` A longer description of the work done. This
   gives the details of the work done.
 - `--author "Alice"` The name of the person doing the work. This
@@ -71,6 +73,57 @@ worklog create \
 --description "A detailed description of my morning routine." \
 --author "Alice" \
 --duration 60 \
+--tags "morning"
+```
+
+## Editing worklogs
+
+``` bash
+worklog edit <ID> <FLAGS>
+```
+
+To edit an existing worklog, you will need to know the ID, then you can
+use the command `worklog edit "abc" --description "New description"`.
+To find this ID, you will need to have printed that worklog previously,
+and enough of the ID must be used to make it unique amongst all other
+worklogs.
+
+The revision and createdAt fields will automatically be updated when
+editing and can't be specified.
+
+Any specified fields will be merged into the existing work overwritting
+previous fields.
+
+Any blank `--title ""` fields will be ignored, and all strings have
+whitespace removed from both ends.
+This does mean that you will be unable to update a field to an empty
+state.
+
+You can specify further fields as you want to.
+
+- `--title "foo"` The title of the work done. This is a summary of
+  the work.
+- `--description "bar"` A longer description of the work done. This
+  gives the details of the work done.
+- `--author "Alice"` The name of the person doing the work. This
+  will override the default value in the config file.
+- `--duration 30` How long the work took. This can be any unit of
+  measurement that suits you. This will override the default value
+  in the config file.
+- `--tags "buzz, bang"` A comma seperate list of tags to describe
+  the work.
+- `--when "2000/12/31"` Timestamp of when the work was done. This
+  should be in [RFC3339] format, either just the date, or datetime.
+
+### Example edit
+
+``` bash
+worklog edit \
+"abc"
+--title "Better summary" \
+--description "Made my coffee" \
+--author "Bob" \
+--duration 10 \
 --tags "morning"
 ```
 
