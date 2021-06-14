@@ -107,7 +107,7 @@ func TestCreate(t *testing.T) {
 
 			testItem.args = append([]string{"create"}, testItem.args...)
 			cmd := exec.Command(path.Join(dir, binaryName), testItem.args...)
-			output, err := cmd.CombinedOutput()
+			output, _ := cmd.CombinedOutput()
 
 			assert.Equal(t, testItem.expOutput, string(output))
 

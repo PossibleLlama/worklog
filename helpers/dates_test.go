@@ -87,68 +87,57 @@ func TestGetStringAsDateTime(t *testing.T) {
 			dateTimeString:   "2000-01-01",
 			dateTimeExpected: expectedDateTimeMidnight,
 			err:              nil,
-		},
-		{
+		}, {
 			name:             "Valid date. / instead of -",
 			dateTimeString:   "2000/01/01",
 			dateTimeExpected: expectedDateTimeMidnight,
 			err:              nil,
-		},
-		{
+		}, {
 			name:             "Valid date. Space instead of -",
 			dateTimeString:   "2000 01 01",
 			dateTimeExpected: expectedDateTimeMidnight,
 			err:              nil,
-		},
-		{
+		}, {
 			name:             "Valid date and time",
 			dateTimeString:   "2000-01-02T01:23:00",
 			dateTimeExpected: expectedDateTimeMorning,
 			err:              nil,
-		},
-		{
+		}, {
 			name:             "Valid date and time. Space instead of T",
 			dateTimeString:   "2000-01-02 01:23:00",
 			dateTimeExpected: expectedDateTimeMorning,
 			err:              nil,
-		},
-		{
+		}, {
 			name:             "Valid full date and time",
 			dateTimeString:   "2000-01-02T01:23:00Z",
 			dateTimeExpected: expectedDateTimeMorning,
 			err:              nil,
-		},
-		{
+		}, {
 			name:             "Valid full date and time with whitespace front",
 			dateTimeString:   "\t2000-01-02T01:23:00Z",
 			dateTimeExpected: expectedDateTimeMorning,
 			err:              nil,
-		},
-		{
+		}, {
 			name:             "Valid full date and time with whitespace end",
 			dateTimeString:   "2000-01-02T01:23:00Z ",
 			dateTimeExpected: expectedDateTimeMorning,
 			err:              nil,
-		},
-		{
+		}, {
 			name:             "Valid full date and time with whitespace front and end",
 			dateTimeString:   " 2000-01-02T01:23:00Z\n",
 			dateTimeExpected: expectedDateTimeMorning,
 			err:              nil,
-		},
-		{
+		}, {
 			name:             "Invalid string",
 			dateTimeString:   "err",
 			dateTimeExpected: time.Now(),
 			err:              errors.New("unable to parse string as date. 'parsing time \"err\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"err\" as \"2006\"'"),
-		},
-		{
+		}, {
 			name:             "Valid date with invalid postfix",
 			dateTimeString:   "2000-01-01 foo",
 			dateTimeExpected: expectedDateTimeMidnight,
 			err:              errors.New("unable to parse string as date. 'parsing time \"2000-01-01 foo\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \" foo\" as \"T\"'"),
-		},
-		{
+		}, {
 			name:             "Valid date with invalid prefix",
 			dateTimeString:   "bar 2000-01-01",
 			dateTimeExpected: expectedDateTimeMidnight,

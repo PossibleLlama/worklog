@@ -19,9 +19,7 @@ const binaryName = "worklog"
 const length = 56
 
 var now = time.Now()
-var tmZoneEurope, _ = time.LoadLocation("Europe/Berlin")
 var tmUTC = time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(), 0, time.UTC)
-var tmEurope = time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(), 0, tmZoneEurope)
 
 func getActualConfig(t *testing.T) *model.Config {
 	var actualFile model.Config
