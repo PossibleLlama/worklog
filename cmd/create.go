@@ -56,8 +56,7 @@ func createArgs() error {
 		}
 	}
 
-	whenDate, err := helpers.GetStringAsDateTime(
-		strings.TrimSpace(createWhenString))
+	whenDate, err := helpers.GetStringAsDateTime(createWhenString)
 	if err != nil {
 		return err
 	}

@@ -49,3 +49,10 @@ func randString(n int, characterSet string) string {
 
 	return *(*string)(unsafe.Pointer(&b))
 }
+
+// https://stackoverflow.com/a/24894202
+func replaceAtIndex(in string, r rune, i int) string {
+	out := []rune(in)
+	out[i] = r
+	return string(out)
+}

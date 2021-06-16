@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -175,7 +176,7 @@ func TestCreateArgs(t *testing.T) {
 			tags:        []string{"1", "2"},
 			whenString:  helpers.RandAlphabeticString(shortLength),
 			when:        time.Time{},
-			expErr:      errors.New("unable to parse string as date"),
+			expErr:      errors.New("Could not find format for \""),
 		},
 	}
 
@@ -212,6 +213,45 @@ func TestCreateArgs(t *testing.T) {
 			assert.Equal(t, testItem.when, createWhen)
 		})
 	}
+}
+
+func TestCreateArgsWhen(t *testing.T) {
+	t.Run("Ensure '--when' is the same when using the flag and not", func(t *testing.T) {
+		tm := time.Now()
+
+		// This is how the date is initialised in the create function
+		setProvidedCreateArgValues(
+			"When without specifying",
+			"",
+			defaultAuthor,
+			helpers.TimeFormat(tm),
+			defaultDuration,
+			"")
+		actualErr := createArgs()
+		assert.Nil(t, actualErr)
+
+		noWhen := createWhen
+
+		zone, _ := tm.Zone()
+		setProvidedCreateArgValues(
+			"When with specifying",
+			"",
+			defaultAuthor,
+			fmt.Sprintf("%d-%d-%dT%d:%d:%d %s",
+				tm.Year(),
+				int(tm.Month()),
+				tm.Day(),
+				tm.Hour(),
+				tm.Minute(),
+				tm.Second(),
+				zone),
+			defaultDuration,
+			"")
+		actualErr = createArgs()
+		assert.Nil(t, actualErr)
+
+		assert.Equal(t, noWhen, createWhen)
+	})
 }
 
 func TestCreateRun(t *testing.T) {

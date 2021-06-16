@@ -53,8 +53,7 @@ func editArgs(args []string) error {
 		}
 	}
 
-	whenDate, err := helpers.GetStringAsDateTime(
-		strings.TrimSpace(editWhenString))
+	whenDate, err := helpers.GetStringAsDateTime(editWhenString)
 	if err != nil {
 		return err
 	}
@@ -113,5 +112,5 @@ func init() {
 		&editTagsString,
 		"tags",
 		"",
-		"Comma seperated list of tags this work relates to")
+		"Comma separated list of tags this work relates to")
 }

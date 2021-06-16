@@ -34,7 +34,7 @@ func TestEditArgs(t *testing.T) {
 	id := helpers.RandAlphabeticString(shortLength)
 	title := helpers.RandHexAlphaNumericString(shortLength)
 	description := helpers.RandHexAlphaNumericString(longLength)
-	now := time.Date(2020, time.January, 30, 23, 59, 0, 0, time.UTC)
+	tm, _ := helpers.GetStringAsDateTime("2021-02-10 21:56:45")
 	tag := helpers.RandHexAlphaNumericString(longLength)
 
 	var tests = []struct {
@@ -76,7 +76,7 @@ func TestEditArgs(t *testing.T) {
 				Title:       "",
 				Description: "",
 				Duration:    -1,
-				When:        now,
+				When:        time.Now(),
 				Tags:        []string{},
 			},
 			err: nil,
@@ -87,14 +87,14 @@ func TestEditArgs(t *testing.T) {
 				Title:       title,
 				Description: description,
 				Duration:    longLength,
-				When:        time.Date(2021, time.February, 10, 21, 56, 45, 0, time.UTC),
+				When:        tm,
 				Tags:        []string{tag},
 			},
 			expected: &model.Work{
 				Title:       title,
 				Description: description,
 				Duration:    longLength,
-				When:        time.Date(2021, time.February, 10, 21, 56, 45, 0, time.UTC),
+				When:        tm,
 				Tags:        []string{tag},
 			},
 			err: nil,
@@ -106,7 +106,7 @@ func TestEditArgs(t *testing.T) {
 			if testItem.provided != nil {
 				var whenString string
 				if (testItem.provided.When == time.Time{}) {
-					whenString = helpers.TimeFormat(now)
+					whenString = helpers.TimeFormat(time.Now())
 				} else {
 					whenString = helpers.TimeFormat(testItem.provided.When)
 				}
@@ -131,7 +131,7 @@ func TestEditArgs(t *testing.T) {
 					assert.Equal(t, testItem.expected.Description, editDescription)
 					assert.Equal(t, testItem.expected.Duration, editDuration)
 					assert.Equal(t, testItem.expected.Author, editAuthor)
-					assert.Equal(t, testItem.expected.When, editWhen)
+					assert.Equal(t, testItem.expected.When.Format(time.RFC3339), editWhen.Format(time.RFC3339))
 					assert.Equal(t, testItem.expected.Tags, editTags)
 				}
 			}
@@ -141,7 +141,7 @@ func TestEditArgs(t *testing.T) {
 
 func TestEditRun(t *testing.T) {
 	now, _ := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-	tm := time.Date(2021, time.February, 10, 21, 56, 45, 0, time.UTC)
+	tm, _ := helpers.GetStringAsDateTime("2021-02-10 21:56:45")
 
 	var tests = []struct {
 		name     string

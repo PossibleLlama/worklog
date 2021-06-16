@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 	"time"
 
@@ -9,11 +10,12 @@ import (
 )
 
 const (
-	outputTime = "2000-01-02T01:23:00Z"
+	outputTimeUTC = "2000-01-02T01:23:00Z"
+	outputTime    = "2000-01-02T01:23:00+00:00"
 )
 
 func initializeTime(t *testing.T, layout, value string) time.Time {
-	tm, err := time.Parse(layout, value)
+	tm, err := time.ParseInLocation(layout, value, time.Now().Location())
 	if err != nil {
 		t.Errorf("Initialization of test data failed with %s", err)
 	}
@@ -21,7 +23,7 @@ func initializeTime(t *testing.T, layout, value string) time.Time {
 }
 
 func initializeTimeBench(b *testing.B, layout, value string) time.Time {
-	tm, err := time.Parse(layout, value)
+	tm, err := time.ParseInLocation(layout, value, time.Now().Location())
 	if err != nil {
 		b.Errorf("Initialization of test data failed with %s", err)
 	}
@@ -37,31 +39,31 @@ func TestTimeFormat(t *testing.T) {
 		{
 			name:   "Valid RFC1123 date time updates",
 			input:  initializeTime(t, time.RFC1123, "Sun, 02 Jan 2000 01:23:00 GMT"),
-			output: outputTime,
+			output: outputTimeUTC,
 		}, {
 			name:   "Valid RFC1123Z date time updates",
 			input:  initializeTime(t, time.RFC1123Z, "Sun, 02 Jan 2000 01:23:00 +0000"),
-			output: outputTime,
+			output: outputTimeUTC,
 		}, {
 			name:   "Valid RFC3339 date time is same",
 			input:  initializeTime(t, time.RFC3339, "2000-01-02T01:23:00Z"),
-			output: outputTime,
+			output: outputTimeUTC,
 		}, {
 			name:   "Valid RFC3339 nano date time updates",
 			input:  initializeTime(t, time.RFC3339Nano, "2000-01-02T01:23:00.000000000Z"),
-			output: outputTime,
+			output: outputTimeUTC,
 		}, {
 			name:   "Valid RFC850 date time updates",
 			input:  initializeTime(t, time.RFC850, "Sunday, 02-Jan-00 01:23:00 GMT"),
-			output: outputTime,
+			output: outputTimeUTC,
 		}, {
 			name:   "Valid RFC882 date time updates",
 			input:  initializeTime(t, time.RFC822, "02 Jan 00 01:23 GMT"),
-			output: outputTime,
+			output: outputTimeUTC,
 		}, {
 			name:   "Valid RFC882Z date time updates",
 			input:  initializeTime(t, time.RFC822Z, "02 Jan 00 01:23 +0000"),
-			output: outputTime,
+			output: outputTimeUTC,
 		},
 	}
 
@@ -73,8 +75,9 @@ func TestTimeFormat(t *testing.T) {
 }
 
 func TestGetStringAsDateTime(t *testing.T) {
-	expectedDateTimeMidnight := initializeTime(t, time.RFC3339, "2000-01-01T00:00:00Z")
+	expectedDateTimeMidnight := initializeTime(t, time.RFC3339, "2000-01-01T00:00:00+00:00")
 	expectedDateTimeMorning := initializeTime(t, time.RFC3339, outputTime)
+	expectedDateTimeMorningUTC := initializeTime(t, time.RFC3339, outputTimeUTC)
 
 	var tests = []struct {
 		name             string
@@ -87,72 +90,61 @@ func TestGetStringAsDateTime(t *testing.T) {
 			dateTimeString:   "2000-01-01",
 			dateTimeExpected: expectedDateTimeMidnight,
 			err:              nil,
-		},
-		{
+		}, {
 			name:             "Valid date. / instead of -",
 			dateTimeString:   "2000/01/01",
 			dateTimeExpected: expectedDateTimeMidnight,
 			err:              nil,
-		},
-		{
+		}, {
 			name:             "Valid date. Space instead of -",
 			dateTimeString:   "2000 01 01",
 			dateTimeExpected: expectedDateTimeMidnight,
 			err:              nil,
-		},
-		{
+		}, {
 			name:             "Valid date and time",
 			dateTimeString:   "2000-01-02T01:23:00",
 			dateTimeExpected: expectedDateTimeMorning,
 			err:              nil,
-		},
-		{
+		}, {
 			name:             "Valid date and time. Space instead of T",
 			dateTimeString:   "2000-01-02 01:23:00",
 			dateTimeExpected: expectedDateTimeMorning,
 			err:              nil,
-		},
-		{
-			name:             "Valid full date and time",
+		}, {
+			name:             "Valid UTC date and time",
 			dateTimeString:   "2000-01-02T01:23:00Z",
-			dateTimeExpected: expectedDateTimeMorning,
+			dateTimeExpected: expectedDateTimeMorningUTC,
 			err:              nil,
-		},
-		{
+		}, {
 			name:             "Valid full date and time with whitespace front",
 			dateTimeString:   "\t2000-01-02T01:23:00Z",
-			dateTimeExpected: expectedDateTimeMorning,
+			dateTimeExpected: expectedDateTimeMorningUTC,
 			err:              nil,
-		},
-		{
+		}, {
 			name:             "Valid full date and time with whitespace end",
 			dateTimeString:   "2000-01-02T01:23:00Z ",
-			dateTimeExpected: expectedDateTimeMorning,
+			dateTimeExpected: expectedDateTimeMorningUTC,
 			err:              nil,
-		},
-		{
+		}, {
 			name:             "Valid full date and time with whitespace front and end",
 			dateTimeString:   " 2000-01-02T01:23:00Z\n",
-			dateTimeExpected: expectedDateTimeMorning,
+			dateTimeExpected: expectedDateTimeMorningUTC,
 			err:              nil,
-		},
-		{
+		}, {
 			name:             "Invalid string",
 			dateTimeString:   "err",
-			dateTimeExpected: time.Now(),
-			err:              errors.New("unable to parse string as date. 'parsing time \"err\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"err\" as \"2006\"'"),
-		},
-		{
+			dateTimeExpected: time.Time{},
+			err:              errors.New("Could not find format for \"err\""),
+		}, {
 			name:             "Valid date with invalid postfix",
 			dateTimeString:   "2000-01-01 foo",
 			dateTimeExpected: expectedDateTimeMidnight,
-			err:              errors.New("unable to parse string as date. 'parsing time \"2000-01-01 foo\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \" foo\" as \"T\"'"),
-		},
-		{
+			err:              nil,
+		}, {
 			name:             "Valid date with invalid prefix",
 			dateTimeString:   "bar 2000-01-01",
-			dateTimeExpected: expectedDateTimeMidnight,
-			err:              errors.New("unable to parse string as date. 'parsing time \"bar 2000-01-01\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"bar 2000-01-01\" as \"2006\"'"),
+			dateTimeExpected: time.Time{},
+			err:              errors.New("parsing time \"bar 2000-01-01\" as \"Jan 2000-01-01\": cannot parse \"bar 2000-01-01\" as \"Jan\""),
 		},
 	}
 
@@ -160,13 +152,13 @@ func TestGetStringAsDateTime(t *testing.T) {
 		t.Run(testItem.name, func(t *testing.T) {
 			actual, err := GetStringAsDateTime(testItem.dateTimeString)
 
-			if err != nil {
-				assert.EqualError(t, testItem.err, err.Error())
-			} else if testItem.err != nil {
+			if err != nil && testItem.err != nil {
 				assert.EqualError(t, err, testItem.err.Error())
-			} else {
-				assert.Equal(t, testItem.dateTimeExpected, actual)
+			} else if err != nil || testItem.err != nil {
+				assert.Fail(t, "Expected or got an error, when the other was not.", fmt.Sprintf("Expected '%s', Actual '%s'", testItem.err, err))
 			}
+
+			assert.Equal(t, testItem.dateTimeExpected, actual, fmt.Sprintf("Expected '%s', Actual '%s'", testItem.dateTimeExpected, actual))
 		})
 	}
 }
