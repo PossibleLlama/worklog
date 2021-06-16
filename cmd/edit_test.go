@@ -76,7 +76,7 @@ func TestEditArgs(t *testing.T) {
 				Title:       "",
 				Description: "",
 				Duration:    -1,
-				When:        tm,
+				When:        time.Now(),
 				Tags:        []string{},
 			},
 			err: nil,
@@ -106,7 +106,7 @@ func TestEditArgs(t *testing.T) {
 			if testItem.provided != nil {
 				var whenString string
 				if (testItem.provided.When == time.Time{}) {
-					whenString = helpers.TimeFormat(tm)
+					whenString = helpers.TimeFormat(time.Now())
 				} else {
 					whenString = helpers.TimeFormat(testItem.provided.When)
 				}
@@ -131,7 +131,7 @@ func TestEditArgs(t *testing.T) {
 					assert.Equal(t, testItem.expected.Description, editDescription)
 					assert.Equal(t, testItem.expected.Duration, editDuration)
 					assert.Equal(t, testItem.expected.Author, editAuthor)
-					assert.Equal(t, testItem.expected.When, editWhen)
+					assert.Equal(t, testItem.expected.When.Format(time.RFC3339), editWhen.Format(time.RFC3339))
 					assert.Equal(t, testItem.expected.Tags, editTags)
 				}
 			}

@@ -175,7 +175,7 @@ func TestCreateArgs(t *testing.T) {
 			tags:        []string{"1", "2"},
 			whenString:  helpers.RandAlphabeticString(shortLength),
 			when:        time.Time{},
-			expErr:      errors.New("unable to parse string as date"),
+			expErr:      errors.New("Could not find format for \""),
 		},
 	}
 

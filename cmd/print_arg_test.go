@@ -317,7 +317,7 @@ func TestPrintArgsDates(t *testing.T) {
 			eDate:    "",
 			today:    false,
 			week:     false,
-			expErr:   errors.New("unable to parse string as date. 'parsing time \"" + randString + "\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"" + randString + "\" as \"2006\"'"),
+			expErr:   fmt.Errorf("Could not find format for \"%s\"", randString),
 		}, {
 			name:     "End date is not required if start date provided",
 			sDate:    testDefaultStartDate.Format(time.RFC3339),
@@ -333,7 +333,7 @@ func TestPrintArgsDates(t *testing.T) {
 			eDate:    randString,
 			today:    false,
 			week:     false,
-			expErr:   errors.New("unable to parse string as date. 'parsing time \"" + randString + "\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"" + randString + "\" as \"2006\"'"),
+			expErr:   fmt.Errorf("Could not find format for \"%s\"", randString),
 		}, {
 			name:     "Today sets start and end date",
 			sDate:    "",
@@ -376,7 +376,11 @@ func TestPrintArgsDates(t *testing.T) {
 				testItem.expEDate,
 				printEndDate)
 
-			assert.Equal(t, testItem.expErr, actualErr)
+			if actualErr != nil && testItem.expErr != nil {
+				assert.EqualError(t, actualErr, testItem.expErr.Error(), fmt.Sprintf("Actual msg '%s'", actualErr.Error()))
+			} else if actualErr != nil || testItem.expErr != nil {
+				assert.Fail(t, "Expected or got an error, when the other was not.", fmt.Sprintf("Expected '%s', Actual '%s'", testItem.expErr, actualErr))
+			}
 
 			// Check string values
 			assert.Equal(t, testItem.sDate, printStartDateString)

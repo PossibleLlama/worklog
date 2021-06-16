@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"regexp"
 	"strings"
 	"time"
 
@@ -11,7 +12,6 @@ import (
 // They will be used to check whether this is likely
 // to be a date, and not a random string
 const dateRegex = `[0-9]{4}[-/ ][0-1][0-9][-/ ][0-3][0-9]`
-const timeRegex = `[0-2][0-9]:[0-5][0-9]:[0-5][0-9]`
 
 // TimeFormat formats a time to string
 func TimeFormat(t time.Time) string {
@@ -20,8 +20,18 @@ func TimeFormat(t time.Time) string {
 
 // GetStringAsDateTime ensures a string is a dateTime
 func GetStringAsDateTime(rawElement string) (time.Time, error) {
-	tm, err := dateparse.ParseLocal(
-		strings.TrimSpace(rawElement))
+	element := strings.TrimSpace(rawElement)
+
+	isDate, dateErr := regexp.MatchString("^"+dateRegex, element)
+	if dateErr != nil {
+		return time.Time{}, dateErr
+	}
+	if isDate {
+		element = replaceAtIndex(element, '-', 4)
+		element = replaceAtIndex(element, '-', 7)
+	}
+
+	tm, err := dateparse.ParseLocal(element)
 	if err != nil {
 		return time.Time{}, err
 	}
