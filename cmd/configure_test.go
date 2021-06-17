@@ -30,7 +30,9 @@ func TestConfigArgs(t *testing.T) {
 		t.Run(testItem.name, func(t *testing.T) {
 			setProvidedConfigureValues(helpers.RandAlphabeticString(shortLength), helpers.RandAlphabeticString(shortLength), shortLength)
 
-			configArgs()
+			if err := configArgs(); err != nil {
+				assert.Failf(t, err.Error(), "Returned error from configArgs")
+			}
 
 			assert.Equal(t, configDefaultAuthor, configProvidedAuthor)
 			assert.Equal(t, configDefaultDuration, configProvidedDuration)

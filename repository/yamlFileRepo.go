@@ -39,7 +39,9 @@ func (*yamlFileRepo) Configure(cfg *model.Config) error {
 	if err := cfg.WriteYAML(file); err != nil {
 		return fmt.Errorf("%s. %s", e.RepoConfigFileSave, err.Error())
 	}
-	file.Sync()
+	if err := file.Sync(); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -56,7 +58,9 @@ func (*yamlFileRepo) Save(wl *model.Work) error {
 	if err := wl.WriteYAML(file); err != nil {
 		return fmt.Errorf("%s. %s", e.RepoSaveFile, err.Error())
 	}
-	file.Sync()
+	if err := file.Sync(); err != nil {
+		return err
+	}
 
 	fmt.Println("Saved file")
 	return nil

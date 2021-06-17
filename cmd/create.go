@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"os"
 	"strings"
 	"time"
 
@@ -119,5 +120,7 @@ func init() {
 		"tags",
 		"",
 		"Comma separated list of tags this work relates to")
-	createCmd.MarkFlagRequired("title")
+	if err := createCmd.MarkFlagRequired("title"); err != nil {
+		os.Exit(1)
+	}
 }
