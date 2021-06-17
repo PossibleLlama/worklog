@@ -32,6 +32,7 @@ var editCmd = &cobra.Command{
 	RunE:  EditRun,
 }
 
+// EditArgs public method to validate arguments
 func EditArgs(cmd *cobra.Command, args []string) error {
 	return editArgs(args)
 }
@@ -62,6 +63,7 @@ func editArgs(args []string) error {
 	return nil
 }
 
+// EditRun public method to run edit
 func EditRun(cmd *cobra.Command, args []string) error {
 	return editRun(args)
 }
