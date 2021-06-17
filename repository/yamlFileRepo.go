@@ -31,15 +31,21 @@ func (*yamlFileRepo) Configure(cfg *model.Config) error {
 		return fmt.Errorf("%s %s. %s", e.RepoCreateDirectory, getWorklogDir(), err.Error())
 	}
 	file, err := createFile(getWorklogDir() + "config.yml")
-	defer file.Close()
 	if err != nil {
 		return fmt.Errorf("%s. %s", e.RepoConfigFileCreate, err.Error())
 	}
+	defer func() {
+		if err := file.Close(); err != nil {
+			fmt.Printf("Error closing file: %s\n", err)
+		}
+	}()
 
 	if err := cfg.WriteYAML(file); err != nil {
 		return fmt.Errorf("%s. %s", e.RepoConfigFileSave, err.Error())
 	}
-	file.Sync()
+	if err := file.Sync(); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -48,15 +54,21 @@ func (*yamlFileRepo) Save(wl *model.Work) error {
 	fmt.Println("Saving file...")
 
 	file, err := createFile(generateFileName(wl))
-	defer file.Close()
 	if err != nil {
 		return fmt.Errorf("%s. %s", e.RepoSaveFile, err.Error())
 	}
+	defer func() {
+		if err := file.Close(); err != nil {
+			fmt.Printf("Error closing file: %s\n", err)
+		}
+	}()
 
 	if err := wl.WriteYAML(file); err != nil {
 		return fmt.Errorf("%s. %s", e.RepoSaveFile, err.Error())
 	}
-	file.Sync()
+	if err := file.Sync(); err != nil {
+		return err
+	}
 
 	fmt.Println("Saved file")
 	return nil
@@ -86,7 +98,7 @@ func getWorklogDir() string {
 }
 
 func createDirectory(filePath string) error {
-	err := os.Mkdir(filePath, 0777)
+	err := os.Mkdir(filePath, 0750)
 	if err != nil {
 		if os.IsExist(err) {
 			return nil
@@ -157,7 +169,10 @@ func (*yamlFileRepo) GetByID(ID string, filter *model.Work) (*model.Work, error)
 func getAllFileNamesBetweenDates(startDate, endDate time.Time) ([]string, error) {
 	var files []string
 
-	err := filepath.Walk(getWorklogDir(), func(fullPath string, info os.FileInfo, err error) error {
+	err := filepath.Walk(getWorklogDir(), func(fullPath string, info os.FileInfo, walkErr error) error {
+		if walkErr != nil {
+			return walkErr
+		}
 		path := filepath.Base(fullPath)
 		if strings.Count(path, "_") < 2 {
 			return nil
@@ -220,7 +235,7 @@ func getFileByID(ID string) (string, error) {
 }
 
 func parseFileToWork(filePath string) (*model.Work, error) {
-	yamlFile, err := ioutil.ReadFile(filePath)
+	yamlFile, err := ioutil.ReadFile(filepath.Clean(filePath))
 	if err != nil {
 		return nil, fmt.Errorf("%s %s. %e", e.RepoGetFilesRead, filePath, err)
 	}

@@ -53,8 +53,9 @@ func (s *service) EditWorklog(id string, newWl *model.Work) (int, error) {
 }
 
 func (*service) GetWorklogsBetween(start, end time.Time, filter *model.Work) ([]*model.Work, int, error) {
-	worklogs := make(model.WorkList, 0)
-	worklogs, err := repo.GetAllBetweenDates(start, end, filter)
+	var worklogs model.WorkList
+	var err error
+	worklogs, err = repo.GetAllBetweenDates(start, end, filter)
 	if err != nil {
 		return worklogs, http.StatusInternalServerError, err
 	}

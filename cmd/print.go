@@ -73,7 +73,7 @@ func printRun(ids ...string) error {
 		When:        time.Time{},
 		CreatedAt:   time.Time{}}
 
-	worklogs := make([]*model.Work, 0)
+	var worklogs []*model.Work
 	var code int
 	var err error
 
@@ -87,6 +87,7 @@ func printRun(ids ...string) error {
 		return err
 	}
 
+	var printErr error
 	if code == http.StatusNotFound && !printOutputJSON {
 		fmt.Printf("No work found between %s and %s with the given filter",
 			printStartDate, printEndDate.Add(time.Second*-1))
@@ -96,24 +97,24 @@ func printRun(ids ...string) error {
 		fmt.Println()
 	} else if printOutputPretty {
 		if printAllFields {
-			model.WriteAllWorkToText(os.Stdout, worklogs)
+			printErr = model.WriteAllWorkToText(os.Stdout, worklogs)
 		} else {
-			model.WriteAllWorkToPrettyText(os.Stdout, worklogs)
+			printErr = model.WriteAllWorkToPrettyText(os.Stdout, worklogs)
 		}
 	} else if printOutputYAML {
 		if printAllFields {
-			model.WriteAllWorkToYAML(os.Stdout, worklogs)
+			printErr = model.WriteAllWorkToYAML(os.Stdout, worklogs)
 		} else {
-			model.WriteAllWorkToPrettyYAML(os.Stdout, worklogs)
+			printErr = model.WriteAllWorkToPrettyYAML(os.Stdout, worklogs)
 		}
 	} else {
 		if printAllFields {
-			model.WriteAllWorkToJSON(os.Stdout, worklogs)
+			printErr = model.WriteAllWorkToJSON(os.Stdout, worklogs)
 		} else {
-			model.WriteAllWorkToPrettyJSON(os.Stdout, worklogs)
+			printErr = model.WriteAllWorkToPrettyJSON(os.Stdout, worklogs)
 		}
 	}
-	return nil
+	return printErr
 }
 
 func init() {

@@ -36,7 +36,7 @@ its way in.
 
 A PR should:
 
-* Add unit or integration tests for fixed or changed functionality.
+* Add unit or e2e tests for fixed or changed functionality.
 * Include documentation.
 * Be accompanied by a completed Pull Request template.
 * Bump the version.

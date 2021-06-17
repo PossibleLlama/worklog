@@ -195,7 +195,9 @@ func BenchmarkGetStringAsDateTime(b *testing.B) {
 	for _, testItem := range tests {
 		b.Run(testItem.name, func(b *testing.B) {
 			for n := 0; n < b.N; n++ {
-				GetStringAsDateTime(testItem.input)
+				if _, err := GetStringAsDateTime(testItem.input); err != nil {
+					b.Fail()
+				}
 			}
 		})
 	}

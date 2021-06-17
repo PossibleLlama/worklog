@@ -207,9 +207,13 @@ func WriteAllWorkToText(writer io.Writer, w []*Work) error {
 			return err
 		}
 		if index != len(w)-1 {
-			writer.Write([]byte("\n"))
+			if _, err := writer.Write([]byte("\n")); err != nil {
+				return err
+			}
 		}
-		writer.Write([]byte("\n"))
+		if _, err := writer.Write([]byte("\n")); err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -223,9 +227,13 @@ func WriteAllWorkToPrettyText(writer io.Writer, w []*Work) error {
 			return err
 		}
 		if index != len(w)-1 {
-			writer.Write([]byte("\n"))
+			if _, err := writer.Write([]byte("\n")); err != nil {
+				return err
+			}
 		}
-		writer.Write([]byte("\n"))
+		if _, err := writer.Write([]byte("\n")); err != nil {
+			return err
+		}
 	}
 	return nil
 }
