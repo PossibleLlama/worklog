@@ -109,6 +109,10 @@ func (*yamlFileRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *mo
 	var worklogs []*model.Work
 	var errors []string
 
+	if (endDate == time.Time{}) {
+		endDate = time.Date(3000, time.January, 1, 0, 0, 0, 0, time.Now().Location())
+	}
+
 	fileNames, err := getAllFileNamesBetweenDates(startDate, endDate)
 	if err != nil {
 		return worklogs, err
