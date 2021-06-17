@@ -34,7 +34,11 @@ func (*yamlFileRepo) Configure(cfg *model.Config) error {
 	if err != nil {
 		return fmt.Errorf("%s. %s", e.RepoConfigFileCreate, err.Error())
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			fmt.Printf("Error closing file: %s\n", err)
+		}
+	}()
 
 	if err := cfg.WriteYAML(file); err != nil {
 		return fmt.Errorf("%s. %s", e.RepoConfigFileSave, err.Error())
@@ -53,7 +57,11 @@ func (*yamlFileRepo) Save(wl *model.Work) error {
 	if err != nil {
 		return fmt.Errorf("%s. %s", e.RepoSaveFile, err.Error())
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			fmt.Printf("Error closing file: %s\n", err)
+		}
+	}()
 
 	if err := wl.WriteYAML(file); err != nil {
 		return fmt.Errorf("%s. %s", e.RepoSaveFile, err.Error())
@@ -90,7 +98,7 @@ func getWorklogDir() string {
 }
 
 func createDirectory(filePath string) error {
-	err := os.Mkdir(filePath, 0777)
+	err := os.Mkdir(filePath, 0750)
 	if err != nil {
 		if os.IsExist(err) {
 			return nil
@@ -223,7 +231,7 @@ func getFileByID(ID string) (string, error) {
 }
 
 func parseFileToWork(filePath string) (*model.Work, error) {
-	yamlFile, err := ioutil.ReadFile(filePath)
+	yamlFile, err := ioutil.ReadFile(filepath.Clean(filePath))
 	if err != nil {
 		return nil, fmt.Errorf("%s %s. %e", e.RepoGetFilesRead, filePath, err)
 	}
