@@ -209,7 +209,7 @@ func TestEditWorklog(t *testing.T) {
 			mockRepo.AssertExpectations(t)
 			mockRepo.AssertCalled(t, "GetByID", id, &model.Work{})
 			if testItem.callSave {
-				//mockRepo.AssertCalled(t, "Save", &expWl)
+				mockRepo.AssertCalled(t, "Save", &expWl)
 			}
 		})
 	}

@@ -73,7 +73,7 @@ func printRun(ids ...string) error {
 		When:        time.Time{},
 		CreatedAt:   time.Time{}}
 
-	worklogs := make([]*model.Work, 0)
+	var worklogs []*model.Work
 	var code int
 	var err error
 

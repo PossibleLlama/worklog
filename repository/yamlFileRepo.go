@@ -31,10 +31,10 @@ func (*yamlFileRepo) Configure(cfg *model.Config) error {
 		return fmt.Errorf("%s %s. %s", e.RepoCreateDirectory, getWorklogDir(), err.Error())
 	}
 	file, err := createFile(getWorklogDir() + "config.yml")
-	defer file.Close()
 	if err != nil {
 		return fmt.Errorf("%s. %s", e.RepoConfigFileCreate, err.Error())
 	}
+	defer file.Close()
 
 	if err := cfg.WriteYAML(file); err != nil {
 		return fmt.Errorf("%s. %s", e.RepoConfigFileSave, err.Error())
@@ -48,10 +48,10 @@ func (*yamlFileRepo) Save(wl *model.Work) error {
 	fmt.Println("Saving file...")
 
 	file, err := createFile(generateFileName(wl))
-	defer file.Close()
 	if err != nil {
 		return fmt.Errorf("%s. %s", e.RepoSaveFile, err.Error())
 	}
+	defer file.Close()
 
 	if err := wl.WriteYAML(file); err != nil {
 		return fmt.Errorf("%s. %s", e.RepoSaveFile, err.Error())
@@ -153,7 +153,10 @@ func (*yamlFileRepo) GetByID(ID string, filter *model.Work) (*model.Work, error)
 func getAllFileNamesBetweenDates(startDate, endDate time.Time) ([]string, error) {
 	var files []string
 
-	err := filepath.Walk(getWorklogDir(), func(fullPath string, info os.FileInfo, err error) error {
+	err := filepath.Walk(getWorklogDir(), func(fullPath string, info os.FileInfo, walkErr error) error {
+		if walkErr != nil {
+			return walkErr
+		}
 		path := filepath.Base(fullPath)
 		if strings.Count(path, "_") < 2 {
 			return nil
