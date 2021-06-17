@@ -9,7 +9,7 @@ have done each day.
 
 ## Supported versions
 
-- v0.5.9
+- v0.5.10
 
 ## Installation
 
