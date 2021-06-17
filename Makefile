@@ -3,28 +3,28 @@ BIN_NAME=worklog
 test:
 	go clean -testcache ./...
 	make test-unit
-	make test-integration
+	make test-e2e
 
 test-repeat:
 	go clean -testcache ./...
 	make test-unit ARGS="-count 50"
-	make test-integration
+	make test-e2e
 
 test-unit:
 	@echo "Running unit tests"
 	go test $(ARGS) ./cmd ./helpers ./model ./repository ./service
 	@echo "Unit tests passed"
 
-test-integration:
-	@echo "Running integration tests"
+test-e2e:
+	@echo "Running end to end tests"
 	cp -a $(HOME)/.worklog/* $(HOME)/.worklog-backup/
-	make build DIR="./integration"
-	go test ./integration
-	rm ./integration/$(BIN_NAME)
+	make build DIR="./e2e"
+	go test ./e2e
+	rm ./e2e/$(BIN_NAME)
 	rm -f $(HOME)/.worklog/*
 	cp -a $(HOME)/.worklog-backup/* $(HOME)/.worklog/
 	rm -f $(HOME)/.worklog-backup/*
-	@echo "Integration tests passed"
+	@echo "e2e tests passed"
 
 format:
 	@echo "Running format checks"
