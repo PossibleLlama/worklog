@@ -3,8 +3,10 @@ package repository
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"time"
 
+	e "github.com/PossibleLlama/worklog/errors"
 	"github.com/PossibleLlama/worklog/model"
 
 	bolt "go.etcd.io/bbolt"
@@ -34,7 +36,10 @@ func (*bboltRepo) Save(wl *model.Work) error {
 	defer db.Close()
 
 	updateErr := db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(worklogBucket))
+		b, bucketErr := tx.CreateBucketIfNotExists([]byte(worklogBucket))
+		if bucketErr != nil {
+			return bucketErr
+		}
 		created, marshalErr := json.Marshal(wl)
 		if marshalErr != nil {
 			return marshalErr
@@ -53,7 +58,11 @@ func (*bboltRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *model
 	defer db.Close()
 
 	viewErr := db.View(func(tx *bolt.Tx) error {
-		c := tx.Bucket([]byte(worklogBucket)).Cursor()
+		b := tx.Bucket([]byte(worklogBucket))
+		if b == nil {
+			return errors.New(e.RepoGetFilesRead)
+		}
+		c := b.Cursor()
 		min, minErr := startDate.MarshalBinary()
 		if minErr != nil {
 			return minErr
