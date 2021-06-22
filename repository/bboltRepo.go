@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"bytes"
 	"encoding/json"
 	"time"
 
@@ -51,7 +52,7 @@ func (*bboltRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *model
 
 func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
 	var foundWl *model.Work
-	db, openErr := open()
+	db, openErr := openReadOnly()
 	if openErr != nil {
 		return nil, openErr
 	}
@@ -67,9 +68,15 @@ func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
 
 // Internal wrapped function to ensure all useages are aligned
 func open() (*bolt.DB, error) {
-	db, err := bolt.Open(filePath, 0750, &bolt.Options{Timeout: 1 * time.Second})
-	if err != nil {
-		return nil, err
+	return bolt.Open(filePath, 0750, &bolt.Options{
+		Timeout: 1 * time.Second,
+	})
 	}
-	return db, nil
+
+// Internal wrapped function to ensure all useages are aligned
+func openReadOnly() (*bolt.DB, error) {
+	return bolt.Open(filePath, 0750, &bolt.Options{
+		Timeout:  1 * time.Second,
+		ReadOnly: true,
+	})
 }
