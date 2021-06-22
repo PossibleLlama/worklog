@@ -8,9 +8,15 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
+var filePath string
+
+const worklogBucket = "worklogs"
+
 type bboltRepo struct{}
 
-func NewBBoltRepo() WorklogRepository {
+// NewBBoltRepo initializes the repo with the given filepath
+func NewBBoltRepo(path string) WorklogRepository {
+	filePath = path
 	return &bboltRepo{}
 }
 
@@ -29,5 +35,13 @@ func (*bboltRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *model
 }
 
 func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
-	return nil, nil
+}
+
+// Internal wrapped function to ensure all useages are aligned
+func open() (*bolt.DB, error) {
+	db, err := bolt.Open(filePath, 0750, &bolt.Options{Timeout: 1 * time.Second})
+	if err != nil {
+		return nil, err
+	}
+	return db, nil
 }
