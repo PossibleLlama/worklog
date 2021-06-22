@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/PossibleLlama/worklog/helpers"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -32,7 +33,8 @@ Flags:
   -y, --yaml                 Output in a yaml format
 
 Global Flags:
-      --config string   config file (default is $HOME/.worklog/config.yml)
+      --config string   config file including file extension (default ".worklog/config.yml")
+      --repo string     repository that worklogs are stored in (default ".worklog/worklog.db")
 
 one flag is required
 `

@@ -59,18 +59,18 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile,
 		"config",
-		fmt.Sprintf("%s%s.worklog%sconfig.yml",
-			home,
-			string(filepath.Separator),
+		// This does not contain the home directory, as then the tool tip description
+		// would include that value, which is difficult to test for
+		fmt.Sprintf(".worklog%sconfig.yml",
 			string(filepath.Separator)),
-		"config file including file extension (default is $HOME/.worklog/config.yml)")
+		"config file including file extension")
 	rootCmd.PersistentFlags().StringVar(&repoLocation,
 		"repo",
-		fmt.Sprintf("%s%s.worklog%sworklog.db",
-			home,
-			string(filepath.Separator),
+		// This does not contain the home directory, as then the tool tip description
+		// would include that value, which is difficult to test for
+		fmt.Sprintf(".worklog%sworklog.db",
 			string(filepath.Separator)),
-		"repository that worklogs are stored in (default is $HOME/.worklog/worklog.db)")
+		"repository that worklogs are stored in")
 
 	cobra.OnInitialize(initConfig)
 
@@ -82,6 +82,9 @@ func init() {
 func initConfig() {
 	if !strings.HasPrefix(cfgFile, string(filepath.Separator)) {
 		cfgFile = fmt.Sprintf("%s%s%s", home, string(filepath.Separator), cfgFile)
+	}
+	if !strings.HasPrefix(repoLocation, string(filepath.Separator)) {
+		repoLocation = fmt.Sprintf("%s%s%s", home, string(filepath.Separator), repoLocation)
 	}
 
 	viper.SetConfigFile(cfgFile)

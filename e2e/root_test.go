@@ -29,8 +29,9 @@ Available Commands:
   print       Print all worklogs since provided date
 
 Flags:
-      --config string   config file (default is $HOME/.worklog/config.yml)
+      --config string   config file including file extension (default ".worklog/config.yml")
   -h, --help            help for worklog
+      --repo string     repository that worklogs are stored in (default ".worklog/worklog.db")
   -v, --version         version for worklog
 
 Use "worklog [command] --help" for more information about a command.

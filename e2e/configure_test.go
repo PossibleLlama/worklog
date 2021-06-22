@@ -23,7 +23,8 @@ Flags:
   -h, --help            help for overrideDefaults
 
 Global Flags:
-      --config string   config file (default is $HOME/.worklog/config.yml)
+      --config string   config file including file extension (default ".worklog/config.yml")
+      --repo string     repository that worklogs are stored in (default ".worklog/worklog.db")
 
 overrideDefaults requires at least one argument
 `
@@ -38,7 +39,8 @@ Flags:
   -h, --help            help for overrideDefaults
 
 Global Flags:
-      --config string   config file (default is $HOME/.worklog/config.yml)
+      --config string   config file including file extension (default ".worklog/config.yml")
+      --repo string     repository that worklogs are stored in (default ".worklog/worklog.db")
 
 format is not valid
 `
@@ -165,7 +167,7 @@ func TestConfigure(t *testing.T) {
 			cmd := exec.Command(path.Join(dir, binaryName), testItem.args...)
 			output, err := cmd.CombinedOutput()
 
-			assert.Contains(t, string(output), testItem.expOutput)
+			assert.Contains(t, string(output), testItem.expOutput, fmt.Sprintf("Expected: '%s', Actual: '%s'\n", testItem.expOutput, string(output)))
 			if testItem.success {
 				assert.Nil(t, err)
 				assert.Equal(t, testItem.expFile, getActualConfig(t))
