@@ -46,8 +46,37 @@ func (*bboltRepo) Save(wl *model.Work) error {
 
 func (*bboltRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *model.Work) ([]*model.Work, error) {
 	var worklogs []*model.Work
+	db, openErr := openReadOnly()
+	if openErr != nil {
+		return nil, openErr
+	}
+	defer db.Close()
 
-	return worklogs, nil
+	viewErr := db.View(func(tx *bolt.Tx) error {
+		c := tx.Bucket([]byte(worklogBucket)).Cursor()
+		min, minErr := startDate.MarshalBinary()
+		if minErr != nil {
+			return minErr
+		}
+		max, maxErr := endDate.MarshalBinary()
+		if maxErr != nil {
+			return maxErr
+		}
+
+		for k, v := c.Seek(min); k != nil && bytes.Compare(k, max) <= 0; k, v = c.Next() {
+			var found model.Work
+			if marshalErr := json.Unmarshal(v, &found); marshalErr != nil {
+				return marshalErr
+			}
+
+			if workMatchesFilter(filter, &found) {
+				worklogs = append(worklogs, &found)
+			}
+		}
+		return nil
+	})
+
+	return worklogs, viewErr
 }
 
 func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
@@ -71,7 +100,7 @@ func open() (*bolt.DB, error) {
 	return bolt.Open(filePath, 0750, &bolt.Options{
 		Timeout: 1 * time.Second,
 	})
-	}
+}
 
 // Internal wrapped function to ensure all useages are aligned
 func openReadOnly() (*bolt.DB, error) {
