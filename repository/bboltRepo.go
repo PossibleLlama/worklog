@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/PossibleLlama/worklog/model"
@@ -25,7 +26,21 @@ func (*bboltRepo) Configure(cfg *model.Config) error {
 }
 
 func (*bboltRepo) Save(wl *model.Work) error {
-	return nil
+	db, openErr := open()
+	if openErr != nil {
+		return openErr
+	}
+	defer db.Close()
+
+	updateErr := db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(worklogBucket))
+		created, marshalErr := json.Marshal(wl)
+		if marshalErr != nil {
+			return marshalErr
+		}
+		return b.Put([]byte(wl.ID), created)
+	})
+	return updateErr
 }
 
 func (*bboltRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *model.Work) ([]*model.Work, error) {
@@ -35,6 +50,19 @@ func (*bboltRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *model
 }
 
 func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
+	var foundWl *model.Work
+	db, openErr := open()
+	if openErr != nil {
+		return nil, openErr
+	}
+	defer db.Close()
+
+	viewErr := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(worklogBucket))
+		found := b.Get([]byte(ID))
+		return json.Unmarshal(found, foundWl)
+	})
+	return foundWl, viewErr
 }
 
 // Internal wrapped function to ensure all useages are aligned
