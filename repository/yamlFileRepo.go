@@ -92,7 +92,7 @@ func getWorklogDir() string {
 	home, err := homedir.Dir()
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		os.Exit(e.RepoErrors)
 	}
 	return home + "/.worklog/"
 }
