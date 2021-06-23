@@ -27,9 +27,9 @@ Flags:
       --when string          When the work was worked in RFC3339 format (default "%s")
 
 Global Flags:
-      --config string   config file including file extension (default ".worklog/config.yml")
+      --config string   Config file including file extension (default ".worklog/config.yml")
       --legacy          Use legacy yaml repository for storing/retrieving worklogs
-      --repo string     repository that worklogs are stored in (default ".worklog/worklog.db")
+      --repo string     Repository that worklogs are stored in (default ".worklog/worklog.db")
 
 required flag(s) "title" not set
 `, time.Now().Format(time.RFC3339))

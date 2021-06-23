@@ -64,7 +64,7 @@ func init() {
 		// would include that value, which is difficult to test for
 		fmt.Sprintf(".worklog%sconfig.yml",
 			string(filepath.Separator)),
-		"config file including file extension")
+		"Config file including file extension")
 	rootCmd.PersistentFlags().BoolVar(&useLegacy,
 		"legacy",
 		false,
@@ -75,7 +75,7 @@ func init() {
 		// would include that value, which is difficult to test for
 		fmt.Sprintf(".worklog%sworklog.db",
 			string(filepath.Separator)),
-		"repository that worklogs are stored in")
+		"Repository that worklogs are stored in")
 
 	cobra.OnInitialize(initConfig)
 

@@ -23,9 +23,9 @@ Flags:
   -h, --help            help for overrideDefaults
 
 Global Flags:
-      --config string   config file including file extension (default ".worklog/config.yml")
+      --config string   Vonfig file including file extension (default ".worklog/config.yml")
       --legacy          Use legacy yaml repository for storing/retrieving worklogs
-      --repo string     repository that worklogs are stored in (default ".worklog/worklog.db")
+      --repo string     Repository that worklogs are stored in (default ".worklog/worklog.db")
 
 overrideDefaults requires at least one argument
 `
@@ -40,9 +40,9 @@ Flags:
   -h, --help            help for overrideDefaults
 
 Global Flags:
-      --config string   config file including file extension (default ".worklog/config.yml")
+      --config string   Config file including file extension (default ".worklog/config.yml")
       --legacy          Use legacy yaml repository for storing/retrieving worklogs
-      --repo string     repository that worklogs are stored in (default ".worklog/worklog.db")
+      --repo string     Repository that worklogs are stored in (default ".worklog/worklog.db")
 
 format is not valid
 `
