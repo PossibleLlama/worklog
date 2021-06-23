@@ -79,7 +79,11 @@ func init() {
 
 	cobra.OnInitialize(initConfig)
 
-	wlRepo = repository.NewYamlFileRepo()
+	if useLegacy {
+		wlRepo = repository.NewYamlFileRepo()
+	} else {
+		// TODO
+	}
 	wlService = service.NewWorklogService(wlRepo)
 }
 
