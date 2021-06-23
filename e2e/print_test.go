@@ -34,6 +34,7 @@ Flags:
 
 Global Flags:
       --config string   config file including file extension (default ".worklog/config.yml")
+      --legacy          Use legacy yaml repository for storing/retrieving worklogs
       --repo string     repository that worklogs are stored in (default ".worklog/worklog.db")
 
 one flag is required

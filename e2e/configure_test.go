@@ -24,6 +24,7 @@ Flags:
 
 Global Flags:
       --config string   config file including file extension (default ".worklog/config.yml")
+      --legacy          Use legacy yaml repository for storing/retrieving worklogs
       --repo string     repository that worklogs are stored in (default ".worklog/worklog.db")
 
 overrideDefaults requires at least one argument
@@ -40,6 +41,7 @@ Flags:
 
 Global Flags:
       --config string   config file including file extension (default ".worklog/config.yml")
+      --legacy          Use legacy yaml repository for storing/retrieving worklogs
       --repo string     repository that worklogs are stored in (default ".worklog/worklog.db")
 
 format is not valid

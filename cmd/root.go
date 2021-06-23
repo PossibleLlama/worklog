@@ -23,6 +23,7 @@ var (
 var (
 	home         string
 	cfgFile      string
+	useLegacy    bool
 	repoLocation string
 )
 
@@ -64,6 +65,10 @@ func init() {
 		fmt.Sprintf(".worklog%sconfig.yml",
 			string(filepath.Separator)),
 		"config file including file extension")
+	rootCmd.PersistentFlags().BoolVar(&useLegacy,
+		"legacy",
+		false,
+		"Use legacy yaml repository for storing/retrieving worklogs")
 	rootCmd.PersistentFlags().StringVar(&repoLocation,
 		"repo",
 		// This does not contain the home directory, as then the tool tip description

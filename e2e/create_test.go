@@ -13,6 +13,27 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var createNoArgs = fmt.Sprintf(`Error: required flag(s) "title" not set
+Usage:
+  worklog create [flags]
+
+Flags:
+      --author string        The author of the work
+      --description string   A description of the work
+      --duration int         Length of time spent on the work (default -1)
+  -h, --help                 help for create
+      --tags string          Comma separated list of tags this work relates to
+      --title string         A short description of the work done
+      --when string          When the work was worked in RFC3339 format (default "%s")
+
+Global Flags:
+      --config string   config file including file extension (default ".worklog/config.yml")
+      --legacy          Use legacy yaml repository for storing/retrieving worklogs
+      --repo string     repository that worklogs are stored in (default ".worklog/worklog.db")
+
+required flag(s) "title" not set
+`, time.Now().Format(time.RFC3339))
+
 func TestCreate(t *testing.T) {
 	randString := helpers.RandAlphabeticString(length)
 
@@ -35,7 +56,7 @@ func TestCreate(t *testing.T) {
 			name:      "No arguments",
 			args:      []string{},
 			success:   false,
-			expOutput: fmt.Sprintf("Error: required flag(s) \"title\" not set\nUsage:\n  worklog create [flags]\n\nFlags:\n      --author string        The author of the work\n      --description string   A description of the work\n      --duration int         Length of time spent on the work (default -1)\n  -h, --help                 help for create\n      --tags string          Comma separated list of tags this work relates to\n      --title string         A short description of the work done\n      --when string          When the work was worked in RFC3339 format (default \"%s\")\n\nGlobal Flags:\n      --config string   config file including file extension (default \".worklog/config.yml\")\n      --repo string     repository that worklogs are stored in (default \".worklog/worklog.db\")\n\nrequired flag(s) \"title\" not set\n", time.Now().Format(time.RFC3339)),
+			expOutput: createNoArgs,
 			expFile:   nil,
 		}, {
 			name:      "Create with description",
