@@ -79,17 +79,6 @@ func init() {
 		"Directory path for repository that worklogs are stored in")
 
 	cobra.OnInitialize(initConfig)
-
-	if repoType == "legacy" {
-		wlRepo = repository.NewYamlFileRepo()
-	} else {
-		// TODO
-		// Temp
-		wlRepo = repository.NewYamlFileRepo()
-	}
-	wlConfig = repository.NewYamlConfig(
-		filepath.Dir(cfgFile))
-	wlService = service.NewWorklogService(wlRepo)
 }
 
 // initConfig reads in config file and ENV variables if set
@@ -109,4 +98,15 @@ func initConfig() {
 		fmt.Printf("Unable to use config file: '%s'. %s\n", viper.ConfigFileUsed(), err)
 		os.Exit(e.StartupErrors)
 	}
+
+	if repoType == "legacy" {
+		wlRepo = repository.NewYamlFileRepo()
+	} else {
+		// TODO
+		// Temp
+		wlRepo = repository.NewYamlFileRepo()
+	}
+	wlConfig = repository.NewYamlConfig(
+		filepath.Dir(cfgFile))
+	wlService = service.NewWorklogService(wlRepo)
 }
