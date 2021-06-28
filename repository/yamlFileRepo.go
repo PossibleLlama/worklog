@@ -18,6 +18,8 @@ import (
 	homedir "github.com/mitchellh/go-homedir"
 )
 
+var configDir string
+
 type yamlFileRepo struct{}
 
 // NewYamlFileRepo Generator for repository storing worklogs
@@ -26,7 +28,12 @@ func NewYamlFileRepo() WorklogRepository {
 	return &yamlFileRepo{}
 }
 
-func (*yamlFileRepo) Configure(cfg *model.Config) error {
+func NewYamlConfig(dir string) ConfigRepository {
+	configDir = dir
+	return &yamlFileRepo{}
+}
+
+func (*yamlFileRepo) SaveConfig(cfg *model.Config) error {
 	if err := createDirectory(getWorklogDir()); err != nil {
 		return fmt.Errorf("%s %s. %s", e.RepoCreateDirectory, getWorklogDir(), err.Error())
 	}
@@ -89,6 +96,9 @@ func generateFileName(wl *model.Work) string {
 }
 
 func getWorklogDir() string {
+	if configDir != "" {
+		return configDir
+	}
 	home, err := homedir.Dir()
 	if err != nil {
 		fmt.Println(err)

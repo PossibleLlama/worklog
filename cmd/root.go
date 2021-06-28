@@ -19,6 +19,7 @@ import (
 var (
 	wlService service.WorklogService
 	wlRepo    repository.WorklogRepository
+	wlConfig  repository.ConfigRepository
 )
 var (
 	homeDir      string
@@ -86,6 +87,8 @@ func init() {
 		// Temp
 		wlRepo = repository.NewYamlFileRepo()
 	}
+	wlConfig = repository.NewYamlConfig(
+		filepath.Dir(cfgFile))
 	wlService = service.NewWorklogService(wlRepo)
 }
 
