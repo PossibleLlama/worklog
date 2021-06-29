@@ -7,7 +7,7 @@ import (
 
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
-	"github.com/PossibleLlama/worklog/service"
+	"github.com/PossibleLlama/worklog/repository"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -50,7 +50,7 @@ func TestConfigRun(t *testing.T) {
 		expErr   error
 	}{
 		{
-			name:     "Sends model to service",
+			name:     "Sends model directly to repo",
 			author:   helpers.RandAlphabeticString(shortLength),
 			duration: shortLength,
 			format:   "yaml",
@@ -67,18 +67,18 @@ func TestConfigRun(t *testing.T) {
 	for _, testItem := range tests {
 		cfg := model.NewConfig(testItem.author, testItem.format, testItem.duration)
 
-		mockService := new(service.MockService)
-		mockService.On("Configure", cfg).Return(testItem.expErr)
-		wlService = mockService
+		mockRepo := new(repository.MockRepo)
+		mockRepo.On("SaveConfig", cfg).Return(testItem.expErr)
+		wlConfig = mockRepo
 
 		t.Run(testItem.name, func(t *testing.T) {
 			setProvidedConfigureValues(testItem.author, testItem.format, testItem.duration)
 
 			actualErr := configRun()
 
-			mockService.AssertExpectations(t)
-			mockService.AssertCalled(t,
-				"Configure",
+			mockRepo.AssertExpectations(t)
+			mockRepo.AssertCalled(t,
+				"SaveConfig",
 				cfg)
 			assert.Equal(t, testItem.expErr, actualErr)
 		})

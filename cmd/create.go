@@ -5,9 +5,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/PossibleLlama/worklog/errors"
+	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
 
-	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -121,6 +122,6 @@ func init() {
 		"",
 		"Comma separated list of tags this work relates to")
 	if err := createCmd.MarkFlagRequired("title"); err != nil {
-		os.Exit(1)
+		os.Exit(errors.StartupErrors)
 	}
 }

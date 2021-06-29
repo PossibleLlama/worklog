@@ -12,12 +12,6 @@ type MockService struct {
 	mock.Mock
 }
 
-// Configure WorklogService method for testing
-func (m *MockService) Configure(cfg *model.Config) error {
-	args := m.Called(cfg)
-	return args.Error(0)
-}
-
 // CreateWorklog WorklogService method for testing
 func (m *MockService) CreateWorklog(wl *model.Work) (int, error) {
 	args := m.Called(wl)
