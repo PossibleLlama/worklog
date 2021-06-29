@@ -3,6 +3,7 @@ package e2e
 import (
 	"fmt"
 	"io/ioutil"
+	"path/filepath"
 	"sort"
 	"testing"
 	"time"
@@ -27,7 +28,7 @@ func getActualConfig(t *testing.T) *model.Config {
 	if err != nil {
 		t.Error(err)
 	}
-	file, err := ioutil.ReadFile(fmt.Sprintf("%s/.worklog/config.yml", home))
+	file, err := ioutil.ReadFile(fmt.Sprintf("%s%s.worklog%sconfig.yml", home, string(filepath.Separator), string(filepath.Separator)))
 	if err != nil {
 		t.Error(err)
 	}
@@ -44,6 +45,12 @@ func getActualWork(t *testing.T, exp *model.Work, cfg *model.Config) *model.Work
 	if exp.Author == "" {
 		exp.Author = cfg.Defaults.Author
 	}
+
+	home, err := homedir.Dir()
+	if err != nil {
+		t.Error(err)
+	}
+	_ = repository.NewYamlConfig(fmt.Sprintf("%s%s.worklog%s", home, string(filepath.Separator), string(filepath.Separator)))
 	ymlRepo := repository.NewYamlFileRepo()
 	wls, _ := ymlRepo.GetAllBetweenDates(tmUTC.Add(time.Hour*1*-1), tmUTC.Add(time.Hour*1), exp)
 
