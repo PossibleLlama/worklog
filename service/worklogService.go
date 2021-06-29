@@ -21,10 +21,6 @@ func NewWorklogService(repository repository.WorklogRepository) WorklogService {
 	return &service{}
 }
 
-func (*service) Configure(cfg *model.Config) error {
-	return repo.Configure(cfg)
-}
-
 func (*service) CreateWorklog(wl *model.Work) (int, error) {
 	if err := repo.Save(wl); err != nil {
 		return http.StatusInternalServerError, err

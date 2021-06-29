@@ -13,7 +13,7 @@ type MockRepo struct {
 }
 
 // Configure WorklogRepository method for testing
-func (m *MockRepo) Configure(cfg *model.Config) error {
+func (m *MockRepo) SaveConfig(cfg *model.Config) error {
 	args := m.Called(cfg)
 	return args.Error(0)
 }

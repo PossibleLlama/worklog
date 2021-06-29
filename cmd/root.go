@@ -19,6 +19,7 @@ import (
 var (
 	wlService service.WorklogService
 	wlRepo    repository.WorklogRepository
+	wlConfig  repository.ConfigRepository
 )
 var (
 	homeDir      string
@@ -78,15 +79,6 @@ func init() {
 		"Directory path for repository that worklogs are stored in")
 
 	cobra.OnInitialize(initConfig)
-
-	if repoType == "legacy" {
-		wlRepo = repository.NewYamlFileRepo()
-	} else {
-		// TODO
-		// Temp
-		wlRepo = repository.NewYamlFileRepo()
-	}
-	wlService = service.NewWorklogService(wlRepo)
 }
 
 // initConfig reads in config file and ENV variables if set
@@ -104,6 +96,16 @@ func initConfig() {
 	// If a config file is found, read it in
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Printf("Unable to use config file: '%s'. %s\n", viper.ConfigFileUsed(), err)
-		os.Exit(e.StartupErrors)
 	}
+
+	if repoType == "legacy" {
+		wlRepo = repository.NewYamlFileRepo()
+	} else {
+		// TODO
+		// Temp
+		wlRepo = repository.NewYamlFileRepo()
+	}
+	wlConfig = repository.NewYamlConfig(
+		filepath.Dir(cfgFile))
+	wlService = service.NewWorklogService(wlRepo)
 }

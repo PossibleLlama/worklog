@@ -14,9 +14,9 @@ import (
 	e "github.com/PossibleLlama/worklog/errors"
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
-
-	homedir "github.com/mitchellh/go-homedir"
 )
+
+var configDir string
 
 type yamlFileRepo struct{}
 
@@ -26,11 +26,16 @@ func NewYamlFileRepo() WorklogRepository {
 	return &yamlFileRepo{}
 }
 
-func (*yamlFileRepo) Configure(cfg *model.Config) error {
-	if err := createDirectory(getWorklogDir()); err != nil {
-		return fmt.Errorf("%s %s. %s", e.RepoCreateDirectory, getWorklogDir(), err.Error())
+func NewYamlConfig(dir string) ConfigRepository {
+	configDir = dir + string(filepath.Separator)
+	return &yamlFileRepo{}
+}
+
+func (*yamlFileRepo) SaveConfig(cfg *model.Config) error {
+	if err := createDirectory(configDir); err != nil {
+		return fmt.Errorf("%s %s. %s", e.RepoCreateDirectory, configDir, err.Error())
 	}
-	file, err := createFile(getWorklogDir() + "config.yml")
+	file, err := createFile(configDir + "config.yml")
 	if err != nil {
 		return fmt.Errorf("%s. %s", e.RepoConfigFileCreate, err.Error())
 	}
@@ -75,8 +80,6 @@ func (*yamlFileRepo) Save(wl *model.Work) error {
 }
 
 func generateFileName(wl *model.Work) string {
-	filePath := getWorklogDir()
-
 	fileName := fmt.Sprintf("%d-%02d-%02dT%02d:%02d_%d_%s",
 		wl.When.Year(),
 		int(wl.When.Month()),
@@ -85,16 +88,7 @@ func generateFileName(wl *model.Work) string {
 		wl.When.Minute(),
 		wl.Revision,
 		wl.ID)
-	return filePath + fileName + ".yml"
-}
-
-func getWorklogDir() string {
-	home, err := homedir.Dir()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(e.RepoErrors)
-	}
-	return home + "/.worklog/"
+	return configDir + fileName + ".yml"
 }
 
 func createDirectory(filePath string) error {
@@ -169,7 +163,7 @@ func (*yamlFileRepo) GetByID(ID string, filter *model.Work) (*model.Work, error)
 func getAllFileNamesBetweenDates(startDate, endDate time.Time) ([]string, error) {
 	var files []string
 
-	err := filepath.Walk(getWorklogDir(), func(fullPath string, info os.FileInfo, walkErr error) error {
+	err := filepath.Walk(configDir, func(fullPath string, info os.FileInfo, walkErr error) error {
 		if walkErr != nil {
 			return walkErr
 		}
@@ -197,7 +191,7 @@ func getAllFileNamesBetweenDates(startDate, endDate time.Time) ([]string, error)
 func getFileByID(ID string) (string, error) {
 	ids := make(map[string]string)
 
-	err := filepath.Walk(getWorklogDir(), func(fullPath string, info os.FileInfo, err error) error {
+	err := filepath.Walk(configDir, func(fullPath string, info os.FileInfo, err error) error {
 		path := filepath.Base(fullPath)
 		if strings.Count(path, "_") < 2 {
 			return nil
