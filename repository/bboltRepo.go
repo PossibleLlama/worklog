@@ -29,7 +29,7 @@ func (*bboltRepo) Configure(cfg *model.Config) error {
 }
 
 func (*bboltRepo) Save(wl *model.Work) error {
-	db, openErr := open()
+	db, openErr := openReadWrite()
 	if openErr != nil {
 		return openErr
 	}
@@ -105,7 +105,7 @@ func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
 }
 
 // Internal wrapped function to ensure all useages are aligned
-func open() (*bolt.DB, error) {
+func openReadWrite() (*bolt.DB, error) {
 	return bolt.Open(filePath, 0750, &bolt.Options{
 		Timeout: 1 * time.Second,
 	})
