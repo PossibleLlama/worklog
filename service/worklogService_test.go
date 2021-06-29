@@ -13,14 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var (
-	src     = rand.New(rand.NewSource(time.Now().UnixNano()))
-	formats = [...]string{
-		"pretty",
-		"yaml",
-		"json",
-	}
-)
+var src = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 const (
 	strLength = 30
