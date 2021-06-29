@@ -96,7 +96,6 @@ func initConfig() {
 	// If a config file is found, read it in
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Printf("Unable to use config file: '%s'. %s\n", viper.ConfigFileUsed(), err)
-		os.Exit(e.StartupErrors)
 	}
 
 	if repoType == "legacy" {
