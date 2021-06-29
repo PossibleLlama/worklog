@@ -12,6 +12,8 @@ import (
 
 var filePath string
 
+const regexCaseInsesitive = "(?i)"
+
 type bboltRepo struct{}
 
 // NewBBoltRepo initializes the repo with the given filepath
@@ -64,7 +66,7 @@ func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
 	defer db.Close()
 
 	sel := q.And(
-		q.Re("ID", ID),
+		q.Re("ID", regexCaseInsesitive+ID),
 		filterQuery(filter),
 	)
 	viewErr := db.Select(sel).OrderBy("Revision").Limit(1).First(&foundWl)
@@ -92,9 +94,9 @@ func openReadOnly() (*storm.DB, error) {
 
 func filterQuery(f *model.Work) q.Matcher {
 	sel := q.And(
-		q.Re("Title", f.Title),
-		q.Re("Description", f.Description),
-		q.Re("Author", f.Author),
+		q.Re("Title", regexCaseInsesitive+f.Title),
+		q.Re("Description", regexCaseInsesitive+f.Description),
+		q.Re("Author", regexCaseInsesitive+f.Author),
 	)
 	return sel
 }
