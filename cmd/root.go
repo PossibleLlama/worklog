@@ -98,12 +98,13 @@ func initConfig() {
 		fmt.Printf("Unable to use config file: '%s'. %s\n", viper.ConfigFileUsed(), err)
 	}
 
-	if repoType == "legacy" {
+	if strings.ToLower(repoType) == "legacy" {
 		wlRepo = repository.NewYamlFileRepo()
+	} else if strings.ToLower(repoType) == "bolt" {
+		wlRepo = repository.NewBBoltRepo(repoLocation)
 	} else {
-		// TODO
-		// Temp
-		wlRepo = repository.NewYamlFileRepo()
+		fmt.Printf("A valid repo must be specified. 'legacy' or 'bolt'\n")
+		os.Exit(e.StartupErrors)
 	}
 	wlConfig = repository.NewYamlConfig(
 		filepath.Dir(cfgFile))
