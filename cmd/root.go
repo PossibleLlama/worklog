@@ -100,7 +100,7 @@ func initConfig() {
 
 	if strings.ToLower(repoType) == "legacy" {
 		wlRepo = repository.NewYamlFileRepo()
-	} else if strings.ToLower(repoType) == "bolt" {
+	} else if strings.ToLower(repoType) == "local" {
 		wlRepo = repository.NewBBoltRepo(repoLocation)
 	} else {
 		fmt.Printf("A valid repo must be specified. 'legacy' or 'bolt'\n")
