@@ -1,9 +1,12 @@
 package repository
 
 import (
+	"fmt"
+	"os"
 	"strings"
 	"time"
 
+	e "github.com/PossibleLlama/worklog/errors"
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
 
@@ -91,16 +94,20 @@ func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
 // Internal wrapped function to ensure all useages are aligned
 func openReadWrite() (*storm.DB, error) {
 	return storm.Open(filePath, storm.BoltOptions(0750, &bolt.Options{
-		Timeout: 1 * time.Second,
+		Timeout:  1 * time.Second,
+		ReadOnly: false,
 	}))
 }
 
 // Internal wrapped function to ensure all useages are aligned
 func openReadOnly() (*storm.DB, error) {
-	return storm.Open(filePath, storm.BoltOptions(0750, &bolt.Options{
-		Timeout:  1 * time.Second,
-		ReadOnly: true,
-	}))
+	if _, err := os.Stat(filePath); err == nil {
+		return storm.Open(filePath, storm.BoltOptions(0750, &bolt.Options{
+			Timeout:  1 * time.Second,
+			ReadOnly: true,
+		}))
+	}
+	return nil, fmt.Errorf(e.RepoGetFilesRead)
 }
 
 func filterQuery(f *model.Work) q.Matcher {
