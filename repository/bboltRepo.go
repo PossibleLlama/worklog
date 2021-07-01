@@ -1,8 +1,10 @@
 package repository
 
 import (
+	"strings"
 	"time"
 
+	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
 
 	"github.com/asdine/storm/v3"
@@ -37,7 +39,7 @@ func (*bboltRepo) Save(wl *model.Work) error {
 }
 
 func (*bboltRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *model.Work) ([]*model.Work, error) {
-	var worklogs []*model.Work
+	var foundWls, filteredWls []*model.Work
 	db, openErr := openReadOnly()
 	if openErr != nil {
 		return nil, openErr
@@ -49,16 +51,22 @@ func (*bboltRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *model
 		q.Lt("When", endDate),
 		filterQuery(filter),
 	)
-	viewErr := db.Select(sel).OrderBy("When").Find(&worklogs)
+	viewErr := db.Select(sel).OrderBy("When").Find(&foundWls)
+
+	for _, el := range foundWls {
+		if filterByTags(filter, el) {
+			filteredWls = append(filteredWls, el)
+		}
+	}
 
 	if viewErr == storm.ErrNotFound {
-		return worklogs, nil
-			}
-	return worklogs, viewErr
+		return []*model.Work{}, nil
+	}
+	return filteredWls, viewErr
 }
 
 func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
-	var foundWl model.Work
+	var foundWl *model.Work
 	db, openErr := openReadOnly()
 	if openErr != nil {
 		return nil, openErr
@@ -69,12 +77,15 @@ func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
 		q.Re("ID", regexCaseInsesitive+ID),
 		filterQuery(filter),
 	)
-	viewErr := db.Select(sel).OrderBy("Revision").Limit(1).First(&foundWl)
+	viewErr := db.Select(sel).OrderBy("Revision").First(&foundWl)
 
 	if viewErr == storm.ErrNotFound {
-		return &foundWl, nil
+		return foundWl, nil
 	}
-	return &foundWl, viewErr
+	if !filterByTags(filter, foundWl) {
+		return nil, viewErr
+	}
+	return foundWl, viewErr
 }
 
 // Internal wrapped function to ensure all useages are aligned
@@ -99,4 +110,18 @@ func filterQuery(f *model.Work) q.Matcher {
 		q.Re("Author", regexCaseInsesitive+f.Author),
 	)
 	return sel
+}
+
+// Check if the filters tags exist in the provided work.
+// Returns true if it matches, or false if not.
+func filterByTags(f *model.Work, w *model.Work) bool {
+	if f == nil || w == nil {
+		return false
+	}
+	for _, fTags := range f.Tags {
+		if fTags != "" && !helpers.AInB(fTags, strings.Join(w.Tags, " ")) {
+			return false
+		}
+	}
+	return true
 }
