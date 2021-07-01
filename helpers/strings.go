@@ -3,6 +3,7 @@ package helpers
 import (
 	"crypto/rand"
 	"log"
+	"strings"
 )
 
 const (
@@ -59,4 +60,11 @@ func replaceAtIndex(in string, r rune, i int) string {
 	out := []rune(in)
 	out[i] = r
 	return string(out)
+}
+
+// AInB check if 'A' exists in 'B'
+func AInB(a, b string) bool {
+	return a == "" || strings.Contains(
+		strings.ToLower(b),
+		strings.ToLower(a))
 }
