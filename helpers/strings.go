@@ -13,6 +13,8 @@ const (
 	letterIdxMask    = 1<<letterIdxBits - 1
 )
 
+const RegexCaseInsesitive = "(?i)"
+
 // RandAlphabeticString Generator function of a random series of characters
 // Uses a-zA-Z character set
 func RandAlphabeticString(n int) string {
