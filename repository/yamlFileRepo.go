@@ -198,7 +198,7 @@ func getFileByID(ID string) (string, error) {
 		}
 
 		splitFileName := strings.Split(path, "_")
-		if aInB(ID, splitFileName[2]) {
+		if helpers.AInB(ID, splitFileName[2]) {
 			currentRev, err := strconv.Atoi(splitFileName[1])
 			if err != nil {
 				return err
@@ -241,26 +241,20 @@ func parseFileToWork(filePath string) (*model.Work, error) {
 }
 
 func workMatchesFilter(filter, w *model.Work) bool {
-	if !aInB(filter.Title, w.Title) {
+	if !helpers.AInB(filter.Title, w.Title) {
 		return false
 	}
-	if !aInB(filter.Description, w.Description) {
+	if !helpers.AInB(filter.Description, w.Description) {
 		return false
 	}
-	if !aInB(filter.Author, w.Author) {
+	if !helpers.AInB(filter.Author, w.Author) {
 		return false
 	}
 	for _, filtersTag := range filter.Tags {
 		if filtersTag != "" &&
-			!aInB(filtersTag, strings.Join(w.Tags, " ")) {
+			!helpers.AInB(filtersTag, strings.Join(w.Tags, " ")) {
 			return false
 		}
 	}
 	return true
-}
-
-func aInB(a, b string) bool {
-	return a == "" || strings.Contains(
-		strings.ToLower(b),
-		strings.ToLower(a))
 }

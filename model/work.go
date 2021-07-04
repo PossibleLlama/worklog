@@ -19,13 +19,13 @@ const idLength = 20
 // work was done by who and when.
 type Work struct {
 	ID          string    `json:"id" yaml:"id"`
-	Revision    int       `json:"revision" yaml:"revision"`
+	Revision    int       `json:"revision" yaml:"revision" storm:"index"`
 	Title       string    `json:"title" yaml:"title"`
 	Description string    `json:"description,omitempty" yaml:"description,omitempty"`
 	Author      string    `json:"author,omitempty" yaml:"author,omitempty"`
 	Duration    int       `json:"duration" yaml:"duration"`
 	Tags        []string  `json:"tags,omitempty" yaml:"tags,omitempty"`
-	When        time.Time `json:"when" yaml:"when"`
+	When        time.Time `json:"when" yaml:"when" storm:"index"`
 	CreatedAt   time.Time `json:"createdAt" yaml:"createdAt"`
 }
 

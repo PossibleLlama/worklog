@@ -3,6 +3,7 @@ package helpers
 import (
 	"crypto/rand"
 	"log"
+	"strings"
 )
 
 const (
@@ -11,6 +12,8 @@ const (
 	letterIdxBits    = 6
 	letterIdxMask    = 1<<letterIdxBits - 1
 )
+
+const RegexCaseInsesitive = "(?i)"
 
 // RandAlphabeticString Generator function of a random series of characters
 // Uses a-zA-Z character set
@@ -59,4 +62,11 @@ func replaceAtIndex(in string, r rune, i int) string {
 	out := []rune(in)
 	out[i] = r
 	return string(out)
+}
+
+// AInB check if 'A' exists in 'B'
+func AInB(a, b string) bool {
+	return a == "" || strings.Contains(
+		strings.ToLower(b),
+		strings.ToLower(a))
 }
