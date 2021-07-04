@@ -98,14 +98,15 @@ func initConfig() {
 		fmt.Printf("Unable to use config file: '%s'. %s\n", viper.ConfigFileUsed(), err)
 	}
 
-	if strings.ToLower(repoType) == "legacy" {
-		wlRepo = repository.NewYamlFileRepo()
-	} else if strings.ToLower(repoType) == "local" {
+	switch strings.ToLower(repoType) {
+	case "local":
 		wlRepo = repository.NewBBoltRepo(repoLocation)
-	} else {
-		fmt.Printf("A valid repo must be specified. 'legacy' or 'local'\n")
+	case "legacy":
+		wlRepo = repository.NewYamlFileRepo()
+	default:
 		os.Exit(e.StartupErrors)
 	}
+
 	wlConfig = repository.NewYamlConfig(
 		filepath.Dir(cfgFile))
 	wlService = service.NewWorklogService(wlRepo)
