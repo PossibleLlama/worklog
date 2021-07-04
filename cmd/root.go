@@ -104,6 +104,7 @@ func initConfig() {
 	case "legacy":
 		wlRepo = repository.NewYamlFileRepo()
 	default:
+		fmt.Println(e.RootRepoType)
 		os.Exit(e.StartupErrors)
 	}
 

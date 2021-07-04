@@ -1,5 +1,8 @@
 package errors
 
+// RootRepoType error value for invalid type of repo
+const RootRepoType = "invalid repo, either \"local\" or \"legacy\" must be specified"
+
 // ConfigureArgsMinimum error value when not enough args
 const ConfigureArgsMinimum = "overrideDefaults requires at least one argument"
 
