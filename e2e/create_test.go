@@ -2,9 +2,6 @@ package e2e
 
 import (
 	"fmt"
-	"os"
-	"os/exec"
-	"path"
 	"testing"
 	"time"
 
@@ -121,16 +118,10 @@ func TestCreate(t *testing.T) {
 
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
-			dir, err := os.Getwd()
-			if err != nil {
-				t.Error(err)
-			}
-
-			testItem.args = append([]string{"create"}, testItem.args...)
-			cmd := exec.Command(path.Join(dir, binaryName), testItem.args...)
-			output, _ := cmd.CombinedOutput()
+			output, err := execBinary(append([]string{"create"}, testItem.args...)...)
 
 			assert.Equal(t, testItem.expOutput, string(output))
+			assert.Nil(t, err)
 
 			cfg := getActualConfig(t)
 			if testItem.success {

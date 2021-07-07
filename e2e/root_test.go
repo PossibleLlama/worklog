@@ -2,9 +2,6 @@ package e2e
 
 import (
 	"fmt"
-	"os"
-	"os/exec"
-	"path"
 	"testing"
 
 	"github.com/PossibleLlama/worklog/helpers"
@@ -65,13 +62,7 @@ func TestRoot(t *testing.T) {
 
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
-			dir, err := os.Getwd()
-			if err != nil {
-				t.Error(err)
-			}
-
-			cmd := exec.Command(path.Join(dir, binaryName), testItem.args...)
-			output, err := cmd.CombinedOutput()
+			output, err := execBinary(testItem.args...)
 
 			assert.Equal(t, testItem.expOutput, string(output))
 			assert.Nil(t, err)

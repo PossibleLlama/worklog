@@ -2,9 +2,6 @@ package e2e
 
 import (
 	"fmt"
-	"os"
-	"os/exec"
-	"path"
 	"testing"
 	"time"
 
@@ -110,14 +107,7 @@ func TestPrint(t *testing.T) {
 
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
-			dir, err := os.Getwd()
-			if err != nil {
-				t.Error(err)
-			}
-
-			testItem.args = append([]string{"print"}, testItem.args...)
-			cmd := exec.Command(path.Join(dir, binaryName), testItem.args...)
-			output, err := cmd.CombinedOutput()
+			output, err := execBinary(append([]string{"print"}, testItem.args...)...)
 
 			assert.Contains(t, string(output), testItem.expOutput)
 			if testItem.success {

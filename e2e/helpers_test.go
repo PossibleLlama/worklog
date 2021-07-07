@@ -3,6 +3,9 @@ package e2e
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
+	"os/exec"
+	"path"
 	"path/filepath"
 	"sort"
 	"testing"
@@ -21,6 +24,19 @@ const length = 56
 
 var now = time.Now()
 var tmUTC = time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(), 0, time.UTC)
+
+func execBinary(args ...string) (string, error) {
+	dir, dirErr := os.Getwd()
+	if dirErr != nil {
+		panic(dirErr)
+	}
+	args = append([]string{fmt.Sprintf("--repoPath \"%s\"", path.Join(dir, "e2e.db"))}, args...)
+	cmd := exec.Command(
+		path.Join(dir, binaryName),
+		args...)
+	output, cmdErr := cmd.CombinedOutput()
+	return string(output), cmdErr
+}
 
 func getActualConfig(t *testing.T) *model.Config {
 	var actualFile model.Config
