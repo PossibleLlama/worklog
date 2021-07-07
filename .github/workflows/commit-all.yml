@@ -54,9 +54,6 @@ jobs:
     - name: Get dependencies
       run: make deps
 
-    - name: Create folders
-      run: mkdir ~/.worklog && mkdir ~/.worklog-backup && touch ~/.worklog/a
-
     - name: Test once
       run: make test
 
