@@ -33,7 +33,13 @@ func (*bboltRepo) Save(wl *model.Work) error {
 	}
 	defer db.Close()
 
-	return db.Save(wl)
+	fmt.Println("Saving file...")
+	if err := db.Save(wl); err != nil {
+		return err
+	}
+
+	fmt.Println("Saved file")
+	return nil
 }
 
 func (*bboltRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *model.Work) ([]*model.Work, error) {
