@@ -21,5 +21,9 @@ const RepoSaveFile = "unable to save worklog"
 // RepoGetFiles error value when getting file
 const RepoGetFiles = "unable to get all files"
 
-//RepoGetFilesRead error value when parsing file
+// RepoGetFilesRead error value when parsing file
 const RepoGetFilesRead = "error reading file"
+
+// RepoGetSingleFileAmbiguous error from having multiple returned
+// values when one is expected
+const RepoGetSingleFileAmbiguous = "must specify a unique ID"
