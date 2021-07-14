@@ -107,9 +107,9 @@ func TestPrint(t *testing.T) {
 
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
-			output, err := execBinary(append([]string{"print"}, testItem.args...)...)
+			output, err := execConfiguredBinary(append([]string{"print"}, testItem.args...)...)
 
-			assert.Contains(t, string(output), testItem.expOutput)
+			assert.Contains(t, output, testItem.expOutput, fmt.Sprintf("Actual: '%s'", output))
 			if testItem.success {
 				assert.Nil(t, err)
 			} else {

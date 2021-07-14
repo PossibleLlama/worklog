@@ -57,6 +57,10 @@ func TestRoot(t *testing.T) {
 			name:      "Change config file",
 			args:      []string{"--config", "/worklog-test/config.yml"},
 			expOutput: rootHelp,
+		}, {
+			name:      "Change repo type",
+			args:      []string{"--repo", "local"},
+			expOutput: rootHelp,
 		},
 	}
 

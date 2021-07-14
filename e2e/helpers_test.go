@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"path"
-	"path/filepath"
 	"sort"
 	"testing"
 	"time"
@@ -14,11 +13,13 @@ import (
 	"github.com/PossibleLlama/worklog/model"
 	"github.com/PossibleLlama/worklog/repository"
 	"gopkg.in/yaml.v2"
-
-	homedir "github.com/mitchellh/go-homedir"
 )
 
-const binaryName = "worklog"
+const (
+	binaryName = "worklog"
+	repoName   = "e2e.db"
+	configName = "e2e.yml"
+)
 
 const length = 56
 
@@ -30,7 +31,6 @@ func execBinary(args ...string) (string, error) {
 	if dirErr != nil {
 		panic(dirErr)
 	}
-	args = append([]string{fmt.Sprintf("--repoPath \"%s\"", path.Join(dir, "e2e.db"))}, args...)
 	cmd := exec.Command(
 		path.Join(dir, binaryName),
 		args...)
@@ -38,13 +38,27 @@ func execBinary(args ...string) (string, error) {
 	return string(output), cmdErr
 }
 
+func execConfiguredBinary(args ...string) (string, error) {
+	dir, dirErr := os.Getwd()
+	if dirErr != nil {
+		panic(dirErr)
+	}
+	args = append([]string{
+		//"--repo \"local\"",
+		//fmt.Sprintf("--repoPath \"%s\"", path.Join(dir, repoName)),
+		fmt.Sprintf("--config \"%s\"", path.Join(dir, configName)),
+	}, args...)
+	return execBinary(args...)
+}
+
 func getActualConfig(t *testing.T) *model.Config {
 	var actualFile model.Config
-	home, err := homedir.Dir()
+	dir, err := os.Getwd()
 	if err != nil {
 		t.Error(err)
 	}
-	file, err := ioutil.ReadFile(fmt.Sprintf("%s%s.worklog%sconfig.yml", home, string(filepath.Separator), string(filepath.Separator)))
+	file, err := ioutil.ReadFile(
+		path.Join(dir, configName))
 	if err != nil {
 		t.Error(err)
 	}
@@ -62,13 +76,13 @@ func getActualWork(t *testing.T, exp *model.Work, cfg *model.Config) *model.Work
 		exp.Author = cfg.Defaults.Author
 	}
 
-	home, err := homedir.Dir()
+	dir, err := os.Getwd()
 	if err != nil {
 		t.Error(err)
 	}
-	_ = repository.NewYamlConfig(fmt.Sprintf("%s%s.worklog%s", home, string(filepath.Separator), string(filepath.Separator)))
-	ymlRepo := repository.NewYamlFileRepo()
-	wls, _ := ymlRepo.GetAllBetweenDates(tmUTC.Add(time.Hour*1*-1), tmUTC.Add(time.Hour*1), exp)
+	_ = repository.NewYamlConfig(path.Join(dir, configName))
+	repo := repository.NewBBoltRepo(path.Join(dir, repoName))
+	wls, _ := repo.GetAllBetweenDates(tmUTC.Add(time.Hour*1*-1), tmUTC.Add(time.Hour*1), exp)
 
 	var actual *model.Work
 	switch len(wls) {

@@ -118,9 +118,9 @@ func TestCreate(t *testing.T) {
 
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
-			output, err := execBinary(append([]string{"create"}, testItem.args...)...)
+			output, err := execConfiguredBinary(append([]string{"create"}, testItem.args...)...)
 
-			assert.Equal(t, testItem.expOutput, string(output))
+			assert.Equal(t, testItem.expOutput, output)
 			assert.Nil(t, err)
 
 			cfg := getActualConfig(t)

@@ -157,9 +157,10 @@ func TestConfigure(t *testing.T) {
 
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
-			output, err := execBinary(append([]string{"configure"}, testItem.args...)...)
+			output, err := execConfiguredBinary(append([]string{"configure"}, testItem.args...)...)
 
-			assert.Contains(t, string(output), testItem.expOutput, fmt.Sprintf("Expected: '%s', Actual: '%s'\n", testItem.expOutput, string(output)))
+			assert.Contains(t, output, testItem.expOutput,
+				fmt.Sprintf("Expected: '%s', Actual: '%s'\n", testItem.expOutput, output))
 			if testItem.success {
 				assert.Nil(t, err)
 				assert.Equal(t, testItem.expFile, getActualConfig(t))

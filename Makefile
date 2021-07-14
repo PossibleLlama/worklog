@@ -17,9 +17,12 @@ test-unit:
 
 test-e2e:
 	@echo "Running e2e tests"
+	@rm ./e2e/$(BIN_NAME) || true
+	@rm ./e2e/e2e.* || true
 	@make --no-print-directory build DIR="./e2e"
 	@go test ./e2e
-	@rm ./e2e/$(BIN_NAME)
+	@rm ./e2e/$(BIN_NAME) || true
+	@rm ./e2e/e2e.* || true
 	@echo "e2e tests passed"
 
 format:
