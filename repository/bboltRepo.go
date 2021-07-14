@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -63,7 +64,7 @@ func (*bboltRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *model
 }
 
 func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
-	var foundWl *model.Work
+	var foundWls []*model.Work
 	db, openErr := openReadOnly()
 	if openErr != nil {
 		return nil, openErr
@@ -74,15 +75,17 @@ func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
 		q.Re("ID", helpers.RegexCaseInsesitive+ID),
 		filterQuery(filter),
 	)
-	viewErr := db.Select(sel).OrderBy("Revision").First(&foundWl)
+	viewErr := db.Select(sel).OrderBy("Revision").Find(&foundWls)
 
 	if viewErr == storm.ErrNotFound {
-		return foundWl, nil
+		return nil, nil
+	} else if viewErr == nil && len(foundWls) > 1 {
+		return nil, errors.New(e.RepoGetSingleFileAmbiguous)
 	}
-	if !filterByTags(filter, foundWl) {
+	if !filterByTags(filter, foundWls[0]) {
 		return nil, viewErr
 	}
-	return foundWl, viewErr
+	return foundWls[0], viewErr
 }
 
 // Internal wrapped function to ensure all useages are aligned
