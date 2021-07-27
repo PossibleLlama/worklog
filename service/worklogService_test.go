@@ -166,6 +166,7 @@ func TestEditWorklog(t *testing.T) {
 func TestGetWorklogsBetween(t *testing.T) {
 	sTime := time.Now()
 	eTime := sTime.Add(time.Hour)
+	eTime3k := time.Date(3000, time.January, 1, 0, 0, 0, 0, time.Now().Location())
 	rev1Wl := genWl()
 	rev2Wl := &model.Work{
 		ID:          rev1Wl.ID,
@@ -198,14 +199,15 @@ func TestGetWorklogsBetween(t *testing.T) {
 	wl4.When = wl4.When.Add(time.Minute * 3)
 
 	var tests = []struct {
-		name   string
-		sTime  time.Time
-		eTime  time.Time
-		filter *model.Work
-		retWl  []*model.Work
-		expWl  []*model.Work
-		exCode int
-		err    error
+		name      string
+		sTime     time.Time
+		eTime     time.Time
+		eTimeRepo *time.Time
+		filter    *model.Work
+		retWl     []*model.Work
+		expWl     []*model.Work
+		exCode    int
+		err       error
 	}{
 		{
 			name:   "Success found 1",
@@ -216,8 +218,7 @@ func TestGetWorklogsBetween(t *testing.T) {
 			expWl:  []*model.Work{rev1Wl},
 			exCode: http.StatusOK,
 			err:    nil,
-		},
-		{
+		}, {
 			name:   "Success found 0",
 			sTime:  sTime,
 			eTime:  eTime,
@@ -226,8 +227,7 @@ func TestGetWorklogsBetween(t *testing.T) {
 			expWl:  []*model.Work{},
 			exCode: http.StatusNotFound,
 			err:    nil,
-		},
-		{
+		}, {
 			name:   "Success deduplicates only has latest revision from ordered list",
 			sTime:  sTime,
 			eTime:  eTime,
@@ -236,8 +236,7 @@ func TestGetWorklogsBetween(t *testing.T) {
 			expWl:  []*model.Work{rev2Wl},
 			exCode: http.StatusOK,
 			err:    nil,
-		},
-		{
+		}, {
 			name:   "Success deduplicates only has latest revision from list",
 			sTime:  sTime,
 			eTime:  eTime,
@@ -246,8 +245,7 @@ func TestGetWorklogsBetween(t *testing.T) {
 			expWl:  []*model.Work{rev3Wl},
 			exCode: http.StatusOK,
 			err:    nil,
-		},
-		{
+		}, {
 			name:   "Success sorts into order",
 			sTime:  sTime,
 			eTime:  eTime,
@@ -256,8 +254,17 @@ func TestGetWorklogsBetween(t *testing.T) {
 			expWl:  []*model.Work{rev1Wl, wl2, wl3, wl4},
 			exCode: http.StatusOK,
 			err:    nil,
-		},
-		{
+		}, {
+			name:      "No endDate defaults to year 3000",
+			sTime:     sTime,
+			eTime:     time.Time{},
+			eTimeRepo: &eTime3k,
+			filter:    rev1Wl,
+			retWl:     []*model.Work{rev1Wl},
+			expWl:     []*model.Work{rev1Wl},
+			exCode:    http.StatusOK,
+			err:       nil,
+		}, {
 			name:   "Errored",
 			sTime:  sTime,
 			eTime:  eTime,
@@ -271,12 +278,21 @@ func TestGetWorklogsBetween(t *testing.T) {
 
 	for _, testItem := range tests {
 		mockRepo := new(repository.MockRepo)
-		mockRepo.On(
-			"GetAllBetweenDates",
-			testItem.sTime,
-			testItem.eTime,
-			testItem.filter).
-			Return(testItem.retWl, testItem.err)
+		if testItem.eTimeRepo == nil {
+			mockRepo.On(
+				"GetAllBetweenDates",
+				testItem.sTime,
+				testItem.eTime,
+				testItem.filter).
+				Return(testItem.retWl, testItem.err)
+		} else {
+			mockRepo.On(
+				"GetAllBetweenDates",
+				testItem.sTime,
+				*testItem.eTimeRepo,
+				testItem.filter).
+				Return(testItem.retWl, testItem.err)
+		}
 		svc := NewWorklogService(mockRepo)
 
 		t.Run(testItem.name, func(t *testing.T) {
@@ -297,11 +313,19 @@ func TestGetWorklogsBetween(t *testing.T) {
 				assert.Equal(t, testItem.expWl[index], returnedWls[index])
 			}
 			mockRepo.AssertExpectations(t)
-			mockRepo.AssertCalled(t,
-				"GetAllBetweenDates",
-				testItem.sTime,
-				testItem.eTime,
-				testItem.filter)
+			if testItem.eTimeRepo == nil {
+				mockRepo.AssertCalled(t,
+					"GetAllBetweenDates",
+					testItem.sTime,
+					testItem.eTime,
+					testItem.filter)
+			} else {
+				mockRepo.AssertCalled(t,
+					"GetAllBetweenDates",
+					testItem.sTime,
+					*testItem.eTimeRepo,
+					testItem.filter)
+			}
 		})
 	}
 }
