@@ -1,7 +1,7 @@
 package errors
 
-// StartupErrors errors that have occured during the startup routine
+// StartupErrors errors that have occurred during the startup routine
 const StartupErrors = 1
 
-// RepoErrors errors that have occured from the repo layer
+// RepoErrors errors that have occurred from the repo layer
 const RepoErrors = 2

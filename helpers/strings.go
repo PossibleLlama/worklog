@@ -13,7 +13,9 @@ const (
 	letterIdxMask    = 1<<letterIdxBits - 1
 )
 
-const RegexCaseInsesitive = "(?i)"
+// RegexCaseInsensitive regex to be prepended to not care about case
+// of characters
+const RegexCaseInsensitive = "(?i)"
 
 // RandAlphabeticString Generator function of a random series of characters
 // Uses a-zA-Z character set

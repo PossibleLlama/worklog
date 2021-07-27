@@ -78,7 +78,7 @@ func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
 	defer db.Close()
 
 	sel := q.And(
-		q.Re("ID", helpers.RegexCaseInsesitive+ID),
+		q.Re("ID", helpers.RegexCaseInsensitive+ID),
 		filterQuery(filter),
 	)
 	viewErr := db.Select(sel).OrderBy("Revision").Find(&foundWls)
@@ -115,9 +115,9 @@ func openReadOnly() (*storm.DB, error) {
 
 func filterQuery(f *model.Work) q.Matcher {
 	sel := q.And(
-		q.Re("Title", helpers.RegexCaseInsesitive+f.Title),
-		q.Re("Description", helpers.RegexCaseInsesitive+f.Description),
-		q.Re("Author", helpers.RegexCaseInsesitive+f.Author),
+		q.Re("Title", helpers.RegexCaseInsensitive+f.Title),
+		q.Re("Description", helpers.RegexCaseInsensitive+f.Description),
+		q.Re("Author", helpers.RegexCaseInsensitive+f.Author),
 	)
 	return sel
 }

@@ -26,6 +26,8 @@ func NewYamlFileRepo() WorklogRepository {
 	return &yamlFileRepo{}
 }
 
+// NewYamlConfig Generator for configuration repository
+// in a yaml format
 func NewYamlConfig(dir string) ConfigRepository {
 	configDir = dir + string(filepath.Separator)
 	return &yamlFileRepo{}
