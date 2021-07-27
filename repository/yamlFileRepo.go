@@ -26,6 +26,8 @@ func NewYamlFileRepo() WorklogRepository {
 	return &yamlFileRepo{}
 }
 
+// NewYamlConfig Generator for configuration repository
+// in a yaml format
 func NewYamlConfig(dir string) ConfigRepository {
 	configDir = dir + string(filepath.Separator)
 	return &yamlFileRepo{}
@@ -114,10 +116,6 @@ func createFile(fileName string) (*os.File, error) {
 func (*yamlFileRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *model.Work) ([]*model.Work, error) {
 	var worklogs []*model.Work
 	var errors []string
-
-	if (endDate == time.Time{}) {
-		endDate = time.Date(3000, time.January, 1, 0, 0, 0, 0, time.Now().Location())
-	}
 
 	fileNames, err := getAllFileNamesBetweenDates(startDate, endDate)
 	if err != nil {

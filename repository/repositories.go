@@ -15,6 +15,8 @@ type WorklogRepository interface {
 	GetByID(id string, filter *model.Work) (*model.Work, error)
 }
 
+// ConfigRepository defines what a configuration
+// store should be capable of doing
 type ConfigRepository interface {
 	SaveConfig(cfg *model.Config) error
 }
