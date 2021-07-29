@@ -3,6 +3,7 @@ package e2e
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"sort"
 	"testing"
@@ -11,8 +12,6 @@ import (
 	"github.com/PossibleLlama/worklog/model"
 	"github.com/PossibleLlama/worklog/repository"
 	"gopkg.in/yaml.v2"
-
-	homedir "github.com/mitchellh/go-homedir"
 )
 
 const binaryName = "worklog"
@@ -24,7 +23,7 @@ var tmUTC = time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute
 
 func getActualConfig(t *testing.T) *model.Config {
 	var actualFile model.Config
-	home, err := homedir.Dir()
+	home, err := os.UserHomeDir()
 	if err != nil {
 		t.Error(err)
 	}
@@ -46,7 +45,7 @@ func getActualWork(t *testing.T, exp *model.Work, cfg *model.Config) *model.Work
 		exp.Author = cfg.Defaults.Author
 	}
 
-	home, err := homedir.Dir()
+	home, err := os.UserHomeDir()
 	if err != nil {
 		t.Error(err)
 	}

@@ -11,7 +11,6 @@ import (
 	"github.com/PossibleLlama/worklog/repository"
 	"github.com/PossibleLlama/worklog/service"
 
-	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -53,7 +52,7 @@ func Execute() {
 func init() {
 	var err error
 
-	homeDir, err = homedir.Dir()
+	homeDir, err = os.UserHomeDir()
 	if err != nil {
 		fmt.Println("Unable to get home directory", err)
 		os.Exit(e.StartupErrors)
