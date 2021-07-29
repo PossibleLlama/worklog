@@ -1,0 +1,24 @@
+config:
+  inherit-env: true
+
+tests:
+  configure root:
+    command: worklog configure
+    stdout:
+      line-count: 1
+      exactly: "Successfully configured"
+    exit-code: 0
+
+  change config to valid path:
+    command: worklog --config "/tmp/config.yaml" configure
+    stdout:
+      line-count: 1
+      exactly: "Successfully configured"
+    exit-code: 0
+
+  change default values:
+    command: worklog configure overrideDefaults --author "Alice" --duration 5 --format "json"
+    stdout:
+      line-count: 1
+      exactly: "Successfully configured"
+    exit-code: 0
