@@ -24,6 +24,7 @@ test-e2e:
 
 	commander test ./e2e/root.test.yaml
 	commander test ./e2e/configure.test.yaml
+	commander test ./e2e/create.test.yaml
 	rm ./e2e/$(BIN_NAME)
 	@echo "e2e tests passed"
 
