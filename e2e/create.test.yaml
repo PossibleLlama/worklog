@@ -24,7 +24,16 @@ tests:
     exit-code: 0
 
   create all:
-    command: ./worklog create --repo "local" --repoPath "/tmp/e2e.db" --title "foo" --description "bar" --tags "foo, bar" --when "2021-01-01" --duration 10
+    command: ./worklog create --repo "local" --repoPath "/tmp/e2e.db" --title "foo" --description "bar" --tags "bang, pop" --when "$(date '+%Y-%m-%d %H:%M')" --duration 10
+    stdout:
+      line-count: 2
+      lines:
+        1: "Saving file..."
+        2: "Saved file"
+    exit-code: 0
+
+  create date:
+    command: ./worklog create --repo "local" --repoPath "/tmp/e2e.db" --title "foo" --when "$(date '+%Y-%m-%d')"
     stdout:
       line-count: 2
       lines:
