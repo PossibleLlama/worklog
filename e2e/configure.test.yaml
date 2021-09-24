@@ -38,3 +38,51 @@ tests:
         3: "  duration: 10"
         4: "  format: json"
     exit-code: 0
+
+  change default values - format pretty:
+    command: ./worklog configure overrideDefaults --format "pretty"
+    stdout:
+      line-count: 1
+      exactly: "Successfully configured"
+    exit-code: 0
+
+  change default values - format json:
+    command: ./worklog configure overrideDefaults --format "json"
+    stdout:
+      line-count: 1
+      exactly: "Successfully configured"
+    exit-code: 0
+
+  change default values - format yaml:
+    command: ./worklog configure overrideDefaults --format "yaml"
+    stdout:
+      line-count: 1
+      exactly: "Successfully configured"
+    exit-code: 0
+
+  change default values - format invalid:
+    command: ./worklog configure overrideDefaults --format "invalid"
+    stdout:
+      line-count: 0
+    stderr:
+      line-count: 14
+      lines:
+        1: "Error: format is not valid"
+    exit-code: 1
+
+  change default values - duration number:
+    command: ./worklog configure overrideDefaults --duration 15
+    stdout:
+      line-count: 1
+      exactly: "Successfully configured"
+    exit-code: 0
+
+  change default values - duration string:
+    command: ./worklog configure overrideDefaults --duration "invalid"
+    stdout:
+      line-count: 0
+    stderr:
+      line-count: 14
+      lines:
+        1: "Error: invalid argument \"invalid\" for \"--duration\" flag: strconv.ParseInt: parsing \"invalid\": invalid syntax"
+    exit-code: 1
