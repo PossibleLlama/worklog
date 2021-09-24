@@ -17,13 +17,10 @@ test-unit:
 
 test-e2e:
 	@echo "Running end to end tests"
-	cp -a $(HOME)/.worklog/* $(HOME)/.worklog-backup/
 	make build DIR="./e2e"
-	go test ./e2e
+	commander test ./e2e/root.test.yaml
+	commander test ./e2e/configure.test.yaml
 	rm ./e2e/$(BIN_NAME)
-	rm -f $(HOME)/.worklog/*
-	cp -a $(HOME)/.worklog-backup/* $(HOME)/.worklog/
-	rm -f $(HOME)/.worklog-backup/*
 	@echo "e2e tests passed"
 
 format:

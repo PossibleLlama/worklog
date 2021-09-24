@@ -1,16 +1,18 @@
 config:
   inherit-env: true
+  # Expects the tests to be ran from the root of project
+  dir: e2e
 
 tests:
   configure root:
-    command: worklog configure
+    command: ./worklog configure
     stdout:
       line-count: 1
       exactly: "Successfully configured"
     exit-code: 0
 
   change config to different but valid path:
-    command: worklog --config "/tmp/config.yaml" configure
+    command: ./worklog --config "/tmp/config.yaml" configure
     stdout:
       line-count: 2
       lines:
@@ -19,7 +21,7 @@ tests:
     exit-code: 0
 
   change default values - stdout:
-    command: worklog configure overrideDefaults --author "Alice" --duration 5 --format "pretty"
+    command: ./worklog configure overrideDefaults --author "Alice" --duration 5 --format "pretty"
     stdout:
       line-count: 1
       exactly: "Successfully configured"
@@ -27,7 +29,7 @@ tests:
 
   change default values - check file contents:
     # TODO: The config states "config.yaml" whereas the file created is "config.yml"
-    command: worklog --config "/tmp/config.yaml" configure overrideDefaults --author "Bob" --duration 10 --format "json" > /tmp/dump && cat /tmp/config.yml
+    command: ./worklog --config "/tmp/config.yaml" configure overrideDefaults --author "Bob" --duration 10 --format "json" > /tmp/dump && cat /tmp/config.yml
     stdout:
       line-count: 4
       lines:
