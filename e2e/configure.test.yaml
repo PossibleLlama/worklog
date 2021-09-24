@@ -9,16 +9,30 @@ tests:
       exactly: "Successfully configured"
     exit-code: 0
 
-  change config to valid path:
+  change config to different but valid path:
     command: worklog --config "/tmp/config.yaml" configure
+    stdout:
+      line-count: 2
+      lines:
+        1: "Unable to use config file: '/tmp/config.yaml'. open /tmp/config.yaml: no such file or directory"
+        2: "Successfully configured"
+    exit-code: 0
+
+  change default values - stdout:
+    command: worklog configure overrideDefaults --author "Alice" --duration 5 --format "pretty"
     stdout:
       line-count: 1
       exactly: "Successfully configured"
     exit-code: 0
 
-  change default values:
-    command: worklog configure overrideDefaults --author "Alice" --duration 5 --format "json"
+  change default values - check file contents:
+    # TODO: The config states "config.yaml" whereas the file created is "config.yml"
+    command: worklog --config "/tmp/config.yaml" configure overrideDefaults --author "Bob" --duration 10 --format "json" > /tmp/dump && cat /tmp/config.yml
     stdout:
-      line-count: 1
-      exactly: "Successfully configured"
+      line-count: 4
+      lines:
+        1: "default:"
+        2: "  author: Bob"
+        3: "  duration: 10"
+        4: "  format: json"
     exit-code: 0
