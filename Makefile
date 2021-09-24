@@ -18,6 +18,10 @@ test-unit:
 test-e2e:
 	@echo "Running end to end tests"
 	make build DIR="./e2e"
+
+	# Run once so all files are setup
+	./e2e/worklog configure > /tmp/dump
+
 	commander test ./e2e/root.test.yaml
 	commander test ./e2e/configure.test.yaml
 	rm ./e2e/$(BIN_NAME)
