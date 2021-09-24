@@ -1,0 +1,67 @@
+config:
+  inherit-env: true
+  # Expects the tests to be ran from the root of project
+  dir: e2e
+
+tests:
+  edit root:
+    command: ./worklog edit
+    stdout:
+      line-count: 0
+    stderr:
+      line-count: 17
+      lines:
+        1: "Error: edit requires a single ID of an existing worklog"
+    exit-code: 1
+
+  edit minimal:
+    command: ./worklog edit --repo "local" --repoPath "/tmp/e2e.db" $(./worklog print --repo "local" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id)
+    stdout:
+      line-count: 2
+      lines:
+        1: "Saving file..."
+        2: "Saved file"
+    exit-code: 0
+
+  edit updates revision:
+    command: ./worklog edit --repo "local" --repoPath "/tmp/e2e.db" $(./worklog print --repo "local" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) > /tmp/dump && ./worklog print --repo "local" --repoPath "/tmp/e2e.db" -taj | jq .[0]
+    stdout:
+      # Ensure the revision number is not 1
+      # We don't know which order the tests will be ran, so can't say what the revision will be
+      # Using JQ, we could get the revision number, but need to make sure it doesn't match against 1x
+      # Also not checking number of lines, as that's variable on what fields exist, which we can't say which order tests are ran
+      not-contains:
+        - "\"revision\": 1,"
+    exit-code: 0
+
+  edit updates title:
+    command: ./worklog edit --repo "local" --repoPath "/tmp/e2e.db" $(./worklog print --repo "local" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) --title "buzz" > /tmp/dump && ./worklog print --repo "local" --repoPath "/tmp/e2e.db" -taj | jq .[0].title
+    stdout:
+      line-count: 1
+      exactly: "\"buzz\""
+    exit-code: 0
+
+  edit updates description:
+    command: ./worklog edit --repo "local" --repoPath "/tmp/e2e.db" $(./worklog print --repo "local" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) --description "buzz" > /tmp/dump && ./worklog print --repo "local" --repoPath "/tmp/e2e.db" -taj | jq .[0].description
+    stdout:
+      line-count: 1
+      exactly: "\"buzz\""
+    exit-code: 0
+
+  edit updates duration:
+    command: ./worklog edit --repo "local" --repoPath "/tmp/e2e.db" $(./worklog print --repo "local" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) --duration 345 > /tmp/dump && ./worklog print --repo "local" --repoPath "/tmp/e2e.db" -taj | jq .[0].duration
+    stdout:
+      line-count: 1
+      exactly: "345"
+    exit-code: 0
+
+  edit updates tags:
+    command: ./worklog edit --repo "local" --repoPath "/tmp/e2e.db" $(./worklog print --repo "local" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) --tags "buzz,boom" > /tmp/dump && ./worklog print --repo "local" --repoPath "/tmp/e2e.db" -taj | jq .[0].tags
+    stdout:
+      line-count: 4
+      lines:
+        1: "["
+        2: "  \"boom\","
+        3: "  \"buzz\""
+        4: "]"
+    exit-code: 0
