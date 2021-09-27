@@ -53,7 +53,7 @@ jobs:
 
     # This is how the e2e tests are ran
     - name: Install commander
-      run: go get github.com/commander-cli/commander/v2/cmd/commander
+      run: go install github.com/commander-cli/commander/v2/cmd/commander@latest
 
     - name: Get dependencies
       run: make deps
