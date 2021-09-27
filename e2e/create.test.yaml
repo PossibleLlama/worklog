@@ -1,0 +1,42 @@
+config:
+  inherit-env: true
+  # Expects the tests to be ran from the root of project
+  dir: e2e
+
+tests:
+  create root:
+    command: ./worklog create
+    stdout:
+      line-count: 0
+    stderr:
+      line-count: 17
+      lines:
+        1: "Error: required flag(s) \"title\" not set"
+    exit-code: 1
+
+  create minimal:
+    command: ./worklog create --repo "local" --repoPath "/tmp/e2e.db" --title "foo"
+    stdout:
+      line-count: 2
+      lines:
+        1: "Saving file..."
+        2: "Saved file"
+    exit-code: 0
+
+  create all:
+    command: ./worklog create --repo "local" --repoPath "/tmp/e2e.db" --title "foo" --description "bar" --tags "bang, pop" --when "$(date '+%Y-%m-%d %H:%M')" --duration 10
+    stdout:
+      line-count: 2
+      lines:
+        1: "Saving file..."
+        2: "Saved file"
+    exit-code: 0
+
+  create date:
+    command: ./worklog create --repo "local" --repoPath "/tmp/e2e.db" --title "foo" --when "$(date '+%Y-%m-%d')"
+    stdout:
+      line-count: 2
+      lines:
+        1: "Saving file..."
+        2: "Saved file"
+    exit-code: 0

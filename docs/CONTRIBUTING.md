@@ -2,8 +2,7 @@
 
 ## Getting started
 
-Contributions are made to this repo via [Issues][RepoIssues] and
-[Pull Requests (PRs)][PRs].
+Contributions are made to this repo via [Issues][RepoIssues] and [Pull Requests (PRs)][PRs].
 
 Commits to this repo are not required to be signed, however it is recommended.
 For more information on how to do this, please visit [git][GitSigning] to sign
@@ -23,8 +22,7 @@ If you find an reported bug that you have experienced and you want fixed, adding
 a [reaction][GithubReaction] can help prioritisation.
 
 Once an issue is raised, it should have appropriate labels to allow for easy discovery.
-Milestones should also be added to the issue.
-This will help indicate what the priority of the issue will be.
+Maintainers will add milestones to the issue to indicate the priority and timeline for the change.
 
 When starting to work on an issue, please assign it to yourself to let others know
 that you are working on it.
@@ -46,8 +44,23 @@ All commits related to the issue should also be prefixed with the issue number.
 
 When a PR is merged, it will automatically squash the commits into the main branch.
 
+### Tests
+
+The unit tests should be used to assert that the functions and individual pieces of functionality
+logically work as expected.
+These will include mocking out the lower levels of the application, for example the service layer
+tests will mock the database layer's responses.
+
+End to end tests will run the executable, and assert on the output and changes around that you
+can observe from the command line.
+These are ran in a linux environment.
+To run these tests, you'll need [commander][CommanderCLI] and [jq][JqCLI] installed and accessible
+on the path.
+
 [RepoIssues]: https://github.com/PossibleLlama/worklog/issues
 [PRs]: https://github.com/PossibleLlama/worklog/pulls
 [GitSigning]: https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work
 [GithubSigning]: https://docs.github.com/en/github/authenticating-to-github/signing-commits
 [GithubReaction]: https://github.blog/2016-03-10-add-reactions-to-pull-requests-issues-and-comments/
+[CommanderCLI]: https://github.com/commander-cli/commander
+[JqCLI]: https://github.com/stedolan/jq

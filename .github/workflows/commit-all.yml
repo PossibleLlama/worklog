@@ -51,11 +51,12 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
 
+    # This is how the e2e tests are ran
+    - name: Install commander
+      run: go install github.com/commander-cli/commander/v2/cmd/commander@latest
+
     - name: Get dependencies
       run: make deps
-
-    - name: Create folders
-      run: mkdir ~/.worklog && mkdir ~/.worklog-backup && touch ~/.worklog/a
 
     - name: Test once
       run: make test

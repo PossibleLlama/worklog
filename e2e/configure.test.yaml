@@ -1,0 +1,88 @@
+config:
+  inherit-env: true
+  # Expects the tests to be ran from the root of project
+  dir: e2e
+
+tests:
+  configure root:
+    command: ./worklog configure
+    stdout:
+      line-count: 1
+      exactly: "Successfully configured"
+    exit-code: 0
+
+  change config to different but valid path:
+    command: ./worklog --config "/tmp/config.yaml" configure
+    stdout:
+      line-count: 2
+      lines:
+        1: "Unable to use config file: '/tmp/config.yaml'. open /tmp/config.yaml: no such file or directory"
+        2: "Successfully configured"
+    exit-code: 0
+
+  change default values - stdout:
+    command: ./worklog configure overrideDefaults --author "Alice" --duration 5 --format "pretty"
+    stdout:
+      line-count: 1
+      exactly: "Successfully configured"
+    exit-code: 0
+
+  change default values - check file contents:
+    # TODO: The config states "config.yaml" whereas the file created is "config.yml"
+    command: ./worklog --config "/tmp/config.yaml" configure overrideDefaults --author "Bob" --duration 10 --format "json" > /tmp/dump && cat /tmp/config.yml
+    stdout:
+      line-count: 4
+      lines:
+        1: "default:"
+        2: "  author: Bob"
+        3: "  duration: 10"
+        4: "  format: json"
+    exit-code: 0
+
+  change default values - format pretty:
+    command: ./worklog configure overrideDefaults --format "pretty"
+    stdout:
+      line-count: 1
+      exactly: "Successfully configured"
+    exit-code: 0
+
+  change default values - format json:
+    command: ./worklog configure overrideDefaults --format "json"
+    stdout:
+      line-count: 1
+      exactly: "Successfully configured"
+    exit-code: 0
+
+  change default values - format yaml:
+    command: ./worklog configure overrideDefaults --format "yaml"
+    stdout:
+      line-count: 1
+      exactly: "Successfully configured"
+    exit-code: 0
+
+  change default values - format invalid:
+    command: ./worklog configure overrideDefaults --format "invalid"
+    stdout:
+      line-count: 0
+    stderr:
+      line-count: 14
+      lines:
+        1: "Error: format is not valid"
+    exit-code: 1
+
+  change default values - duration number:
+    command: ./worklog configure overrideDefaults --duration 15
+    stdout:
+      line-count: 1
+      exactly: "Successfully configured"
+    exit-code: 0
+
+  change default values - duration string:
+    command: ./worklog configure overrideDefaults --duration "invalid"
+    stdout:
+      line-count: 0
+    stderr:
+      line-count: 14
+      lines:
+        1: "Error: invalid argument \"invalid\" for \"--duration\" flag: strconv.ParseInt: parsing \"invalid\": invalid syntax"
+    exit-code: 1

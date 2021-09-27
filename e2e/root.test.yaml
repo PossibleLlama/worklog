@@ -1,0 +1,35 @@
+config:
+  inherit-env: true
+  # Expects the tests to be ran from the root of project
+  dir: e2e
+
+tests:
+  root:
+    command: ./worklog
+    stdout:
+      line-count: 25
+      contains:
+        - "For information on using the CLI, use worklog"
+        - "--help"
+        - "Usage:"
+        - "worklog [command]"
+        - "Available Commands:"
+        - "configure"
+        - "create"
+        - "edit"
+        - "help"
+        - "print"
+        - "Flags:"
+        - "--config"
+        - "--repo"
+        - "--repoPath"
+        - "--version"
+    exit-code: 0
+
+  version:
+    command: ./worklog --version
+    stdout:
+      line-count: 1
+      contains:
+        - "worklog version"
+    exit-code: 0
