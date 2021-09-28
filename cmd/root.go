@@ -97,10 +97,7 @@ func initConfig() {
 		fmt.Printf("Unable to use config file: '%s'. %s\n", viper.ConfigFileUsed(), err)
 	}
 
-	if repoType == "" {
-		repoType = viper.GetString("repo")
-	}
-	switch strings.ToLower(repoType) {
+	switch helpers.GetRepoTypeString(repoType) {
 	case "":
 		fallthrough
 	case "bolt":
