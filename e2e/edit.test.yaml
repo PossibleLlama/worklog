@@ -18,7 +18,7 @@ tests:
     exit-code: 1
 
   edit minimal:
-    command: ./worklog edit --repo "local" --repoPath "/tmp/e2e.db" $(./worklog print --repo "local" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id)
+    command: ./worklog edit --repo "bolt" --repoPath "/tmp/e2e.db" $(./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id)
     stdout:
       line-count: 2
       lines:
@@ -27,7 +27,7 @@ tests:
     exit-code: 0
 
   edit updates revision:
-    command: ./worklog edit --repo "local" --repoPath "/tmp/e2e.db" $(./worklog print --repo "local" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) > /tmp/dump && ./worklog print --repo "local" --repoPath "/tmp/e2e.db" -taj | jq .[0]
+    command: ./worklog edit --repo "bolt" --repoPath "/tmp/e2e.db" $(./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) > /tmp/dump && ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -taj | jq .[0]
     stdout:
       # Ensure the revision number is not 1
       # We don't know which order the tests will be ran, so can't say what the revision will be
@@ -38,28 +38,28 @@ tests:
     exit-code: 0
 
   edit updates title:
-    command: ./worklog edit --repo "local" --repoPath "/tmp/e2e.db" $(./worklog print --repo "local" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) --title "buzz" > /tmp/dump && ./worklog print --repo "local" --repoPath "/tmp/e2e.db" -taj | jq .[0].title
+    command: ./worklog edit --repo "bolt" --repoPath "/tmp/e2e.db" $(./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) --title "buzz" > /tmp/dump && ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -taj | jq .[0].title
     stdout:
       line-count: 1
       exactly: "\"buzz\""
     exit-code: 0
 
   edit updates description:
-    command: ./worklog edit --repo "local" --repoPath "/tmp/e2e.db" $(./worklog print --repo "local" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) --description "buzz" > /tmp/dump && ./worklog print --repo "local" --repoPath "/tmp/e2e.db" -taj | jq .[0].description
+    command: ./worklog edit --repo "bolt" --repoPath "/tmp/e2e.db" $(./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) --description "buzz" > /tmp/dump && ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -taj | jq .[0].description
     stdout:
       line-count: 1
       exactly: "\"buzz\""
     exit-code: 0
 
   edit updates duration:
-    command: ./worklog edit --repo "local" --repoPath "/tmp/e2e.db" $(./worklog print --repo "local" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) --duration 345 > /tmp/dump && ./worklog print --repo "local" --repoPath "/tmp/e2e.db" -taj | jq .[0].duration
+    command: ./worklog edit --repo "bolt" --repoPath "/tmp/e2e.db" $(./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) --duration 345 > /tmp/dump && ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -taj | jq .[0].duration
     stdout:
       line-count: 1
       exactly: "345"
     exit-code: 0
 
   edit updates tags:
-    command: ./worklog edit --repo "local" --repoPath "/tmp/e2e.db" $(./worklog print --repo "local" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) --tags "buzz,boom" > /tmp/dump && ./worklog print --repo "local" --repoPath "/tmp/e2e.db" -taj | jq .[0].tags
+    command: ./worklog edit --repo "bolt" --repoPath "/tmp/e2e.db" $(./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) --tags "buzz,boom" > /tmp/dump && ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -taj | jq .[0].tags
     stdout:
       line-count: 4
       lines:

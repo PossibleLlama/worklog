@@ -15,7 +15,7 @@ tests:
     exit-code: 1
 
   create minimal:
-    command: ./worklog create --repo "local" --repoPath "/tmp/e2e.db" --title "foo"
+    command: ./worklog create --repo "bolt" --repoPath "/tmp/e2e.db" --title "foo"
     stdout:
       line-count: 2
       lines:
@@ -24,7 +24,7 @@ tests:
     exit-code: 0
 
   create all:
-    command: ./worklog create --repo "local" --repoPath "/tmp/e2e.db" --title "foo" --description "bar" --tags "bang, pop" --when "$(date '+%Y-%m-%d %H:%M')" --duration 10
+    command: ./worklog create --repo "bolt" --repoPath "/tmp/e2e.db" --title "foo" --description "bar" --tags "bang, pop" --when "$(date '+%Y-%m-%d %H:%M')" --duration 10
     stdout:
       line-count: 2
       lines:
@@ -33,7 +33,7 @@ tests:
     exit-code: 0
 
   create date:
-    command: ./worklog create --repo "local" --repoPath "/tmp/e2e.db" --title "foo" --when "$(date '+%Y-%m-%d')"
+    command: ./worklog create --repo "bolt" --repoPath "/tmp/e2e.db" --title "foo" --when "$(date '+%Y-%m-%d')"
     stdout:
       line-count: 2
       lines:
