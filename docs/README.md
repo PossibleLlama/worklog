@@ -32,6 +32,52 @@ rm worklog-binary.zip
 
 [GithubReleases]: https://github.com/PossibleLlama/worklog/releases
 
+## Global flags
+
+```bash
+worklog --config "/path/to/config" <command>
+```
+
+If you store the configuration file somewhere other than
+`$HOME/.worklog/config.yaml`, you will need to specify where, via
+this flag.
+It will have to be provided everytime you use this, as such, if
+you want to permanently use another location, setting this as an
+alias will likely be most useful.
+
+```bash
+worklog --repo "bolt"
+```
+
+To use a different way of storing the worklogs, you can change it
+via this flag.
+The currently available options are listed below, although more
+may be available in the future.
+
+This will be most useful when changing between storage types.
+Currently the default is `bolt`, however up until 0.6.1, the
+default repo was `legacy`, and as such to search those, you'll
+need to specify this repo type when printing.
+You can also specify the default repo type via the `configure`
+command.
+
+Valid options:
+
+- `bolt`
+- `legacy`
+
+```bash
+worklog --repoPath "/path/to/repo"
+```
+
+This will be to specify where the store of worklogs is.
+If it isn't in the default location of `$HOME/.worklog/worklog.db`
+you will need to specify this.
+You can also specify the default repo type via the `configure`
+command.
+
+This is not supported by the `legacy` repo type.
+
 ## Creating worklogs
 
 ``` bash
