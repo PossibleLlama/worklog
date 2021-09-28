@@ -67,7 +67,7 @@ func init() {
 		"Config file including file extension")
 	rootCmd.PersistentFlags().StringVar(&repoType,
 		"repo",
-		"legacy",
+		"",
 		"Which type of repository to use for storing/retrieving worklogs")
 	rootCmd.PersistentFlags().StringVar(&repoLocation,
 		"repoPath",
@@ -97,8 +97,13 @@ func initConfig() {
 		fmt.Printf("Unable to use config file: '%s'. %s\n", viper.ConfigFileUsed(), err)
 	}
 
+	if repoType == "" {
+		repoType = viper.GetString("repo")
+	}
 	switch strings.ToLower(repoType) {
-	case "local":
+	case "":
+		fallthrough
+	case "bolt":
 		wlRepo = repository.NewBBoltRepo(repoLocation)
 	case "legacy":
 		wlRepo = repository.NewYamlFileRepo()
