@@ -21,7 +21,7 @@ tests:
     exit-code: 0
 
   change default values - stdout:
-    command: ./worklog configure overrideDefaults --author "Alice" --duration 5 --format "pretty"
+    command: ./worklog configure overrideDefaults --author "Alice" --duration 5 --format "pretty" --repo "bolt" --repoPath "/tmp/e2e.db"
     stdout:
       line-count: 1
       exactly: "Successfully configured"
@@ -29,14 +29,17 @@ tests:
 
   change default values - check file contents:
     # TODO: The config states "config.yaml" whereas the file created is "config.yml"
-    command: ./worklog --config "/tmp/config.yaml" configure overrideDefaults --author "Bob" --duration 10 --format "json" > /tmp/dump && cat /tmp/config.yml
+    command: ./worklog --config "/tmp/config.yaml" configure overrideDefaults --author "Bob" --duration 10 --format "json" --repo "bolt" --repoPath "/tmp/e2e.db" > /tmp/dump && cat /tmp/config.yml
     stdout:
-      line-count: 4
+      line-count: 7
       lines:
         1: "default:"
         2: "  author: Bob"
         3: "  duration: 10"
         4: "  format: json"
+        5: "repo:"
+        6: "  type: bolt"
+        7: "  path: /tmp/e2e.db"
     exit-code: 0
 
   change default values - format pretty:
@@ -86,3 +89,41 @@ tests:
       lines:
         1: "Error: invalid argument \"invalid\" for \"--duration\" flag: strconv.ParseInt: parsing \"invalid\": invalid syntax"
     exit-code: 1
+
+  change default values - repo type bolt:
+    command: ./worklog configure overrideDefaults --repo "bolt"
+    stdout:
+      line-count: 1
+      exactly: "Successfully configured"
+    exit-code: 0
+
+  change default values - repo type legacy:
+    command: ./worklog configure overrideDefaults --repo "legacy"
+    stdout:
+      line-count: 1
+      exactly: "Successfully configured"
+    exit-code: 0
+
+  change default values - repo type invalid:
+    command: ./worklog configure overrideDefaults --repo "invalid"
+    stdout:
+      line-count: 0
+    stderr:
+      line-count: 14
+      lines:
+        1: "Error: invalid repo, either \"bolt\" or \"legacy\" must be specified"
+    exit-code: 1
+
+  change default values - repo path absolute:
+    command: ./worklog configure overrideDefaults --repoPath "/tmp/e2e.db"
+    stdout:
+      line-count: 1
+      exactly: "Successfully configured"
+    exit-code: 0
+
+  change default values - repo path relative:
+    command: ./worklog configure overrideDefaults --repoPath "./e2e.db"
+    stdout:
+      line-count: 1
+      exactly: "Successfully configured"
+    exit-code: 0

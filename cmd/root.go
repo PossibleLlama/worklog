@@ -67,14 +67,13 @@ func init() {
 		"Config file including file extension")
 	rootCmd.PersistentFlags().StringVar(&repoType,
 		"repo",
-		"legacy",
+		"",
 		"Which type of repository to use for storing/retrieving worklogs")
 	rootCmd.PersistentFlags().StringVar(&repoLocation,
 		"repoPath",
 		// This does not contain the home directory, as then the tool tip description
 		// would include that value, which is difficult to test for
-		fmt.Sprintf(".worklog%sworklog.db",
-			string(filepath.Separator)),
+		"",
 		"Directory path for repository that worklogs are stored in")
 
 	cobra.OnInitialize(initConfig)
@@ -85,9 +84,6 @@ func initConfig() {
 	if !strings.HasPrefix(cfgFile, string(filepath.Separator)) {
 		cfgFile = fmt.Sprintf("%s%s%s", homeDir, string(filepath.Separator), cfgFile)
 	}
-	if !strings.HasPrefix(repoLocation, string(filepath.Separator)) {
-		repoLocation = fmt.Sprintf("%s%s%s", homeDir, string(filepath.Separator), repoLocation)
-	}
 
 	viper.SetConfigFile(cfgFile)
 	viper.AutomaticEnv()
@@ -97,8 +93,12 @@ func initConfig() {
 		fmt.Printf("Unable to use config file: '%s'. %s\n", viper.ConfigFileUsed(), err)
 	}
 
-	switch strings.ToLower(repoType) {
-	case "local":
+	repoLocation = helpers.GetRepoPath(repoLocation, homeDir)
+
+	switch helpers.GetRepoTypeString(repoType) {
+	case "":
+		fallthrough
+	case "bolt":
 		wlRepo = repository.NewBBoltRepo(repoLocation)
 	case "legacy":
 		wlRepo = repository.NewYamlFileRepo()

@@ -8,12 +8,16 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+const path = "/tmp/foo"
+
 func TestNewConfig(t *testing.T) {
 	var tests = []struct {
 		name     string
 		author   string
 		format   string
 		duration int
+		rType    string
+		rPath    string
 		expected *Config
 	}{
 		{
@@ -21,11 +25,17 @@ func TestNewConfig(t *testing.T) {
 			author:   "Author",
 			format:   "pretty",
 			duration: 60,
+			rType:    "bolt",
+			rPath:    path,
 			expected: &Config{
 				Defaults: Defaults{
 					Author:   "Author",
 					Format:   "pretty",
 					Duration: 60,
+				},
+				Repo: Repo{
+					Type: "bolt",
+					Path: path,
 				},
 			},
 		}, {
@@ -33,11 +43,17 @@ func TestNewConfig(t *testing.T) {
 			author:   "Author",
 			format:   "yaml",
 			duration: 60,
+			rType:    "bolt",
+			rPath:    path,
 			expected: &Config{
 				Defaults: Defaults{
 					Author:   "Author",
 					Format:   "yaml",
 					Duration: 60,
+				},
+				Repo: Repo{
+					Type: "bolt",
+					Path: path,
 				},
 			},
 		}, {
@@ -45,11 +61,17 @@ func TestNewConfig(t *testing.T) {
 			author:   "Author",
 			format:   "yml",
 			duration: 60,
+			rType:    "bolt",
+			rPath:    path,
 			expected: &Config{
 				Defaults: Defaults{
 					Author:   "Author",
 					Format:   "yml",
 					Duration: 60,
+				},
+				Repo: Repo{
+					Type: "bolt",
+					Path: path,
 				},
 			},
 		}, {
@@ -57,11 +79,17 @@ func TestNewConfig(t *testing.T) {
 			author:   "Author",
 			format:   "json",
 			duration: 60,
+			rType:    "bolt",
+			rPath:    path,
 			expected: &Config{
 				Defaults: Defaults{
 					Author:   "Author",
 					Format:   "json",
 					Duration: 60,
+				},
+				Repo: Repo{
+					Type: "bolt",
+					Path: path,
 				},
 			},
 		}, {
@@ -69,11 +97,17 @@ func TestNewConfig(t *testing.T) {
 			author:   "Author",
 			format:   "foo",
 			duration: 60,
+			rType:    "bolt",
+			rPath:    path,
 			expected: &Config{
 				Defaults: Defaults{
 					Author:   "Author",
 					Format:   "",
 					Duration: 60,
+				},
+				Repo: Repo{
+					Type: "bolt",
+					Path: path,
 				},
 			},
 		}, {
@@ -81,11 +115,17 @@ func TestNewConfig(t *testing.T) {
 			author:   "Author",
 			format:   "",
 			duration: 60,
+			rType:    "bolt",
+			rPath:    path,
 			expected: &Config{
 				Defaults: Defaults{
 					Author:   "Author",
 					Format:   "",
 					Duration: 60,
+				},
+				Repo: Repo{
+					Type: "bolt",
+					Path: path,
 				},
 			},
 		}, {
@@ -93,11 +133,53 @@ func TestNewConfig(t *testing.T) {
 			author:   "",
 			format:   "yaml",
 			duration: 60,
+			rType:    "bolt",
+			rPath:    path,
 			expected: &Config{
 				Defaults: Defaults{
 					Author:   "",
 					Format:   "yaml",
 					Duration: 60,
+				},
+				Repo: Repo{
+					Type: "bolt",
+					Path: path,
+				},
+			},
+		}, {
+			name:     "Missing repo type",
+			author:   "Author",
+			format:   "yaml",
+			duration: 60,
+			rType:    "",
+			rPath:    path,
+			expected: &Config{
+				Defaults: Defaults{
+					Author:   "Author",
+					Format:   "yaml",
+					Duration: 60,
+				},
+				Repo: Repo{
+					Type: "",
+					Path: path,
+				},
+			},
+		}, {
+			name:     "Missing repo path",
+			author:   "Author",
+			format:   "yaml",
+			duration: 60,
+			rType:    "bolt",
+			rPath:    "",
+			expected: &Config{
+				Defaults: Defaults{
+					Author:   "Author",
+					Format:   "yaml",
+					Duration: 60,
+				},
+				Repo: Repo{
+					Type: "bolt",
+					Path: "",
 				},
 			},
 		}, {
@@ -105,11 +187,35 @@ func TestNewConfig(t *testing.T) {
 			author:   "Author",
 			format:   "yaml",
 			duration: 0,
+			rType:    "bolt",
+			rPath:    path,
 			expected: &Config{
 				Defaults: Defaults{
 					Author:   "Author",
 					Format:   "yaml",
 					Duration: 0,
+				},
+				Repo: Repo{
+					Type: "bolt",
+					Path: path,
+				},
+			},
+		}, {
+			name:     "Invalid repo type",
+			author:   "Author",
+			format:   "yaml",
+			duration: 60,
+			rType:    "invalid",
+			rPath:    path,
+			expected: &Config{
+				Defaults: Defaults{
+					Author:   "Author",
+					Format:   "yaml",
+					Duration: 60,
+				},
+				Repo: Repo{
+					Type: "",
+					Path: path,
 				},
 			},
 		}, {
@@ -117,11 +223,17 @@ func TestNewConfig(t *testing.T) {
 			author:   "Author",
 			format:   "",
 			duration: 0,
+			rType:    "",
+			rPath:    "",
 			expected: &Config{
 				Defaults: Defaults{
 					Author:   "Author",
 					Format:   "",
 					Duration: 0,
+				},
+				Repo: Repo{
+					Type: "",
+					Path: "",
 				},
 			},
 		}, {
@@ -129,11 +241,17 @@ func TestNewConfig(t *testing.T) {
 			author:   "",
 			format:   "yaml",
 			duration: 0,
+			rType:    "",
+			rPath:    "",
 			expected: &Config{
 				Defaults: Defaults{
 					Author:   "",
 					Format:   "yaml",
 					Duration: 0,
+				},
+				Repo: Repo{
+					Type: "",
+					Path: "",
 				},
 			},
 		}, {
@@ -141,11 +259,53 @@ func TestNewConfig(t *testing.T) {
 			author:   "",
 			format:   "",
 			duration: 60,
+			rType:    "",
+			rPath:    "",
 			expected: &Config{
 				Defaults: Defaults{
 					Author:   "",
 					Format:   "",
 					Duration: 60,
+				},
+				Repo: Repo{
+					Type: "",
+					Path: "",
+				},
+			},
+		}, {
+			name:     "Just repo type",
+			author:   "",
+			format:   "",
+			duration: 0,
+			rType:    "bolt",
+			rPath:    "",
+			expected: &Config{
+				Defaults: Defaults{
+					Author:   "",
+					Format:   "",
+					Duration: 0,
+				},
+				Repo: Repo{
+					Type: "bolt",
+					Path: "",
+				},
+			},
+		}, {
+			name:     "Just repo path",
+			author:   "",
+			format:   "",
+			duration: 0,
+			rType:    "",
+			rPath:    path,
+			expected: &Config{
+				Defaults: Defaults{
+					Author:   "",
+					Format:   "",
+					Duration: 0,
+				},
+				Repo: Repo{
+					Type: "",
+					Path: path,
 				},
 			},
 		},
@@ -153,7 +313,15 @@ func TestNewConfig(t *testing.T) {
 
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
-			actual := NewConfig(testItem.author, testItem.format, testItem.duration)
+			actual := NewConfig(Defaults{
+				Author:   testItem.author,
+				Format:   testItem.format,
+				Duration: testItem.duration,
+			},
+				Repo{
+					Type: testItem.rType,
+					Path: testItem.rPath,
+				})
 
 			assert.Equal(t, testItem.expected, actual)
 		})
