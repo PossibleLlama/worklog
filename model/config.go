@@ -13,25 +13,32 @@ type Defaults struct {
 	Format   string `yaml:"format,omitempty"`
 }
 
+type Repo struct {
+	Type string `yaml:"type"`
+	Path string `yaml:"path,omitempty"`
+}
+
 // Config all options available in the configuration
 type Config struct {
 	Defaults Defaults `yaml:"default"`
+	Repo     Repo     `yaml:"repo"`
 }
 
 // NewConfig is the generator for configuration
-func NewConfig(author, format string, duration int) *Config {
-	if format != "pretty" &&
-		format != "json" &&
-		format != "yaml" &&
-		format != "yml" {
-		format = ""
+func NewConfig(def Defaults, repo Repo) *Config {
+	if def.Format != "pretty" &&
+		def.Format != "json" &&
+		def.Format != "yaml" &&
+		def.Format != "yml" {
+		def.Format = ""
+	}
+	if repo.Type != "bolt" &&
+		repo.Type != "legacy" {
+		repo.Type = ""
 	}
 	return &Config{
-		Defaults: Defaults{
-			Author:   author,
-			Duration: duration,
-			Format:   format,
-		},
+		Defaults: def,
+		Repo:     repo,
 	}
 }
 
