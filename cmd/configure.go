@@ -15,11 +15,17 @@ const (
 	configDefaultAuthor   = ""
 	configDefaultDuration = 15
 	configDefaultFormat   = "pretty"
+	configDefaultRepoType = "bolt"
+	configDefaultRepoPath = ""
 )
 
-var configProvidedAuthor string
-var configProvidedDuration int
-var configProvidedFormat string
+var (
+	configProvidedAuthor   string
+	configProvidedDuration int
+	configProvidedFormat   string
+	configProvidedRepoType string
+	configProvidedRepoPath string
+)
 
 // configureCmd represents the create command
 var configureCmd = &cobra.Command{
@@ -40,6 +46,8 @@ func configArgs() error {
 	configProvidedAuthor = configDefaultAuthor
 	configProvidedDuration = configDefaultDuration
 	configProvidedFormat = configDefaultFormat
+	configProvidedRepoType = configDefaultRepoType
+	configProvidedRepoPath = configDefaultRepoPath
 	return nil
 }
 
@@ -49,7 +57,15 @@ func ConfigRun(cmd *cobra.Command, args []string) error {
 }
 
 func configRun() error {
-	cfg := model.NewConfig(configProvidedAuthor, configProvidedFormat, configProvidedDuration)
+	cfg := model.NewConfig(
+		model.Defaults{
+			Author:   configProvidedAuthor,
+			Format:   configProvidedFormat,
+			Duration: configProvidedDuration,
+		}, model.Repo{
+			Type: configProvidedRepoType,
+			Path: configProvidedRepoPath,
+		})
 	if err := wlConfig.SaveConfig(cfg); err != nil {
 		return err
 	}
@@ -74,9 +90,13 @@ func OverrideDefaultsArgs(cmd *cobra.Command, args []string) error {
 func overrideDefaultsArgs() error {
 	configProvidedAuthor = strings.TrimSpace(configProvidedAuthor)
 	configProvidedFormat = strings.TrimSpace(configProvidedFormat)
+	configProvidedRepoType = strings.TrimSpace(configProvidedRepoType)
+	configProvidedRepoPath = strings.TrimSpace(configProvidedRepoPath)
 	if configProvidedAuthor == "" &&
 		configProvidedFormat == "" &&
-		configProvidedDuration < 0 {
+		configProvidedDuration < 0 &&
+		configProvidedRepoType == "" &&
+		configProvidedRepoPath == "" {
 		return errors.New(e.ConfigureArgsMinimum)
 	}
 	if configProvidedDuration < 0 {
@@ -88,6 +108,13 @@ func overrideDefaultsArgs() error {
 		configProvidedFormat != "yaml" {
 		return errors.New(e.Format)
 	}
+	if configProvidedRepoType != "" &&
+		configProvidedRepoType != "bolt" &&
+		configProvidedRepoType != "legacy" {
+		return errors.New(e.RootRepoType)
+	}
+	// Repo path will accept anything, it's up to the user to make sure
+	// the file path makes sense.
 	return nil
 }
 
@@ -110,4 +137,14 @@ func init() {
 		"format",
 		"",
 		"Format to print work in. If provided, must be one of 'pretty', 'yaml', 'json'")
+	overrideDefaultsCmd.Flags().StringVar(
+		&configProvidedRepoType,
+		"repo",
+		"bolt",
+		"The type of repository used")
+	overrideDefaultsCmd.Flags().StringVar(
+		&configProvidedRepoPath,
+		"repoPath",
+		"",
+		"The path to the repository for storage")
 }
