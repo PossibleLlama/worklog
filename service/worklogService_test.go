@@ -47,23 +47,37 @@ func genWl() *model.Work {
 }
 
 func TestCreateWorklog(t *testing.T) {
+	genedWl := genWl()
+
 	var tests = []struct {
-		name   string
-		wl     *model.Work
-		exCode int
-		err    error
+		name    string
+		wl      *model.Work
+		savedWl *model.Work
+		expCode int
+		err     error
 	}{
 		{
-			name:   "Success",
-			wl:     genWl(),
-			exCode: http.StatusCreated,
-			err:    nil,
-		},
-		{
-			name:   "Errored",
-			wl:     genWl(),
-			exCode: http.StatusInternalServerError,
-			err:    errors.New(helpers.RandAlphabeticString(strLength)),
+			name:    "Success",
+			wl:      genedWl,
+			savedWl: genedWl,
+			expCode: http.StatusCreated,
+			err:     nil,
+		}, {
+			name: "Duplicate tags",
+			wl: &model.Work{
+				Tags: []string{"a", "a", "b", "c", "b"},
+			},
+			savedWl: &model.Work{
+				Tags: []string{"a", "b", "c"},
+			},
+			expCode: http.StatusCreated,
+			err:     nil,
+		}, {
+			name:    "Errored",
+			wl:      genedWl,
+			savedWl: genedWl,
+			expCode: http.StatusInternalServerError,
+			err:     errors.New(helpers.RandAlphabeticString(strLength)),
 		},
 	}
 
@@ -81,7 +95,7 @@ func TestCreateWorklog(t *testing.T) {
 			} else {
 				assert.Nil(t, returnedErr)
 			}
-			assert.Equal(t, testItem.exCode, returnedCode)
+			assert.Equal(t, testItem.expCode, returnedCode)
 			mockRepo.AssertExpectations(t)
 			mockRepo.AssertCalled(t, "Save", testItem.wl)
 		})
@@ -91,6 +105,9 @@ func TestCreateWorklog(t *testing.T) {
 func TestEditWorklog(t *testing.T) {
 	id := helpers.RandHexAlphaNumericString(strLength)
 	wl := genWl()
+	wlWithDuplicateTags := genWl()
+	wlWithDuplicateTags.Tags = append(wlWithDuplicateTags.Tags, "a", "a")
+
 	var tests = []struct {
 		name     string
 		newWl    *model.Work
@@ -103,6 +120,14 @@ func TestEditWorklog(t *testing.T) {
 		{
 			name:     "Success with all fields",
 			newWl:    genWl(),
+			getWl:    wl,
+			getErr:   nil,
+			callSave: true,
+			expCode:  http.StatusOK,
+			expErr:   nil,
+		}, {
+			name:     "Duplicate tags",
+			newWl:    wlWithDuplicateTags,
 			getWl:    wl,
 			getErr:   nil,
 			callSave: true,
@@ -135,7 +160,7 @@ func TestEditWorklog(t *testing.T) {
 			Description: testItem.newWl.Description,
 			Author:      testItem.newWl.Author,
 			Duration:    testItem.newWl.Duration,
-			Tags:        testItem.newWl.Tags,
+			Tags:        helpers.DeduplicateString(testItem.newWl.Tags),
 			When:        wl.When,
 			CreatedAt:   testItem.newWl.CreatedAt}
 

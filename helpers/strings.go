@@ -72,3 +72,17 @@ func AInB(a, b string) bool {
 		strings.ToLower(b),
 		strings.ToLower(a))
 }
+
+// DeduplicateString removes items when there is more than 1 of the same item
+// https://stackoverflow.com/a/66751055
+func DeduplicateString(s []string) []string {
+	allKeys := make(map[string]bool)
+	list := []string{}
+	for _, item := range s {
+		if _, value := allKeys[item]; !value {
+			allKeys[item] = true
+			list = append(list, item)
+		}
+	}
+	return list
+}

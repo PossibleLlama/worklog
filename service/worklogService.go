@@ -5,6 +5,7 @@ import (
 	"sort"
 	"time"
 
+	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
 	"github.com/PossibleLlama/worklog/repository"
 )
@@ -22,6 +23,7 @@ func NewWorklogService(repository repository.WorklogRepository) WorklogService {
 }
 
 func (*service) CreateWorklog(wl *model.Work) (int, error) {
+	wl.Tags = helpers.DeduplicateString(wl.Tags)
 	if err := repo.Save(wl); err != nil {
 		return http.StatusInternalServerError, err
 	}
@@ -29,6 +31,7 @@ func (*service) CreateWorklog(wl *model.Work) (int, error) {
 }
 
 func (s *service) EditWorklog(id string, newWl *model.Work) (int, error) {
+	newWl.Tags = helpers.DeduplicateString(newWl.Tags)
 	wls, code, err := s.GetWorklogsByID(&model.Work{}, id)
 	if err != nil {
 		return code, err
