@@ -7,7 +7,7 @@ tests:
   root:
     command: ./worklog
     stdout:
-      line-count: 25
+      line-count: 26
       contains:
         - "For information on using the CLI, use worklog"
         - "--help"
