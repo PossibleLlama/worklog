@@ -62,3 +62,46 @@ func TestRandHexadecimalStringRandomness(t *testing.T) {
 		seen = append(seen, str)
 	}
 }
+
+func TestDeduplicateString(t *testing.T) {
+	var tests = []struct {
+		name string
+		in   []string
+		exp  []string
+	}{
+		{
+			name: "Empty",
+			in:   []string{},
+			exp:  []string{},
+		}, {
+			name: "1 item",
+			in:   []string{"a"},
+			exp:  []string{"a"},
+		}, {
+			name: "2 items",
+			in:   []string{"a", "b"},
+			exp:  []string{"a", "b"},
+		}, {
+			name: "1 item repeated",
+			in:   []string{"a", "a"},
+			exp:  []string{"a"},
+		}, {
+			name: "2 items repeated",
+			in:   []string{"a", "a", "b", "b"},
+			exp:  []string{"a", "b"},
+		}, {
+			name: "3 items, some repeated",
+			in:   []string{"a", "a", "b", "c", "b"},
+			exp:  []string{"a", "b", "c"},
+		},
+	}
+
+	for _, testItem := range tests {
+		t.Run(testItem.name, func(t *testing.T) {
+			assert.Equal(t, len(DeduplicateString(testItem.in)), len(testItem.exp))
+			for index, element := range DeduplicateString(testItem.in) {
+				assert.Equal(t, testItem.exp[index], element)
+			}
+		})
+	}
+}
