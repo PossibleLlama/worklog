@@ -67,6 +67,8 @@ jobs:
   security:
     name: Security Scans
     runs-on: ubuntu-latest
+    env:
+      GO111MODULE: on
     steps:
 
     - name: Set up Go 1.x
@@ -82,3 +84,8 @@ jobs:
 
     - name: Run Nancy
       uses: sonatype-nexus-community/nancy-github-action@main
+
+    - name: Run Gosec Security Scanner
+      uses: securego/gosec@master
+      with:
+        args: ./...
