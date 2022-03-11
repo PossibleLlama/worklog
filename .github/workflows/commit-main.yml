@@ -55,9 +55,8 @@ jobs:
     - name: Extract
       run: "mv ./${{ matrix.binary }} ./worklog"
 
-    # TODO change to tests
     - name: Test
-      run: "./worklog"
+      run: "./worklog create --title test && ./worklog print -t"
 
   run-mac:
     name: Run-mac
@@ -82,7 +81,7 @@ jobs:
       run: "mv ./${{ matrix.binary }} ./worklog"
 
     - name: Test
-      run: "./worklog"
+      run: "./worklog create --title test && ./worklog print -t"
 
   run-windows:
     name: Run-windows
@@ -105,7 +104,7 @@ jobs:
       run: "move .\\${{ matrix.binary }} .\\worklog.exe"
 
     - name: Test
-      run: ".\\worklog.exe"
+      run: ".\\worklog.exe create --title test; .\\worklog.exe print -t"
 
   changelog:
     name: Generate changelog
