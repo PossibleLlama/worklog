@@ -140,26 +140,27 @@ jobs:
     steps:
     - name: Check out
       uses: actions/checkout@v2
-
-    - name: Download binary
-      uses: actions/download-artifact@v2
       with:
-        name: worklog-binary
-
-    - name: Zip binaries
-      run: "zip binaries.zip 32bit 64bit"
+          fetch-depth: 0
 
     - name: Download changelog
       uses: actions/download-artifact@v2
       with:
         name: release-changelog
 
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
+    - name: Fetch all tags
+      run: git fetch --force --tags
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
       with:
-        draft: true
-        files: binaries.zip
-        body_path: release-changelog.txt
+        go-version: ^1.17
+
+    - name: Run GoReleaser
+      uses: goreleaser/goreleaser-action@v2
+      with:
+        distribution: goreleaser
+        version: latest
+        args: release --rm-dist
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
