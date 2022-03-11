@@ -47,16 +47,7 @@ build-local:
 
 compile:
 	@echo "Compiling for OS and Platform"
-	@echo "32 bit systems"
-	GOOS=freebsd GOARCH=386 go build -ldflags='-w -s' -o bin/32bit/$(BIN_NAME)-freebsd main.go
-	GOOS=linux GOARCH=386 go build -ldflags='-w -s' -o bin/32bit/$(BIN_NAME)-linux main.go
-	GOOS=windows GOARCH=386 go build -ldflags='-w -s' -o bin/32bit/$(BIN_NAME)-windows.exe main.go
-
-	@echo "64 bit systems"
-	GOOS=freebsd GOARCH=amd64 go build -ldflags='-w -s' -o bin/64bit/$(BIN_NAME)-freebsd main.go
-	GOOS=darwin GOARCH=amd64 go build -ldflags='-w -s' -o bin/64bit/$(BIN_NAME)-darwin main.go
-	GOOS=linux GOARCH=amd64 go build -ldflags='-w -s' -o bin/64bit/$(BIN_NAME)-linux main.go
-	GOOS=windows GOARCH=amd64 go build -ldflags='-w -s' -o bin/64bit/$(BIN_NAME)-windows.exe main.go
+	goreleaser release --snapshot --rm-dist
 	@echo "Built all binaries"
 
 deps:
@@ -65,3 +56,7 @@ deps:
 	go mod download
 	go mod verify
 	@echo "Passed all dependency checks"
+
+clean:
+	@echo "Cleaning"
+	@rm -rf dist/
