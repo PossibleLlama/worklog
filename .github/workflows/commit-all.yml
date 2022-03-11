@@ -63,29 +63,3 @@ jobs:
 
     - name: Test multiple
       run: make test-repeat
-
-  security:
-    name: Security Scans
-    runs-on: ubuntu-latest
-    env:
-      GO111MODULE: on
-    steps:
-
-    - name: Set up Go 1.x
-      uses: actions/setup-go@v2
-      with:
-        go-version: ^1.17
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2
-
-    - name: Write Go List
-      run: go list -json -m all > go.list
-
-    - name: Run Nancy
-      uses: sonatype-nexus-community/nancy-github-action@main
-
-    - name: Run Gosec Security Scanner
-      uses: securego/gosec@master
-      with:
-        args: ./...
