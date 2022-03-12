@@ -52,7 +52,7 @@ jobs:
         name: worklog-binary
 
     - name: Permissions
-      run: "sudo chown -R $USER:$USER ./32bit ./64bit && sudo chmod +x 32bit/worklog-* 64bit/worklog-*"
+      run: "sudo chown -R $USER:$USER ./worklog_linux_${{ matrix.binary }}/worklog && sudo chmod +x ./worklog_linux_${{ matrix.binary }}/worklog"
 
     - name: Extract
       run: "mv ./worklog_linux_${{ matrix.binary }}/worklog ./worklog"
@@ -77,7 +77,7 @@ jobs:
         name: worklog-binary
 
     - name: Permissions
-      run: "sudo chown -R $USER ./32bit ./64bit && sudo chmod +x 32bit/worklog-* 64bit/worklog-*"
+      run: "sudo chown -R $USER ./worklog_darwin_${{ matrix.binary }}/worklog && sudo chmod +x ./worklog_darwin_${{ matrix.binary }}/worklog"
 
     - name: Extract
       run: "mv ./worklog_darwin_${{ matrix.binary }}/worklog ./worklog"
