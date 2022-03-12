@@ -19,6 +19,11 @@ jobs:
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
+      with:
+          fetch-depth: 0
+
+    - name: Fetch all tags
+      run: git fetch --force --tags
 
     - name: Get dependencies
       run: make deps
@@ -54,11 +59,8 @@ jobs:
     - name: Permissions
       run: "sudo chown -R $USER:$USER ./worklog_linux_${{ matrix.binary }}/worklog && sudo chmod +x ./worklog_linux_${{ matrix.binary }}/worklog"
 
-    - name: Extract
-      run: "mv ./worklog_linux_${{ matrix.binary }}/worklog ./worklog"
-
     - name: Test
-      run: "./worklog create --title test && ./worklog print -t"
+      run: "./worklog_linux_${{ matrix.binary }}/worklog --version"
 
   run-mac:
     name: Run-mac
@@ -79,11 +81,8 @@ jobs:
     - name: Permissions
       run: "sudo chown -R $USER ./worklog_darwin_${{ matrix.binary }}/worklog && sudo chmod +x ./worklog_darwin_${{ matrix.binary }}/worklog"
 
-    - name: Extract
-      run: "mv ./worklog_darwin_${{ matrix.binary }}/worklog ./worklog"
-
     - name: Test
-      run: "./worklog create --title test && ./worklog print -t"
+      run: "./worklog_darwin_${{ matrix.binary }}/worklog --version"
 
   run-windows:
     name: Run-windows
@@ -93,7 +92,7 @@ jobs:
     strategy:
       matrix:
         binary:
-          - "worklog_windows_amd64"
+          - "amd64"
 
     steps:
     - name: Download
@@ -101,11 +100,8 @@ jobs:
       with:
         name: worklog-binary
 
-    - name: Extract
-      run: "move .\\worklog_windows_${{ matrix.binary }}\\worklog.exe .\\worklog.exe"
-
     - name: Test
-      run: ".\\worklog.exe create --title test; .\\worklog.exe print -t"
+      run: ".\\worklog_windows_${{ matrix.binary }}\\worklog.exe --version"
 
   changelog:
     name: Generate changelog
