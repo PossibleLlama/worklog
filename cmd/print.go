@@ -94,7 +94,7 @@ func printRun(ids ...string) error {
 		if len(ids) > 0 {
 			msg = fmt.Sprintf("%s with id's %s", msg, ids)
 		}
-		helpers.LogInfo(msg)
+		helpers.LogInfo(msg, "print - none found")
 	} else if printOutputPretty {
 		if printAllFields {
 			printErr = model.WriteAllWorkToText(os.Stdout, worklogs)

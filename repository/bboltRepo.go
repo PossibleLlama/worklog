@@ -33,12 +33,12 @@ func (*bboltRepo) Save(wl *model.Work) error {
 	}
 	defer db.Close()
 
-	helpers.LogDebug("Saving file...")
+	helpers.LogDebug("Saving file...", "save model - bolt")
 	if err := db.Save(wl); err != nil {
 		return err
 	}
 
-	helpers.LogDebug("Saved file")
+	helpers.LogDebug("Saved file", "save model successful - bolt")
 	return nil
 }
 

@@ -69,7 +69,7 @@ func configRun() error {
 	if err := wlConfig.SaveConfig(cfg); err != nil {
 		return err
 	}
-	helpers.LogInfo("Successfully configured")
+	helpers.LogInfo("Successfully configured", "configure - saved config")
 	return nil
 }
 

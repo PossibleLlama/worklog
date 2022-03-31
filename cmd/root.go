@@ -44,7 +44,7 @@ For information on using the CLI, use worklog
 // This is called by main.main(). It only needs to happen once to the rootCmd
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		helpers.LogError(err.Error())
+		helpers.LogError(err.Error(), "root")
 		os.Exit(e.StartupErrors)
 	}
 }
@@ -54,7 +54,7 @@ func init() {
 
 	homeDir, err = os.UserHomeDir()
 	if err != nil {
-		helpers.LogError(fmt.Sprintf("Unable to get home directory: %s", err.Error()))
+		helpers.LogError(fmt.Sprintf("Unable to get home directory: %s", err.Error()), "root - startup")
 		os.Exit(e.StartupErrors)
 	}
 
@@ -90,7 +90,7 @@ func initConfig() {
 
 	// If a config file is found, read it in
 	if err := viper.ReadInConfig(); err != nil {
-		helpers.LogError(fmt.Sprintf("Unable to use config file: '%s'. %s", viper.ConfigFileUsed(), err.Error()))
+		helpers.LogError(fmt.Sprintf("Unable to use config file: '%s'. %s", viper.ConfigFileUsed(), err.Error()), "root - startup - load config")
 	}
 
 	repoLocation = helpers.GetRepoPath(repoLocation, homeDir)
@@ -103,7 +103,7 @@ func initConfig() {
 	case "legacy":
 		wlRepo = repository.NewYamlFileRepo()
 	default:
-		helpers.LogInfo(e.RootRepoType)
+		helpers.LogInfo(e.RootRepoType, "root - startup - unknown repo type")
 		os.Exit(e.StartupErrors)
 	}
 
