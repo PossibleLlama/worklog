@@ -59,4 +59,4 @@ deps:
 
 clean:
 	@echo "Cleaning"
-	@rm -rf dist/
+	@rm -rf dist/ ./e2e/$(BIN_NAME)
