@@ -45,7 +45,7 @@ func (*yamlFileRepo) SaveConfig(cfg *model.Config) error {
 	}
 	defer func() {
 		if err := file.Close(); err != nil {
-			fmt.Printf("Error closing file: %s\n", err)
+			helpers.LogError(fmt.Sprintf("Error closing file: %s", err.Error()))
 		}
 	}()
 
@@ -60,7 +60,7 @@ func (*yamlFileRepo) SaveConfig(cfg *model.Config) error {
 }
 
 func (*yamlFileRepo) Save(wl *model.Work) error {
-	fmt.Println("Saving file...")
+	helpers.LogDebug("Saving file...")
 
 	file, err := createFile(generateFileName(wl))
 	if err != nil {
@@ -68,7 +68,7 @@ func (*yamlFileRepo) Save(wl *model.Work) error {
 	}
 	defer func() {
 		if err := file.Close(); err != nil {
-			fmt.Printf("Error closing file: %s\n", err)
+			helpers.LogError(fmt.Sprintf("Error closing file: %s", err.Error()))
 		}
 	}()
 
@@ -79,7 +79,7 @@ func (*yamlFileRepo) Save(wl *model.Work) error {
 		return err
 	}
 
-	fmt.Println("Saved file")
+	helpers.LogDebug("Saved file")
 	return nil
 }
 
