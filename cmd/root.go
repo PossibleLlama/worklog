@@ -103,7 +103,7 @@ func initConfig() {
 	case "legacy":
 		wlRepo = repository.NewYamlFileRepo()
 	default:
-		helpers.LogInfo(e.RootRepoType, "root - startup - unknown repo type")
+		helpers.LogWarn(e.RootRepoType, "root - startup - unknown repo type")
 		os.Exit(e.StartupErrors)
 	}
 

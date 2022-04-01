@@ -11,19 +11,19 @@ import (
 var NewRelicApp *newrelic.Application
 
 func init() {
-	app, err := newrelic.NewApplication(
+	app, _ := newrelic.NewApplication(
 		newrelic.ConfigAppName("worklog"),
 		newrelic.ConfigLicense("NEW_RELIC_LICENSE_KEY"),
 		newrelic.ConfigDebugLogger(os.Stdout),
 	)
-	if err != nil {
-		LogDebug(err.Error(), "startup new relic logger")
-	}
+	// if err != nil {
+	// 	LogDebug(err.Error(), "startup new relic logger")
+	// }
 	NewRelicApp = app
 }
 
 func LogDebug(msg, event string) {
-	// fmt.Printf("%s\n", msg)
+	fmt.Printf("%s\n", msg)
 	// logToNewRelic(msg, event, "debug")
 }
 

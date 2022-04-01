@@ -29,12 +29,14 @@ func NewBBoltRepo(path string) WorklogRepository {
 func (*bboltRepo) Save(wl *model.Work) error {
 	db, openErr := openReadWrite()
 	if openErr != nil {
+		helpers.LogError(fmt.Sprintf("Error opening file: %s", openErr.Error()), "read db error - bolt")
 		return openErr
 	}
 	defer db.Close()
 
 	helpers.LogDebug("Saving file...", "save model - bolt")
 	if err := db.Save(wl); err != nil {
+		helpers.LogError(fmt.Sprintf("Error closing file: %s", err.Error()), "save model error - bolt")
 		return err
 	}
 
@@ -46,6 +48,7 @@ func (*bboltRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *model
 	var foundWls, filteredWls []*model.Work
 	db, openErr := openReadOnly()
 	if openErr != nil {
+		helpers.LogError(fmt.Sprintf("Error opening file: %s", openErr.Error()), "read db error - bolt")
 		return nil, openErr
 	}
 	defer db.Close()
@@ -73,6 +76,7 @@ func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
 	var foundWls []*model.Work
 	db, openErr := openReadOnly()
 	if openErr != nil {
+		helpers.LogError(fmt.Sprintf("Error opening file: %s", openErr.Error()), "read db error - bolt")
 		return nil, openErr
 	}
 	defer db.Close()
