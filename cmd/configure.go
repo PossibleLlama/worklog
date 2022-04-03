@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
 	e "github.com/PossibleLlama/worklog/errors"
+	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
 
 	"github.com/spf13/cobra"
@@ -69,7 +69,7 @@ func configRun() error {
 	if err := wlConfig.SaveConfig(cfg); err != nil {
 		return err
 	}
-	fmt.Println("Successfully configured")
+	helpers.LogInfo("Successfully configured", "configure - saved config")
 	return nil
 }
 

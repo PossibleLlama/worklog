@@ -89,12 +89,12 @@ func printRun(ids ...string) error {
 
 	var printErr error
 	if code == http.StatusNotFound && !printOutputJSON {
-		fmt.Printf("No work found between %s and %s with the given filter",
+		msg := fmt.Sprintf("No work found between %s and %s with the given filter",
 			printStartDate, printEndDate.Add(time.Second*-1))
 		if len(ids) > 0 {
-			fmt.Printf(" with id's %s", ids)
+			msg = fmt.Sprintf("%s with id's %s", msg, ids)
 		}
-		fmt.Println()
+		helpers.LogInfo(msg, "print - none found")
 	} else if printOutputPretty {
 		if printAllFields {
 			printErr = model.WriteAllWorkToText(os.Stdout, worklogs)
