@@ -79,6 +79,16 @@ func (w *Work) Update(new Work) {
 	}
 }
 
+// Sanitize remove all html from a wl
+func (w *Work) Sanitize() {
+	w.Title = helpers.Sanitize(w.Title)
+	w.Description = helpers.Sanitize(w.Description)
+	w.Author = helpers.Sanitize(w.Author)
+	for i, t := range w.Tags {
+		w.Tags[i] = helpers.Sanitize(t)
+	}
+}
+
 func workToPrettyWork(w Work) prettyWork {
 	return prettyWork{
 		ID:          w.ID,

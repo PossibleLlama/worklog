@@ -18,6 +18,11 @@ const (
 	dateString  = "2000-01-30T0000:00:00Z"
 )
 
+const (
+	xssHtmlOpen  = "<a href=\"javascript:alert('XSS1')\" onmouseover=\"alert('XSS2')\">"
+	xssHtmlClose = "<a>"
+)
+
 func genRandWork() *Work {
 	return NewWork(
 		helpers.RandAlphabeticString(shortLength),
@@ -151,6 +156,36 @@ func TestUpdate(t *testing.T) {
 	assert.Equal(t, new.Duration, wOg.Duration)
 	assert.Equal(t, new.Author, wOg.Author)
 	assert.Equal(t, new.Tags, wOg.Tags)
+}
+
+func TestSanitize(t *testing.T) {
+	newTag := helpers.RandAlphabeticString(shortLength)
+	wSafe := genRandWork()
+	wSafe.CreatedAt = time.Date(2020, time.January, 30, 23, 59, 0, 0, time.UTC)
+	wXss := Work{
+		ID:          wSafe.ID,
+		Revision:    wSafe.Revision,
+		Title:       xssHtmlOpen + wSafe.Title + xssHtmlClose,
+		Description: xssHtmlOpen + wSafe.Description + xssHtmlClose,
+		Author:      xssHtmlOpen + wSafe.Author + xssHtmlClose,
+		Duration:    wSafe.Duration,
+		Tags:        append(wSafe.Tags, xssHtmlOpen+newTag+xssHtmlClose),
+		When:        wSafe.When,
+		CreatedAt:   wSafe.CreatedAt,
+	}
+	wXss.Sanitize()
+
+	assert.Equal(t, wSafe.ID, wXss.ID)
+	assert.Equal(t, wSafe.Revision, wXss.Revision)
+	assert.Equal(t, wSafe.Duration, wXss.Duration)
+	assert.Equal(t, wSafe.When, wXss.When)
+	assert.Equal(t, wSafe.CreatedAt, wXss.CreatedAt)
+
+	assert.Equal(t, wSafe.Title, wXss.Title)
+	assert.Equal(t, wSafe.Description, wXss.Description)
+	assert.Equal(t, wSafe.Author, wXss.Author)
+	assert.Equal(t, len(wSafe.Tags)+1, len(wXss.Tags))
+	assert.Equal(t, append(wSafe.Tags, newTag), wXss.Tags)
 }
 
 func TestWorkToPrintWork(t *testing.T) {
