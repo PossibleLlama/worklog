@@ -32,6 +32,16 @@ tests:
         2: "Saved file"
     exit-code: 0
 
+  create with html:
+    command: ./worklog create --repo "bolt" --repoPath "/tmp/e2e.db" --title "<a href="">foo<a>" && ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -jt | jq -r '. | last | .title'
+    stdout:
+      line-count: 3
+      lines:
+        1: "Saving file..."
+        2: "Saved file"
+        3: "foo"
+    exit-code: 0
+
   create date:
     command: ./worklog create --repo "bolt" --repoPath "/tmp/e2e.db" --title "foo" --when "$(date '+%Y-%m-%d')"
     stdout:
@@ -39,4 +49,14 @@ tests:
       lines:
         1: "Saving file..."
         2: "Saved file"
+    exit-code: 0
+
+  create with xss capable html:
+    command: ./worklog create --repo "bolt" --repoPath "/tmp/e2e.db" --title "<a href=\"javascript:alert('XSS1')\" onmouseover=\"alert('XSS2')\">bar<a>" && ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -jt | jq -r '. | last | .title'
+    stdout:
+      line-count: 3
+      lines:
+        1: "Saving file..."
+        2: "Saved file"
+        3: "bar"
     exit-code: 0
