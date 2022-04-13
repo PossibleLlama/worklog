@@ -4,6 +4,8 @@ import (
 	"crypto/rand"
 	"log"
 	"strings"
+
+	"github.com/microcosm-cc/bluemonday"
 )
 
 const (
@@ -16,6 +18,8 @@ const (
 // RegexCaseInsensitive regex to be prepended to not care about case
 // of characters
 const RegexCaseInsensitive = "(?i)"
+
+var policy = bluemonday.StrictPolicy()
 
 // RandAlphabeticString Generator function of a random series of characters
 // Uses a-zA-Z character set
@@ -85,4 +89,9 @@ func DeduplicateString(s []string) []string {
 		}
 	}
 	return list
+}
+
+// Sanitize removes some unsafe html
+func Sanitize(s string) string {
+	return policy.Sanitize(s)
 }

@@ -105,3 +105,40 @@ func TestDeduplicateString(t *testing.T) {
 		})
 	}
 }
+
+func TestSanitise(t *testing.T) {
+	var tests = []struct {
+		name string
+		in   string
+		exp  string
+	}{
+		{
+			name: "Empty",
+			in:   "",
+			exp:  "",
+		}, {
+			name: "1 item",
+			in:   "a",
+			exp:  "a",
+		}, {
+			name: "2 items",
+			in:   "ab",
+			exp:  "ab",
+		}, {
+			name: "anchor tag",
+			in:   "<a href=\"\">foo</a>",
+			exp:  "foo",
+		}, {
+			name: "anchor tag with script",
+			in:   "<a href=\"javascript:alert('XSS1')\" onmouseover=\"alert('XSS2')\">bar<a>",
+			exp:  "bar",
+		},
+	}
+
+	for _, testItem := range tests {
+		t.Run(testItem.name, func(t *testing.T) {
+			assert.Equal(t, len(Sanitize(testItem.in)), len(testItem.exp))
+			assert.Equal(t, Sanitize(testItem.in), testItem.exp)
+		})
+	}
+}
