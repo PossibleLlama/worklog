@@ -20,7 +20,7 @@ const (
 
 const (
 	xssHtmlOpen  = "<a href=\"javascript:alert('XSS1')\" onmouseover=\"alert('XSS2')\">"
-	xssHtmlClose = "<a>"
+	xssHtmlClose = "</a>"
 )
 
 func genRandWork() *Work {
