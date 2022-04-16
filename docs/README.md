@@ -7,6 +7,8 @@
 Intended to be a quick productivity CLI tool, to track what you
 have done each day.
 
+Any HTML provided will be removed.
+
 ## Supported versions
 
 - v0.6.x
