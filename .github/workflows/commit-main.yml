@@ -11,6 +11,9 @@ jobs:
     name: Generate binaries
     runs-on: ubuntu-latest
 
+    # Disable creation of binaries for now
+    if: ${{ false }}
+
     steps:
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
