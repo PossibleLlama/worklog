@@ -272,7 +272,7 @@ func TestCreateArgsWhen(t *testing.T) {
 			defaultDuration,
 			"")
 		actualErr := createArgs()
-		assert.Nil(t, actualErr, "An error occured when creating without args")
+		assert.Nil(t, actualErr, "An error occurred when creating without args")
 
 		noWhen := createWhen
 
@@ -292,7 +292,7 @@ func TestCreateArgsWhen(t *testing.T) {
 			defaultDuration,
 			"")
 		actualErr = createArgs()
-		assert.Nil(t, actualErr, "An error occured when creating with args")
+		assert.Nil(t, actualErr, "An error occurred when creating with args")
 
 		// TODO I hate timezones
 		assert.Equal(t, noWhen.UTC(), createWhen.UTC())
