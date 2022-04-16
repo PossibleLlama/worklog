@@ -70,7 +70,7 @@ tests:
     exit-code: 0
 
   edit with xss capable html:
-    command: ./worklog edit --repo "bolt" --repoPath "/tmp/e2e.db" $(./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) --title "<a href=\"javascript:alert('XSS1')\" onmouseover=\"alert('XSS2')\">bang<a>" && ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].title
+    command: ./worklog edit --repo "bolt" --repoPath "/tmp/e2e.db" $(./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -j --startDate "$(date -d 'last Sunday - 2 day' '+%Y-%m-%d')" --endDate "$(date -d 'last Sunday - 2 day' '+%Y-%m-%d')" | jq -r '. | last | .id') --title "<a href=\"javascript:alert('XSS1')\" onmouseover=\"alert('XSS2')\">bang<a>" && ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -j --startDate "$(date -d 'last Sunday - 2 day' '+%Y-%m-%d')" --endDate "$(date -d 'last Sunday - 2 day' '+%Y-%m-%d')" | jq -r '. | last | .title'
     stdout:
       line-count: 3
       lines:
