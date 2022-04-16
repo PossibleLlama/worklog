@@ -130,6 +130,7 @@ func (*yamlFileRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *mo
 		if err != nil {
 			errors = append(errors, err.Error())
 		} else if workMatchesFilter(filter, readWorklog) {
+			readWorklog.Sanitize()
 			worklogs = append(worklogs, readWorklog)
 		}
 	}
@@ -156,6 +157,7 @@ func (*yamlFileRepo) GetByID(ID string, filter *model.Work) (*model.Work, error)
 	if err != nil {
 		return nil, err
 	} else if workMatchesFilter(filter, wl) {
+		wl.Sanitize()
 		return wl, nil
 	}
 	return nil, nil

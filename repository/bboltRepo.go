@@ -62,6 +62,7 @@ func (*bboltRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *model
 
 	for _, el := range foundWls {
 		if filterByTags(filter, el) {
+			el.Sanitize()
 			filteredWls = append(filteredWls, el)
 		}
 	}
@@ -95,6 +96,7 @@ func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
 	if !filterByTags(filter, foundWls[0]) {
 		return nil, viewErr
 	}
+	foundWls[0].Sanitize()
 	return foundWls[0], viewErr
 }
 

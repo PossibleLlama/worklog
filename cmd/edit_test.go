@@ -98,6 +98,24 @@ func TestEditArgs(t *testing.T) {
 				Tags:        []string{tag},
 			},
 			err: nil,
+		}, {
+			name: "XSS parameters are cleared",
+			ids:  []string{id},
+			provided: &model.Work{
+				Title:       xssHtmlOpen + title + xssHtmlClose,
+				Description: xssHtmlOpen + description + xssHtmlClose,
+				Duration:    longLength,
+				When:        tm,
+				Tags:        []string{xssHtmlOpen + tag + xssHtmlClose},
+			},
+			expected: &model.Work{
+				Title:       title,
+				Description: description,
+				Duration:    longLength,
+				When:        tm,
+				Tags:        []string{tag},
+			},
+			err: nil,
 		},
 	}
 

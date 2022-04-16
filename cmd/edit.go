@@ -43,14 +43,14 @@ func editArgs(args []string) error {
 	}
 
 	editID = args[0]
-	editTitle = strings.TrimSpace(editTitle)
-	editDescription = strings.TrimSpace(editDescription)
-	editAuthor = strings.TrimSpace(editAuthor)
+	editTitle = helpers.Sanitize(strings.TrimSpace(editTitle))
+	editDescription = helpers.Sanitize(strings.TrimSpace(editDescription))
+	editAuthor = helpers.Sanitize(strings.TrimSpace(editAuthor))
 	editTags = []string{}
 
 	for _, tag := range strings.Split(editTagsString, ",") {
 		if strings.TrimSpace(tag) != "" {
-			editTags = append(editTags, strings.TrimSpace(tag))
+			editTags = append(editTags, helpers.Sanitize(strings.TrimSpace(tag)))
 		}
 	}
 

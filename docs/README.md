@@ -4,8 +4,10 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/PossibleLlama/worklog)](https://goreportcard.com/report/github.com/PossibleLlama/worklog)
 
-Intented to be a quick productivity CLI tool, to track what you
+Intended to be a quick productivity CLI tool, to track what you
 have done each day.
+
+Any HTML provided will be removed.
 
 ## Supported versions
 
@@ -15,10 +17,10 @@ have done each day.
 
 To install worklog, you can download the latest version from
 [github][GithubReleases], choose version you want, unzip the
-folder, and add the approperiate binary for your machine, to
+folder, and add the appropriate binary for your machine, to
 a location on your machines PATH.
 
-There is both a windows executeable, as well as a linux binary.
+There is both a windows executable, as well as a linux binary.
 
 ### Linux
 
@@ -41,7 +43,7 @@ worklog --config "/path/to/config" <command>
 If you store the configuration file somewhere other than
 `$HOME/.worklog/config.yaml`, you will need to specify where, via
 this flag.
-It will have to be provided everytime you use this, as such, if
+It will have to be provided every time you use this, as such, if
 you want to permanently use another location, setting this as an
 alias will likely be most useful.
 
@@ -104,7 +106,7 @@ You can specify further fields as you want to.
 - `--duration 30` How long the work took. This can be any unit of
   measurement that suits you. This will override the default value
   in the config file.
-- `--tags "buzz, bang"` A comma seperate list of tags to describe
+- `--tags "buzz, bang"` A comma separate list of tags to describe
   the work.
 - `--when "2000/12/31"` Timestamp of when the work was done. This
   should be in [RFC3339] format, either just the date, or datetime.
@@ -137,7 +139,7 @@ worklogs.
 The revision and createdAt fields will automatically be updated when
 editing and can't be specified.
 
-Any specified fields will be merged into the existing work overwritting
+Any specified fields will be merged into the existing work overwriting
 previous fields.
 
 Any blank `--title ""` fields will be ignored, and all strings have
@@ -156,7 +158,7 @@ You can specify further fields as you want to.
 - `--duration 30` How long the work took. This can be any unit of
   measurement that suits you. This will override the default value
   in the config file.
-- `--tags "buzz, bang"` A comma seperate list of tags to describe
+- `--tags "buzz, bang"` A comma separate list of tags to describe
   the work.
 - `--when "2000/12/31"` Timestamp of when the work was done. This
   should be in [RFC3339] format, either just the date, or datetime.

@@ -177,6 +177,50 @@ func TestCreateArgs(t *testing.T) {
 			whenString:  helpers.RandAlphabeticString(shortLength),
 			when:        time.Time{},
 			expErr:      errors.New("Could not find format for \""),
+		}, {
+			name:        "XSS title",
+			title:       xssHtmlOpen + helpers.RandAlphabeticString(shortLength) + xssHtmlClose,
+			description: helpers.RandAlphabeticString(shortLength),
+			author:      helpers.RandAlphabeticString(shortLength),
+			duration:    shortLength,
+			tagsString:  "alpha, beta",
+			tags:        []string{"alpha", "beta"},
+			whenString:  now.Format(time.RFC3339),
+			when:        now,
+			expErr:      nil,
+		}, {
+			name:        "XSS description",
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: xssHtmlOpen + helpers.RandAlphabeticString(shortLength) + xssHtmlClose,
+			author:      helpers.RandAlphabeticString(shortLength),
+			duration:    shortLength,
+			tagsString:  "alpha, beta",
+			tags:        []string{"alpha", "beta"},
+			whenString:  now.Format(time.RFC3339),
+			when:        now,
+			expErr:      nil,
+		}, {
+			name:        "XSS author",
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength),
+			author:      xssHtmlOpen + helpers.RandAlphabeticString(shortLength) + xssHtmlClose,
+			duration:    shortLength,
+			tagsString:  "alpha, beta",
+			tags:        []string{"alpha", "beta"},
+			whenString:  now.Format(time.RFC3339),
+			when:        now,
+			expErr:      nil,
+		}, {
+			name:        "XSS tags",
+			title:       helpers.RandAlphabeticString(shortLength),
+			description: helpers.RandAlphabeticString(shortLength),
+			author:      helpers.RandAlphabeticString(shortLength),
+			duration:    shortLength,
+			tagsString:  xssHtmlOpen + "alpha, beta" + xssHtmlClose,
+			tags:        []string{"alpha", "beta"},
+			whenString:  now.Format(time.RFC3339),
+			when:        now,
+			expErr:      nil,
 		},
 	}
 
@@ -198,9 +242,9 @@ func TestCreateArgs(t *testing.T) {
 				assert.Contains(t, actualErr.Error(), testItem.expErr.Error())
 			}
 
-			assert.Equal(t, strings.TrimSpace(testItem.title), createTitle)
-			assert.Equal(t, strings.TrimSpace(testItem.description), createDescription)
-			assert.Equal(t, strings.TrimSpace(testItem.author), createAuthor)
+			assert.Equal(t, helpers.Sanitize(strings.TrimSpace(testItem.title)), createTitle)
+			assert.Equal(t, helpers.Sanitize(strings.TrimSpace(testItem.description)), createDescription)
+			assert.Equal(t, helpers.Sanitize(strings.TrimSpace(testItem.author)), createAuthor)
 
 			if testItem.duration >= 0 {
 				assert.Equal(t, testItem.duration, createDuration)
@@ -228,7 +272,7 @@ func TestCreateArgsWhen(t *testing.T) {
 			defaultDuration,
 			"")
 		actualErr := createArgs()
-		assert.Nil(t, actualErr, "An error occured when creating without args")
+		assert.Nil(t, actualErr, "An error occurred when creating without args")
 
 		noWhen := createWhen
 
@@ -248,7 +292,7 @@ func TestCreateArgsWhen(t *testing.T) {
 			defaultDuration,
 			"")
 		actualErr = createArgs()
-		assert.Nil(t, actualErr, "An error occured when creating with args")
+		assert.Nil(t, actualErr, "An error occurred when creating with args")
 
 		// TODO I hate timezones
 		assert.Equal(t, noWhen.UTC(), createWhen.UTC())

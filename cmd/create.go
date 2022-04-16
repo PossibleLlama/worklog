@@ -44,17 +44,17 @@ func createArgs() error {
 	if createDuration <= -1 {
 		createDuration = viper.GetInt("default.duration")
 	}
-	createTitle = strings.TrimSpace(createTitle)
-	createDescription = strings.TrimSpace(createDescription)
-	createAuthor = strings.TrimSpace(createAuthor)
+	createTitle = helpers.Sanitize(strings.TrimSpace(createTitle))
+	createDescription = helpers.Sanitize(strings.TrimSpace(createDescription))
+	createAuthor = helpers.Sanitize(strings.TrimSpace(createAuthor))
 
 	if createAuthor == "" {
-		createAuthor = viper.GetString("default.author")
+		createAuthor = helpers.Sanitize(viper.GetString("default.author"))
 	}
 
 	for _, tag := range strings.Split(createTagsString, ",") {
 		if strings.TrimSpace(tag) != "" {
-			createTags = append(createTags, strings.TrimSpace(tag))
+			createTags = append(createTags, helpers.Sanitize(strings.TrimSpace(tag)))
 		}
 	}
 
