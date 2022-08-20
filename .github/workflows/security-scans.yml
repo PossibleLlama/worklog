@@ -9,12 +9,12 @@ jobs:
     steps:
 
     - name: Set up Go 1.x
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
         go-version: ^1.19
 
     - name: Check out code into the Go module directory
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Write Go List
       run: go list -json -m all > go.list
@@ -30,7 +30,7 @@ jobs:
     steps:
 
       - name: Checkout Source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Run Gosec Security Scanner
         uses: securego/gosec@master
