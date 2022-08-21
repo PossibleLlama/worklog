@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Check out
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Push tag
       uses: mathieudutour/github-tag-action@v5.3
