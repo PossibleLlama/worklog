@@ -1,4 +1,4 @@
-package cmd
+package cli
 
 const (
 	shortLength = 30

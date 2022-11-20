@@ -12,7 +12,7 @@ test-repeat:
 
 test-unit:
 	@echo "Running unit tests"
-	go test $(ARGS) ./cmd ./helpers ./model ./repository ./service
+	go test $(ARGS) ./cli ./helpers ./model ./repository ./service
 	@echo "Unit tests passed"
 
 test-e2e:
@@ -39,7 +39,7 @@ format:
 
 build:
 	@echo "Building to $(DIR)"
-	@go build -ldflags="-w -s" -o "$(DIR)/$(BIN_NAME)" main.go
+	@go build -ldflags="-w -s" -o "$(DIR)/$(BIN_NAME)" exec/cli/main.go
 	@echo "Built to $(DIR)"
 
 build-local:
