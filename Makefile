@@ -40,6 +40,7 @@ format:
 build:
 	@echo "Building to $(DIR)"
 	@go build -ldflags="-w -s" -o "$(DIR)/$(BIN_NAME)" exec/cli/main.go
+	@go build -ldflags="-w -s" -o "$(DIR)/$(BIN_NAME)-server" exec/server/main.go
 	@echo "Built to $(DIR)"
 
 build-local:
@@ -59,4 +60,4 @@ deps:
 
 clean:
 	@echo "Cleaning"
-	@rm -rf dist/ ./e2e/$(BIN_NAME)
+	@rm -rf dist/ ./e2e/$(BIN_NAME) ./e2e/$(BIN_NAME)-server
