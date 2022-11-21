@@ -24,6 +24,9 @@ func NewWorklogService(repository repository.WorklogRepository) WorklogService {
 
 func (*service) CreateWorklog(wl *model.Work) (int, error) {
 	wl.Tags = helpers.DeduplicateString(wl.Tags)
+	if wl.When.IsZero() {
+		wl.When = wl.CreatedAt
+	}
 	if err := repo.Save(wl); err != nil {
 		return http.StatusInternalServerError, err
 	}
