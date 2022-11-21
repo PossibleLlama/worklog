@@ -254,7 +254,7 @@ func TestEditWorklog(t *testing.T) {
 		svc := NewWorklogService(mockRepo)
 
 		t.Run(testItem.name, func(t *testing.T) {
-			returnedCode, returnedErr := svc.EditWorklog(id, testItem.newWl)
+			_, returnedCode, returnedErr := svc.EditWorklog(id, testItem.newWl)
 
 			assert.Equal(t, returnedErr, testItem.expErr)
 			assert.Equal(t, testItem.expCode, returnedCode)

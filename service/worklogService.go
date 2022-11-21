@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	e "github.com/PossibleLlama/worklog/errors"
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
 	"github.com/PossibleLlama/worklog/repository"
@@ -53,25 +54,25 @@ func (*service) CreateWorklog(wl *model.Work) (int, error) {
 	return http.StatusCreated, nil
 }
 
-func (s *service) EditWorklog(id string, newWl *model.Work) (int, error) {
+func (s *service) EditWorklog(id string, newWl *model.Work) (*model.Work, int, error) {
 	newWl.Tags = helpers.DeduplicateString(newWl.Tags)
 	wls, code, err := s.GetWorklogsByID(&model.Work{}, id)
 	if err != nil {
-		return code, err
+		return nil, code, err
 	}
 	// The get returns 1 WL per ID, as we are only
 	// passing one ID, there is only one possible WL
 	if len(wls) == 0 {
-		return http.StatusNotFound, nil
+		return nil, http.StatusNotFound, nil
 	}
 
 	wl := wls[0]
 	wl.Update(*newWl)
 
 	if err := repo.Save(wl); err != nil {
-		return http.StatusInternalServerError, err
+		return nil, http.StatusInternalServerError, err
 	}
-	return http.StatusOK, nil
+	return wl, http.StatusOK, nil
 }
 
 func (*service) GetWorklogsBetween(start, end time.Time, filter *model.Work) ([]*model.Work, int, error) {
