@@ -10,6 +10,7 @@ import (
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
 	"github.com/PossibleLlama/worklog/repository"
+
 	"github.com/spf13/viper"
 )
 
