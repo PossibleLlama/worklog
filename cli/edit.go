@@ -1,4 +1,4 @@
-package cmd
+package cli
 
 import (
 	"errors"
@@ -77,7 +77,7 @@ func editRun(args []string) error {
 		editTags,
 		editWhen)
 	newWl.ID = editID
-	_, err := wlService.EditWorklog(editID, newWl)
+	_, _, err := wlService.EditWorklog(editID, newWl)
 	return err
 }
 

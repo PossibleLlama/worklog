@@ -2,19 +2,33 @@ before:
   hooks:
     - go mod tidy
 builds:
-  - env:
+  - id: cli
+    main: ./exec/cli/main.go
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+  - id: server
+    main: ./exec/server/main.go
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
       - windows
       - darwin
 archives:
-  - replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
-      386: i386
-      amd64: x86_64
+  - id: cli
+    builds:
+      - cli
+    name_template: "{{ .ProjectName }}_cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    wrap_in_directory: true
+  - id: server
+    builds:
+      - server
+    name_template: "{{ .ProjectName }}_server_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    wrap_in_directory: true
 checksum:
   name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
   algorithm: sha256

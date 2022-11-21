@@ -16,11 +16,15 @@ Any HTML provided will be removed.
 ## Installation
 
 To install worklog, you can download the latest version from
-[github][GithubReleases], choose version you want, unzip the
-folder, and add the appropriate binary for your machine, to
-a location on your machines PATH.
+[github][GithubReleases], choose the version you want, unzip
+the directory, and add the appropriate binary for your machine
+to a location on your machines PATH.
 
-There is both a windows executable, as well as a linux binary.
+There are binaries for several platforms, for any others, you
+could download the code separately and build directly.
+
+We also have a server that can be installed in the same way
+as the CLI.
 
 ### Linux
 
@@ -34,7 +38,7 @@ rm worklog-binary.zip
 
 [GithubReleases]: https://github.com/PossibleLlama/worklog/releases
 
-## Global flags
+## CLI - Global flags
 
 ```bash
 worklog --config "/path/to/config" <command>
@@ -269,6 +273,11 @@ will add provided flags into the configuration.
 - `--duration 15` Default duration that a task takes.
 - `--format "json"` Default format to print output.
   Accepts `"pretty"`, `"yaml"` or `"json"`.
+- `--repo "bolt"` String of the repository type.
+  Accepts `"bolt"` or `"legacy"`
+- `--repoPath ".worklog/my-database.db"` Path from
+  the home directory to the database, unless an
+  absolute path is used.
 
 ### Example configure
 
@@ -283,4 +292,32 @@ default:
   author: "Alice"
   duration: 15
   format: "pretty"
+repo:
+  type: bolt
+  path: ".worklog/my-database.db"
 ```
+
+## Server
+
+The server will start by default on port 8080,
+although this can be overridden.
+
+You can create, print and edit worklogs through
+the API.
+
+### Endpoints
+
+- `POST /worklog` - You'll need to provide the
+  same fields as using the CLI, as JSON in the body.
+  The completed model will be returned.
+- `GET /worklog` - Return all worklogs matching
+  the filter.
+  Defaults startDate to epoch, and endDate to 1st
+  Jan 3000.
+  Additional filters are provided through query
+  parameters.
+- `GET /worklog/{id}` - Get a single worklog by
+  the ID.
+- `PUT /worklog/{id}` - Update the single worklog
+  with the ID provided, with any provided fields
+  as JSON in the body.

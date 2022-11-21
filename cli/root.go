@@ -1,4 +1,4 @@
-package cmd
+package cli
 
 import (
 	"fmt"
@@ -20,6 +20,7 @@ var (
 	wlRepo    repository.WorklogRepository
 	wlConfig  repository.ConfigRepository
 )
+
 var (
 	homeDir      string
 	cfgFile      string
@@ -31,7 +32,7 @@ var (
 var rootCmd = &cobra.Command{
 	Use:     "worklog",
 	Version: helpers.Version,
-	Short:   "A productivity tool to track previous work",
+	Short:   "A productivity tool to track work",
 	Long: `A CLI tool to let people track what work they
 have completed. You can record what work you do,
 and get a summary of what you've done each day.

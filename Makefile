@@ -12,7 +12,7 @@ test-repeat:
 
 test-unit:
 	@echo "Running unit tests"
-	go test $(ARGS) ./cmd ./helpers ./model ./repository ./service
+	go test $(ARGS) ./cli ./helpers ./model ./repository ./service
 	@echo "Unit tests passed"
 
 test-e2e:
@@ -28,7 +28,7 @@ test-e2e:
 	commander test ./e2e/create.test.yaml
 	commander test ./e2e/print.test.yaml
 	commander test ./e2e/edit.test.yaml
-	@rm ./e2e/$(BIN_NAME)
+	@make --no-print-directory clean
 	@echo "e2e tests passed"
 
 format:
@@ -39,7 +39,8 @@ format:
 
 build:
 	@echo "Building to $(DIR)"
-	@go build -ldflags="-w -s" -o "$(DIR)/$(BIN_NAME)" main.go
+	@go build -ldflags="-w -s" -o "$(DIR)/$(BIN_NAME)" exec/cli/main.go
+	@go build -ldflags="-w -s" -o "$(DIR)/$(BIN_NAME)-server" exec/server/main.go
 	@echo "Built to $(DIR)"
 
 build-local:
@@ -59,4 +60,4 @@ deps:
 
 clean:
 	@echo "Cleaning"
-	@rm -rf dist/ ./e2e/$(BIN_NAME)
+	@rm -rf dist/ ./e2e/$(BIN_NAME) ./e2e/$(BIN_NAME)-server

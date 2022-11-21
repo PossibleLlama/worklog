@@ -19,9 +19,9 @@ func (m *MockService) CreateWorklog(wl *model.Work) (int, error) {
 }
 
 // EditWorklog WorklogService method for testing
-func (m *MockService) EditWorklog(id string, newWl *model.Work) (int, error) {
+func (m *MockService) EditWorklog(id string, newWl *model.Work) (*model.Work, int, error) {
 	args := m.Called(id, newWl)
-	return args.Int(0), args.Error(1)
+	return nil, args.Int(0), args.Error(1)
 }
 
 // GetWorklogsBetween WorklogService method for testing

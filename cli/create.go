@@ -1,4 +1,4 @@
-package cmd
+package cli
 
 import (
 	"os"
@@ -10,7 +10,6 @@ import (
 	"github.com/PossibleLlama/worklog/model"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var (
@@ -41,20 +40,9 @@ func CreateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func createArgs() error {
-	if createDuration <= -1 {
-		createDuration = viper.GetInt("default.duration")
-	}
-	createTitle = helpers.Sanitize(strings.TrimSpace(createTitle))
-	createDescription = helpers.Sanitize(strings.TrimSpace(createDescription))
-	createAuthor = helpers.Sanitize(strings.TrimSpace(createAuthor))
-
-	if createAuthor == "" {
-		createAuthor = helpers.Sanitize(viper.GetString("default.author"))
-	}
-
 	for _, tag := range strings.Split(createTagsString, ",") {
 		if strings.TrimSpace(tag) != "" {
-			createTags = append(createTags, helpers.Sanitize(strings.TrimSpace(tag)))
+			createTags = append(createTags, tag)
 		}
 	}
 
