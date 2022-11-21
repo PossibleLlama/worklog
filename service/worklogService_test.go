@@ -10,6 +10,7 @@ import (
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
 	"github.com/PossibleLlama/worklog/repository"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -48,6 +49,12 @@ func genWl() *model.Work {
 
 func TestCreateWorklog(t *testing.T) {
 	genedWl := genWl()
+	defaultDur := 15
+	viper.Set("default.duration", defaultDur)
+	defaultAuth := helpers.RandAlphabeticString(30)
+	viper.Set("default.author", defaultAuth)
+	randomStr := helpers.RandAlphabeticString(30)
+	now := time.Now()
 
 	var tests = []struct {
 		name    string
@@ -63,12 +70,84 @@ func TestCreateWorklog(t *testing.T) {
 			expCode: http.StatusCreated,
 			err:     nil,
 		}, {
+			name: "Default duration",
+			wl: &model.Work{
+				Duration: 0,
+			},
+			savedWl: &model.Work{
+				Duration: defaultDur,
+			},
+			expCode: http.StatusCreated,
+			err:     nil,
+		}, {
+			name: "Default author",
+			wl: &model.Work{
+				Author: "",
+			},
+			savedWl: &model.Work{
+				Author: defaultAuth,
+			},
+			expCode: http.StatusCreated,
+			err:     nil,
+		}, {
 			name: "Duplicate tags",
 			wl: &model.Work{
 				Tags: []string{"a", "a", "b", "c", "b"},
 			},
 			savedWl: &model.Work{
 				Tags: []string{"a", "b", "c"},
+			},
+			expCode: http.StatusCreated,
+			err:     nil,
+		}, {
+			name: "Padded title",
+			wl: &model.Work{
+				Title: " " + randomStr,
+			},
+			savedWl: &model.Work{
+				Title: randomStr,
+			},
+			expCode: http.StatusCreated,
+			err:     nil,
+		}, {
+			name: "Padded description",
+			wl: &model.Work{
+				Description: " " + randomStr,
+			},
+			savedWl: &model.Work{
+				Description: randomStr,
+			},
+			expCode: http.StatusCreated,
+			err:     nil,
+		}, {
+			name: "Padded author",
+			wl: &model.Work{
+				Author: " " + randomStr,
+			},
+			savedWl: &model.Work{
+				Author: randomStr,
+			},
+			expCode: http.StatusCreated,
+			err:     nil,
+		}, {
+			name: "Padded tags",
+			wl: &model.Work{
+				Tags: []string{" a", "b\t", "c\n"},
+			},
+			savedWl: &model.Work{
+				Tags: []string{"a", "b", "c"},
+			},
+			expCode: http.StatusCreated,
+			err:     nil,
+		}, {
+			name: "Default When",
+			wl: &model.Work{
+				When:      time.Time{},
+				CreatedAt: now,
+			},
+			savedWl: &model.Work{
+				When:      now,
+				CreatedAt: now,
 			},
 			expCode: http.StatusCreated,
 			err:     nil,

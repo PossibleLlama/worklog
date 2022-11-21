@@ -44,195 +44,145 @@ func setProvidedCreateRunValues(id, title, description, author string, when time
 
 func TestCreateArgs(t *testing.T) {
 	now, _ := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	randTitle := helpers.RandAlphabeticString(shortLength)
+	randDesc := helpers.RandAlphabeticString(shortLength)
+	randAuth := helpers.RandAlphabeticString(shortLength)
+	randTagA := helpers.RandAlphabeticString(shortLength)
+	randTagB := helpers.RandAlphabeticString(shortLength)
+
 	var tests = []struct {
-		name        string
-		title       string
-		description string
-		author      string
-		duration    int
-		tagsString  string
-		tags        []string
-		whenString  string
-		when        time.Time
-		expErr      error
+		name             string
+		inputTitle       string
+		expTitle         string
+		inputDescription string
+		expDescription   string
+		inputAuthor      string
+		expAuthor        string
+		inputDuration    int
+		expDuration      int
+		inputTags        string
+		expTags          []string
+		inputWhen        string
+		expWhen          time.Time
+		expErr           error
 	}{
 		{
-			name:        "Variables take defaults",
-			title:       helpers.RandAlphabeticString(shortLength),
-			description: helpers.RandAlphabeticString(shortLength),
-			author:      helpers.RandAlphabeticString(shortLength),
-			duration:    shortLength,
-			tagsString:  "alpha, beta",
-			tags:        []string{"alpha", "beta"},
-			whenString:  now.Format(time.RFC3339),
-			when:        now,
-			expErr:      nil,
+			name:             "Uses inputs",
+			inputTitle:       randTitle,
+			expTitle:         randTitle,
+			inputDescription: randDesc,
+			expDescription:   randDesc,
+			inputAuthor:      randAuth,
+			expAuthor:        randAuth,
+			inputDuration:    shortLength,
+			expDuration:      shortLength,
+			inputTags:        randTagA + "," + randTagB,
+			expTags:          []string{randTagA, randTagB},
+			inputWhen:        now.Format(time.RFC3339),
+			expWhen:          now,
+			expErr:           nil,
 		}, {
-			name:        "Negative duration",
-			title:       helpers.RandAlphabeticString(shortLength),
-			description: helpers.RandAlphabeticString(shortLength),
-			author:      helpers.RandAlphabeticString(shortLength),
-			duration:    -1,
-			tagsString:  "1, 2",
-			tags:        []string{"1", "2"},
-			whenString:  now.Format(time.RFC3339),
-			when:        now,
-			expErr:      nil,
+			name:             "Negative duration",
+			inputTitle:       randTitle,
+			expTitle:         randTitle,
+			inputDescription: randDesc,
+			expDescription:   randDesc,
+			inputAuthor:      randAuth,
+			expAuthor:        randAuth,
+			inputDuration:    -1,
+			expDuration:      -1,
+			inputTags:        randTagA + "," + randTagB,
+			expTags:          []string{randTagA, randTagB},
+			inputWhen:        now.Format(time.RFC3339),
+			expWhen:          now,
+			expErr:           nil,
 		}, {
-			name:        "Padded title",
-			title:       "\n" + helpers.RandAlphabeticString(shortLength),
-			description: helpers.RandAlphabeticString(shortLength),
-			author:      helpers.RandAlphabeticString(shortLength),
-			duration:    -1,
-			tagsString:  "1, 2",
-			tags:        []string{"1", "2"},
-			whenString:  now.Format(time.RFC3339),
-			when:        now,
-			expErr:      nil,
+			name:             "Empty author stays empty",
+			inputTitle:       randTitle,
+			expTitle:         randTitle,
+			inputDescription: randDesc,
+			expDescription:   randDesc,
+			inputAuthor:      "",
+			expAuthor:        "",
+			inputDuration:    shortLength,
+			expDuration:      shortLength,
+			inputTags:        randTagA + "," + randTagB,
+			expTags:          []string{randTagA, randTagB},
+			inputWhen:        now.Format(time.RFC3339),
+			expWhen:          now,
+			expErr:           nil,
 		}, {
-			name:        "Padded description",
-			title:       helpers.RandAlphabeticString(shortLength),
-			description: helpers.RandAlphabeticString(shortLength) + " ",
-			author:      helpers.RandAlphabeticString(shortLength),
-			duration:    longLength,
-			tagsString:  "1, 2",
-			tags:        []string{"1", "2"},
-			whenString:  now.Format(time.RFC3339),
-			when:        now,
-			expErr:      nil,
+			name:             "Empty tags",
+			inputTitle:       randTitle,
+			expTitle:         randTitle,
+			inputDescription: randDesc,
+			expDescription:   randDesc,
+			inputAuthor:      randAuth,
+			expAuthor:        randAuth,
+			inputDuration:    shortLength,
+			expDuration:      shortLength,
+			inputTags:        "",
+			expTags:          []string{},
+			inputWhen:        now.Format(time.RFC3339),
+			expWhen:          now,
+			expErr:           nil,
 		}, {
-			name:        "Empty author uses default",
-			title:       helpers.RandAlphabeticString(shortLength),
-			description: helpers.RandAlphabeticString(shortLength),
-			author:      "",
-			duration:    longLength,
-			tagsString:  "1, 2",
-			tags:        []string{"1", "2"},
-			whenString:  now.Format(time.RFC3339),
-			when:        now,
-			expErr:      nil,
+			name:             "Whitespace tags",
+			inputTitle:       randTitle,
+			expTitle:         randTitle,
+			inputDescription: randDesc,
+			expDescription:   randDesc,
+			inputAuthor:      randAuth,
+			expAuthor:        randAuth,
+			inputDuration:    shortLength,
+			expDuration:      shortLength,
+			inputTags:        " ,\t",
+			expTags:          []string{},
+			inputWhen:        now.Format(time.RFC3339),
+			expWhen:          now,
+			expErr:           nil,
 		}, {
-			name:        "Padded author",
-			title:       helpers.RandAlphabeticString(shortLength),
-			description: helpers.RandAlphabeticString(shortLength),
-			author:      helpers.RandAlphabeticString(shortLength) + " ",
-			duration:    longLength,
-			tagsString:  "1, 2",
-			tags:        []string{"1", "2"},
-			whenString:  now.Format(time.RFC3339),
-			when:        now,
-			expErr:      nil,
+			name:             "Single character tag",
+			inputTitle:       randTitle,
+			expTitle:         randTitle,
+			inputDescription: randDesc,
+			expDescription:   randDesc,
+			inputAuthor:      randAuth,
+			expAuthor:        randAuth,
+			inputDuration:    shortLength,
+			expDuration:      shortLength,
+			inputTags:        "1",
+			expTags:          []string{"1"},
+			inputWhen:        now.Format(time.RFC3339),
+			expWhen:          now,
+			expErr:           nil,
 		}, {
-			name:        "Empty tags",
-			title:       helpers.RandAlphabeticString(shortLength),
-			description: helpers.RandAlphabeticString(shortLength),
-			author:      helpers.RandAlphabeticString(shortLength),
-			duration:    longLength,
-			tagsString:  "",
-			tags:        []string{},
-			whenString:  now.Format(time.RFC3339),
-			when:        now,
-			expErr:      nil,
-		}, {
-			name:        "Whitespace tags",
-			title:       helpers.RandAlphabeticString(shortLength),
-			description: helpers.RandAlphabeticString(shortLength),
-			author:      helpers.RandAlphabeticString(shortLength),
-			duration:    longLength,
-			tagsString:  " ,\t",
-			tags:        []string{},
-			whenString:  now.Format(time.RFC3339),
-			when:        now,
-			expErr:      nil,
-		}, {
-			name:        "Single character tags",
-			title:       helpers.RandAlphabeticString(shortLength),
-			description: helpers.RandAlphabeticString(shortLength),
-			author:      helpers.RandAlphabeticString(shortLength),
-			duration:    longLength,
-			tagsString:  "1, ",
-			tags:        []string{"1"},
-			whenString:  now.Format(time.RFC3339),
-			when:        now,
-			expErr:      nil,
-		}, {
-			name:        "Padded when",
-			title:       helpers.RandAlphabeticString(shortLength),
-			description: helpers.RandAlphabeticString(shortLength),
-			author:      helpers.RandAlphabeticString(shortLength),
-			duration:    longLength,
-			tagsString:  "1, 2",
-			tags:        []string{"1", "2"},
-			whenString:  "\t" + now.Format(time.RFC3339),
-			when:        now,
-			expErr:      nil,
-		}, {
-			name:        "Invalid when",
-			title:       helpers.RandAlphabeticString(shortLength),
-			description: helpers.RandAlphabeticString(shortLength),
-			author:      helpers.RandAlphabeticString(shortLength),
-			duration:    longLength,
-			tagsString:  "1, 2",
-			tags:        []string{"1", "2"},
-			whenString:  helpers.RandAlphabeticString(shortLength),
-			when:        time.Time{},
-			expErr:      errors.New("Could not find format for \""),
-		}, {
-			name:        "XSS title",
-			title:       xssHtmlOpen + helpers.RandAlphabeticString(shortLength) + xssHtmlClose,
-			description: helpers.RandAlphabeticString(shortLength),
-			author:      helpers.RandAlphabeticString(shortLength),
-			duration:    shortLength,
-			tagsString:  "alpha, beta",
-			tags:        []string{"alpha", "beta"},
-			whenString:  now.Format(time.RFC3339),
-			when:        now,
-			expErr:      nil,
-		}, {
-			name:        "XSS description",
-			title:       helpers.RandAlphabeticString(shortLength),
-			description: xssHtmlOpen + helpers.RandAlphabeticString(shortLength) + xssHtmlClose,
-			author:      helpers.RandAlphabeticString(shortLength),
-			duration:    shortLength,
-			tagsString:  "alpha, beta",
-			tags:        []string{"alpha", "beta"},
-			whenString:  now.Format(time.RFC3339),
-			when:        now,
-			expErr:      nil,
-		}, {
-			name:        "XSS author",
-			title:       helpers.RandAlphabeticString(shortLength),
-			description: helpers.RandAlphabeticString(shortLength),
-			author:      xssHtmlOpen + helpers.RandAlphabeticString(shortLength) + xssHtmlClose,
-			duration:    shortLength,
-			tagsString:  "alpha, beta",
-			tags:        []string{"alpha", "beta"},
-			whenString:  now.Format(time.RFC3339),
-			when:        now,
-			expErr:      nil,
-		}, {
-			name:        "XSS tags",
-			title:       helpers.RandAlphabeticString(shortLength),
-			description: helpers.RandAlphabeticString(shortLength),
-			author:      helpers.RandAlphabeticString(shortLength),
-			duration:    shortLength,
-			tagsString:  xssHtmlOpen + "alpha, beta" + xssHtmlClose,
-			tags:        []string{"alpha", "beta"},
-			whenString:  now.Format(time.RFC3339),
-			when:        now,
-			expErr:      nil,
+			name:             "Invalid when",
+			inputTitle:       randTitle,
+			expTitle:         randTitle,
+			inputDescription: randDesc,
+			expDescription:   randDesc,
+			inputAuthor:      randAuth,
+			expAuthor:        randAuth,
+			inputDuration:    shortLength,
+			expDuration:      shortLength,
+			inputTags:        randTagA + "," + randTagB,
+			expTags:          []string{randTagA, randTagB},
+			inputWhen:        helpers.RandAlphabeticString(shortLength),
+			expWhen:          time.Time{},
+			expErr:           errors.New("Could not find format for \""),
 		},
 	}
 
 	for _, testItem := range tests {
 		t.Run(testItem.name, func(t *testing.T) {
 			setProvidedCreateArgValues(
-				testItem.title,
-				testItem.description,
-				testItem.author,
-				testItem.whenString,
-				testItem.duration,
-				testItem.tagsString)
+				testItem.inputTitle,
+				testItem.inputDescription,
+				testItem.inputAuthor,
+				testItem.inputWhen,
+				testItem.inputDuration,
+				testItem.inputTags)
 
 			actualErr := createArgs()
 
@@ -242,19 +192,14 @@ func TestCreateArgs(t *testing.T) {
 				assert.Contains(t, actualErr.Error(), testItem.expErr.Error())
 			}
 
-			assert.Equal(t, helpers.Sanitize(strings.TrimSpace(testItem.title)), createTitle)
-			assert.Equal(t, helpers.Sanitize(strings.TrimSpace(testItem.description)), createDescription)
-			assert.Equal(t, helpers.Sanitize(strings.TrimSpace(testItem.author)), createAuthor)
-
-			if testItem.duration >= 0 {
-				assert.Equal(t, testItem.duration, createDuration)
-			} else {
-				assert.Equal(t, 0, createDuration)
-			}
-			assert.Equal(t, testItem.tagsString, createTagsString)
-			assert.Equal(t, testItem.tags, createTags)
-			assert.Equal(t, testItem.whenString, createWhenString)
-			assert.Equal(t, testItem.when, createWhen)
+			assert.Equal(t, testItem.expTitle, createTitle)
+			assert.Equal(t, testItem.expDescription, createDescription)
+			assert.Equal(t, testItem.expAuthor, createAuthor)
+			assert.Equal(t, testItem.expDuration, createDuration)
+			assert.Equal(t, testItem.inputTags, createTagsString)
+			assert.Equal(t, testItem.expTags, createTags)
+			assert.Equal(t, testItem.inputWhen, createWhenString)
+			assert.Equal(t, testItem.expWhen, createWhen)
 		})
 	}
 }

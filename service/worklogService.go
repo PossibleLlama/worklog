@@ -3,11 +3,13 @@ package service
 import (
 	"net/http"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/model"
 	"github.com/PossibleLlama/worklog/repository"
+	"github.com/spf13/viper"
 )
 
 type service struct{}
@@ -23,6 +25,24 @@ func NewWorklogService(repository repository.WorklogRepository) WorklogService {
 }
 
 func (*service) CreateWorklog(wl *model.Work) (int, error) {
+	if wl.Duration <= 0 {
+		wl.Duration = viper.GetInt("default.duration")
+	}
+	wl.Title = helpers.Sanitize(strings.TrimSpace(wl.Title))
+	wl.Description = helpers.Sanitize(strings.TrimSpace(wl.Description))
+	wl.Author = helpers.Sanitize(strings.TrimSpace(wl.Author))
+
+	cleanTags := make([]string, 0)
+	for _, tag := range wl.Tags {
+		if strings.TrimSpace(tag) != "" {
+			cleanTags = append(cleanTags, helpers.Sanitize(strings.TrimSpace(tag)))
+		}
+	}
+	wl.Tags = cleanTags
+	if wl.Author == "" {
+		wl.Author = helpers.Sanitize(viper.GetString("default.author"))
+	}
+
 	wl.Tags = helpers.DeduplicateString(wl.Tags)
 	if wl.When.IsZero() {
 		wl.When = wl.CreatedAt

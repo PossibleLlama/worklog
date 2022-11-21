@@ -32,7 +32,10 @@ func Create(resp http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		helpers.LogError(fmt.Sprintf("failed to create work. %s", err.Error()), "create")
 	}
+	err = json.NewEncoder(resp).Encode(wl)
+	if err != nil {
+		helpers.LogError("failed to encode work", "create")
+	}
 	resp.Header().Add("Content-Type", "application/json; charset=utf-8")
 	resp.WriteHeader(status)
-	json.NewEncoder(resp).Encode(wl)
 }
