@@ -100,6 +100,9 @@ func (*service) GetWorklogsByID(filter *model.Work, ids ...string) ([]*model.Wor
 		// Implement using goroutines and channels
 		wl, err := repo.GetByID(ID, filter)
 		if err != nil {
+			if err.Error() == e.RepoGetSingleFileAmbiguous {
+				return worklogs, http.StatusNotFound, nil
+			}
 			return worklogs, http.StatusInternalServerError, err
 		}
 		if wl != nil {

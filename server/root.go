@@ -21,7 +21,8 @@ import (
 )
 
 const (
-	PATH = "/worklog"
+	PATH    = "/worklog"
+	ID_PATH = PATH + "/{id}"
 )
 
 var (
@@ -68,9 +69,10 @@ func startServer() {
 
 	httpRouter.NotFoundHandler = http.HandlerFunc(NotFound)
 	httpRouter.MethodNotAllowedHandler = http.HandlerFunc(InvalidMethod)
-	httpRouter.HandleFunc(PATH, Print).Methods(http.MethodGet)
 	httpRouter.HandleFunc(PATH, Create).Methods(http.MethodPost)
-	httpRouter.HandleFunc(PATH, Edit).Methods(http.MethodPut)
+	httpRouter.HandleFunc(PATH, Print).Methods(http.MethodGet)
+	httpRouter.HandleFunc(ID_PATH, PrintSingle).Methods(http.MethodGet)
+	httpRouter.HandleFunc(ID_PATH, Edit).Methods(http.MethodPut)
 
 	server := &http.Server{
 		Addr:              fmt.Sprintf("0.0.0.0:%d", port),
