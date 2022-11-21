@@ -28,7 +28,7 @@ test-e2e:
 	commander test ./e2e/create.test.yaml
 	commander test ./e2e/print.test.yaml
 	commander test ./e2e/edit.test.yaml
-	@rm ./e2e/$(BIN_NAME)
+	@make --no-print-directory clean
 	@echo "e2e tests passed"
 
 format:
