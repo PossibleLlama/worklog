@@ -1,10 +1,10 @@
 name: "On commit to main"
 
-on: push
-  # workflow_run:
-    # workflows: ["On commit"]
-    # branches: [main]
-    # types: [completed]
+on:
+  workflow_run:
+    workflows: ["On commit"]
+    branches: [main]
+    types: [completed]
 
 jobs:
   binaries:
