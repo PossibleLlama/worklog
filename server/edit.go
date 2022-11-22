@@ -12,7 +12,6 @@ import (
 )
 
 func Edit(resp http.ResponseWriter, req *http.Request) {
-	resp.Header().Add("Content-Type", "application/json; charset=utf-8")
 	var body model.Work
 
 	err := json.NewDecoder(req.Body).Decode(&body)
