@@ -14,8 +14,6 @@ import (
 )
 
 func Print(resp http.ResponseWriter, req *http.Request) {
-	resp.Header().Add("Content-Type", "application/json; charset=utf-8")
-
 	var startDate, endDate time.Time
 	var err error
 	startDateString := req.URL.Query().Get("startDate")
@@ -68,7 +66,6 @@ func Print(resp http.ResponseWriter, req *http.Request) {
 }
 
 func PrintSingle(resp http.ResponseWriter, req *http.Request) {
-	resp.Header().Add("Content-Type", "application/json; charset=utf-8")
 	ret, status, err := wlService.GetWorklogsByID(&model.Work{}, mux.Vars(req)["id"])
 	resp.WriteHeader(status)
 

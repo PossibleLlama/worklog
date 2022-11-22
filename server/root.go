@@ -68,12 +68,15 @@ func Execute() {
 func startServer() {
 	helpers.LogInfo(fmt.Sprintf("server starting on port %d\n", port), "startup")
 
+	httpRouter.Use(SetDefaultHeadersMiddleware)
+
 	httpRouter.NotFoundHandler = http.HandlerFunc(NotFound)
 	httpRouter.MethodNotAllowedHandler = http.HandlerFunc(InvalidMethod)
 	httpRouter.HandleFunc(PATH, Create).Methods(http.MethodPost)
 	httpRouter.HandleFunc(PATH, Print).Methods(http.MethodGet)
 	httpRouter.HandleFunc(ID_PATH, PrintSingle).Methods(http.MethodGet)
 	httpRouter.HandleFunc(ID_PATH, Edit).Methods(http.MethodPut)
+	httpRouter.HandleFunc("/", CORS).Methods(http.MethodOptions)
 
 	server := &http.Server{
 		Addr:              fmt.Sprintf("0.0.0.0:%d", port),
