@@ -15,6 +15,7 @@ import (
 	"github.com/PossibleLlama/worklog/helpers"
 	"github.com/PossibleLlama/worklog/repository"
 	"github.com/PossibleLlama/worklog/service"
+	"github.com/rs/cors"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
@@ -76,7 +77,11 @@ func startServer() {
 	httpRouter.HandleFunc(PATH, Print).Methods(http.MethodGet)
 	httpRouter.HandleFunc(ID_PATH, PrintSingle).Methods(http.MethodGet)
 	httpRouter.HandleFunc(ID_PATH, Edit).Methods(http.MethodPut)
-	httpRouter.HandleFunc("/", CORS).Methods(http.MethodOptions)
+
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{http.MethodGet, http.MethodPost, http.MethodPut},
+	})
 
 	server := &http.Server{
 		Addr:              fmt.Sprintf("0.0.0.0:%d", port),
@@ -84,7 +89,7 @@ func startServer() {
 		ReadTimeout:       time.Second * 5,
 		ReadHeaderTimeout: time.Second * 5,
 		IdleTimeout:       time.Second * 20,
-		Handler:           httpRouter,
+		Handler:           c.Handler(httpRouter),
 	}
 
 	go func() {
