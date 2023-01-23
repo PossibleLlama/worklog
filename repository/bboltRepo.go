@@ -54,11 +54,14 @@ func (*bboltRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *model
 	defer db.Close()
 
 	sel := q.And(
-		q.Gte("When", startDate),
-		q.Lt("When", endDate),
+		q.Gte("WhenQueryEpoch", startDate.Unix()),
+		q.Lt("WhenQueryEpoch", endDate.Unix()),
 		filterQuery(filter),
 	)
-	viewErr := db.Select(sel).OrderBy("When").Find(&foundWls)
+	viewErr := db.Select(sel).OrderBy("WhenQueryEpoch").Find(&foundWls)
+	if viewErr != nil && viewErr != storm.ErrNotFound {
+		return nil, errors.New("failed to get from db between dates")
+	}
 
 	for _, el := range foundWls {
 		if filterByTags(filter, el) {

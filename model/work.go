@@ -25,8 +25,8 @@ type Work struct {
 	Author         string    `json:"author,omitempty" yaml:"author,omitempty"`
 	Duration       int       `json:"duration" yaml:"duration"`
 	Tags           []string  `json:"tags,omitempty" yaml:"tags,omitempty"`
-	When           time.Time `json:"when" yaml:"when" storm:"index"`
-	WhenQueryEpoch int64     `json:"-"`
+	When           time.Time `json:"when" yaml:"when"`
+	WhenQueryEpoch int64     `json:"whenEpoch" yaml:"whenEpoch" storm:"index"`
 	CreatedAt      time.Time `json:"createdAt" yaml:"createdAt"`
 }
 
