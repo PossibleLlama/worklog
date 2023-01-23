@@ -35,6 +35,10 @@ func NewYamlConfig(dir string) ConfigRepository {
 	return &yamlFileRepo{}
 }
 
+func (*yamlFileRepo) Init() error {
+	return nil
+}
+
 func (*yamlFileRepo) SaveConfig(cfg *model.Config) error {
 	if err := createDirectory(configDir); err != nil {
 		return fmt.Errorf("%s %s. %s", e.RepoCreateDirectory, configDir, err.Error())

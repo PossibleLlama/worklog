@@ -18,6 +18,11 @@ func (m *MockRepo) SaveConfig(cfg *model.Config) error {
 	return args.Error(0)
 }
 
+func (m *MockRepo) Init() error {
+	args := m.Called()
+	return args.Error(0)
+}
+
 // Save WorklogRepository method for testing
 func (m *MockRepo) Save(wl *model.Work) error {
 	args := m.Called(wl)

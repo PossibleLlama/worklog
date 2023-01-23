@@ -67,7 +67,7 @@ func TestConfigRun(t *testing.T) {
 			rPath:    "/tmp/foo",
 			expErr:   nil,
 		}, {
-			name:     "Error propogated",
+			name:     "Error propagated",
 			author:   helpers.RandAlphabeticString(shortLength),
 			duration: shortLength,
 			format:   "yaml",
@@ -89,7 +89,12 @@ func TestConfigRun(t *testing.T) {
 
 		mockRepo := new(repository.MockRepo)
 		mockRepo.On("SaveConfig", cfg).Return(testItem.expErr)
+		if testItem.expErr == nil {
+			mockRepo.On("Init").Return(nil)
+		}
+
 		wlConfig = mockRepo
+		wlRepo = mockRepo
 
 		t.Run(testItem.name, func(t *testing.T) {
 			setProvidedConfigureValues(

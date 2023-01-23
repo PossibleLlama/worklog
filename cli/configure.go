@@ -70,6 +70,9 @@ func configRun() error {
 		return err
 	}
 	helpers.LogInfo("Successfully configured", "configure - saved config")
+
+	wlRepo.Init()
+	helpers.LogInfo("Successfully updated existing", "configure - updated db")
 	return nil
 }
 

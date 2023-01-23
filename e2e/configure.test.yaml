@@ -7,24 +7,29 @@ tests:
   configure root:
     command: ./worklog configure
     stdout:
-      line-count: 1
-      exactly: "Successfully configured"
+      line-count: 3
+      lines:
+        1: "Successfully configured"
+        3: "Successfully updated existing"
     exit-code: 0
 
   change config to different but valid path:
     command: ./worklog --config "/tmp/config.yaml" configure
     stdout:
-      line-count: 2
+      line-count: 4
       lines:
         1: "Unable to use config file: '/tmp/config.yaml'. open /tmp/config.yaml: no such file or directory"
         2: "Successfully configured"
+        4: "Successfully updated existing"
     exit-code: 0
 
   change default values - stdout:
     command: ./worklog configure overrideDefaults --author "Alice" --duration 5 --format "pretty" --repo "bolt" --repoPath "/tmp/e2e.db"
     stdout:
-      line-count: 1
-      exactly: "Successfully configured"
+      line-count: 2
+      lines:
+        1: "Successfully configured"
+        2: "Successfully updated existing"
     exit-code: 0
 
   change default values - check file contents:
@@ -45,22 +50,28 @@ tests:
   change default values - format pretty:
     command: ./worklog configure overrideDefaults --format "pretty"
     stdout:
-      line-count: 1
-      exactly: "Successfully configured"
+      line-count: 3
+      lines:
+        1: "Successfully configured"
+        3: "Successfully updated existing"
     exit-code: 0
 
   change default values - format json:
     command: ./worklog configure overrideDefaults --format "json"
     stdout:
-      line-count: 1
-      exactly: "Successfully configured"
+      line-count: 3
+      lines:
+        1: "Successfully configured"
+        3: "Successfully updated existing"
     exit-code: 0
 
   change default values - format yaml:
     command: ./worklog configure overrideDefaults --format "yaml"
     stdout:
-      line-count: 1
-      exactly: "Successfully configured"
+      line-count: 3
+      lines:
+        1: "Successfully configured"
+        3: "Successfully updated existing"
     exit-code: 0
 
   change default values - format invalid:
@@ -76,8 +87,10 @@ tests:
   change default values - duration number:
     command: ./worklog configure overrideDefaults --duration 15
     stdout:
-      line-count: 1
-      exactly: "Successfully configured"
+      line-count: 3
+      lines:
+        1: "Successfully configured"
+        3: "Successfully updated existing"
     exit-code: 0
 
   change default values - duration string:
@@ -93,15 +106,19 @@ tests:
   change default values - repo type bolt:
     command: ./worklog configure overrideDefaults --repo "bolt"
     stdout:
-      line-count: 1
-      exactly: "Successfully configured"
+      line-count: 3
+      lines:
+        1: "Successfully configured"
+        3: "Successfully updated existing"
     exit-code: 0
 
   change default values - repo type legacy:
     command: ./worklog configure overrideDefaults --repo "legacy"
     stdout:
-      line-count: 1
-      exactly: "Successfully configured"
+      line-count: 3
+      lines:
+        1: "Successfully configured"
+        3: "Successfully updated existing"
     exit-code: 0
 
   change default values - repo type invalid:
@@ -117,13 +134,17 @@ tests:
   change default values - repo path absolute:
     command: ./worklog configure overrideDefaults --repoPath "/tmp/e2e.db"
     stdout:
-      line-count: 1
-      exactly: "Successfully configured"
+      line-count: 3
+      lines:
+        1: "Successfully configured"
+        3: "Successfully updated existing"
     exit-code: 0
 
   change default values - repo path relative:
     command: ./worklog configure overrideDefaults --repoPath "./e2e.db"
     stdout:
-      line-count: 1
-      exactly: "Successfully configured"
+      line-count: 3
+      lines:
+        1: "Successfully configured"
+        3: "Successfully updated existing"
     exit-code: 0
