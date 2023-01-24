@@ -1,6 +1,9 @@
 package service
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"sort"
 	"strings"
@@ -119,5 +122,20 @@ func (*service) GetWorklogsByID(filter *model.Work, ids ...string) ([]*model.Wor
 }
 
 func (*service) ExportTo(path string) (int, error) {
-	return 0, nil
+	all, err := repo.GetAll()
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	data, err := json.Marshal(all)
+	if err != nil {
+		return http.StatusInternalServerError, fmt.Errorf("error encoding worklogs. %s", err.Error())
+	}
+	err = ioutil.WriteFile(path, data, 0644)
+	if err != nil {
+		return http.StatusInternalServerError, fmt.Errorf("error saving file. %s", err.Error())
+	}
+
+	helpers.LogDebug("Saved export file", "save export successful - json")
+	return http.StatusOK, nil
 }
