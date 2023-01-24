@@ -14,6 +14,7 @@ type WorklogRepository interface {
 
 	GetAllBetweenDates(startDate, endDate time.Time, filter *model.Work) ([]*model.Work, error)
 	GetByID(id string, filter *model.Work) (*model.Work, error)
+	GetAll() ([]*model.Work, error)
 }
 
 // ConfigRepository defines what a configuration

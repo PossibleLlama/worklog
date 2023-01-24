@@ -17,17 +17,18 @@ test-unit:
 
 test-e2e:
 	@echo "Running end to end tests"
+	@make --no-print-directory clean
 	@make --no-print-directory build DIR="./e2e"
 
 	# Run once so all files are setup
 	@./e2e/worklog configure > /tmp/dump
-	@rm -f /tmp/e2e.db
 
 	commander test ./e2e/root.test.yaml
 	commander test ./e2e/configure.test.yaml
 	commander test ./e2e/create.test.yaml
 	commander test ./e2e/print.test.yaml
 	commander test ./e2e/edit.test.yaml
+	commander test ./e2e/export.yaml
 	@make --no-print-directory clean
 	@echo "e2e tests passed"
 
@@ -61,3 +62,4 @@ deps:
 clean:
 	@echo "Cleaning"
 	@rm -rf dist/ ./e2e/$(BIN_NAME) ./e2e/$(BIN_NAME)-server
+	@rm -f /tmp/e2e.db /tmp/export-check.db $(HOME)/.worklog/export-* $(HOME)/.worklog/202*

@@ -1,6 +1,9 @@
 package service
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"sort"
 	"strings"
@@ -116,4 +119,25 @@ func (*service) GetWorklogsByID(filter *model.Work, ids ...string) ([]*model.Wor
 	}
 	sort.Sort(worklogs)
 	return worklogs, http.StatusOK, nil
+}
+
+func (*service) ExportTo(path string) (int, error) {
+	all, err := repo.GetAll()
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	data, err := json.Marshal(all)
+	if err != nil {
+		return http.StatusInternalServerError, fmt.Errorf("error encoding worklogs. %s", err.Error())
+	}
+	// #nosec G306 -- Not concerned that others on machine can access the exported values
+	// if the user wants to update permissions later, they can
+	err = ioutil.WriteFile(path, data, 0644)
+	if err != nil {
+		return http.StatusInternalServerError, fmt.Errorf("error saving file. %s", err.Error())
+	}
+
+	helpers.LogDebug("Saved export file", "save export successful - json")
+	return http.StatusOK, nil
 }

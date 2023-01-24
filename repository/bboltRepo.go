@@ -55,6 +55,9 @@ func (*bboltRepo) Init() error {
 				"update db error - bolt")
 		}
 	}
+	if err := db.ReIndex(&model.Work{}); err != nil {
+		helpers.LogError("failed to reindex database", "update db - bolt")
+	}
 
 	return nil
 }
@@ -136,7 +139,20 @@ func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
 	return foundWls[0], viewErr
 }
 
-// Internal wrapped function to ensure all useages are aligned
+func (*bboltRepo) GetAll() ([]*model.Work, error) {
+	var all []*model.Work
+	db, openErr := openReadOnly()
+	if openErr != nil {
+		helpers.LogError(fmt.Sprintf("Error opening file: %s", openErr.Error()), "read db error - bolt")
+		return nil, openErr
+	}
+	defer db.Close()
+
+	err := db.All(&all)
+	return all, err
+}
+
+// Internal wrapped function to ensure all usages are aligned
 func openReadWrite() (*storm.DB, error) {
 	return storm.Open(filePath, storm.BoltOptions(0750, &bolt.Options{
 		Timeout:  1 * time.Second,
@@ -144,7 +160,7 @@ func openReadWrite() (*storm.DB, error) {
 	}))
 }
 
-// Internal wrapped function to ensure all useages are aligned
+// Internal wrapped function to ensure all usages are aligned
 func openReadOnly() (*storm.DB, error) {
 	if _, err := os.Stat(filePath); err == nil {
 		return storm.Open(filePath, storm.BoltOptions(0750, &bolt.Options{

@@ -195,6 +195,51 @@ func getAllFileNamesBetweenDates(startDate, endDate time.Time) ([]string, error)
 	return files, err
 }
 
+func (*yamlFileRepo) GetAll() ([]*model.Work, error) {
+	var all []*model.Work
+	var errors []string
+
+	fileNames, err := getAllFileNames()
+	if err != nil {
+		return all, err
+	}
+
+	for _, fileName := range fileNames {
+		readWorklog, err := parseFileToWork(fileName)
+		if err != nil {
+			errors = append(errors, err.Error())
+		} else {
+			readWorklog.Sanitize()
+			all = append(all, readWorklog)
+		}
+	}
+	if len(errors) != 0 {
+		return all, fmt.Errorf("%s. %s", e.RepoGetFiles,
+			strings.Join(errors, ", "))
+	}
+
+	return all, nil
+}
+
+func getAllFileNames() ([]string, error) {
+	var files []string
+
+	err := filepath.Walk(configDir, func(fullPath string, info os.FileInfo, walkErr error) error {
+		if walkErr != nil {
+			return walkErr
+		}
+		path := filepath.Base(fullPath)
+		if strings.Count(path, "_") < 2 {
+			return nil
+		}
+
+		files = append(files, fullPath)
+		return nil
+	})
+
+	return files, err
+}
+
 func getFileByID(ID string) (string, error) {
 	ids := make(map[string]string)
 

@@ -40,3 +40,9 @@ func (m *MockRepo) GetByID(id string, filter *model.Work) (*model.Work, error) {
 	args := m.Called(id, filter)
 	return args.Get(0).(*model.Work), args.Error(1)
 }
+
+// GetAll WorklogRepository method for testing
+func (m *MockRepo) GetAll() ([]*model.Work, error) {
+	args := m.Called()
+	return args.Get(0).([]*model.Work), args.Error(1)
+}
