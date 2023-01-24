@@ -34,7 +34,11 @@ func exportArgs(args ...string) error {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		helpers.LogError(fmt.Sprintf("Unable to get home directory: %s", err.Error()), "export - startup")
-		return fmt.Errorf("Unable to get home directory: %s", err.Error())
+		return fmt.Errorf("unable to get home directory: %s", err.Error())
+	}
+
+	if exportPath == "" {
+		exportPath = exportDefaultPath
 	}
 
 	if !strings.HasPrefix(exportPath, string(filepath.Separator)) {
