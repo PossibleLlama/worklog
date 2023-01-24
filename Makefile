@@ -17,11 +17,11 @@ test-unit:
 
 test-e2e:
 	@echo "Running end to end tests"
+	@make --no-print-directory clean
 	@make --no-print-directory build DIR="./e2e"
 
 	# Run once so all files are setup
 	@./e2e/worklog configure > /tmp/dump
-	@make --no-print-directory clean
 
 	commander test ./e2e/root.test.yaml
 	commander test ./e2e/configure.test.yaml
