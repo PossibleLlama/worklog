@@ -4,6 +4,12 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/PossibleLlama/worklog)](https://goreportcard.com/report/github.com/PossibleLlama/worklog)
 
+> **When updating to version 0.6.11, any previous bolt database
+> will initially not show any previously created worklogs.**
+> To fix this, run `worklog configure`, which will update the
+> database with new values allowing the query functionality.
+> It is recommended to backup the database before running this.
+
 Intended to be a quick productivity CLI tool, to track what you
 have done each day.
 
@@ -61,9 +67,14 @@ The currently available options are listed below, although more
 may be available in the future.
 
 This will be most useful when changing between storage types.
-Currently the default is `bolt`, however up until 0.6.1, the
-default repo was `legacy`, and as such to search those, you'll
+Currently the default is `"bolt"`, however up until 0.6.1, the
+default repo was `"legacy"`, and as such to search those, you'll
 need to specify this repo type when printing.
+
+> The `"legacy"` type will be removed at the `0.7.0` release, however
+> before this happens there will be a release containing the import/
+> export functionality, allowing transfer between repository types.
+
 You can also specify the default repo type via the `configure`
 command.
 
@@ -274,10 +285,15 @@ will add provided flags into the configuration.
 - `--format "json"` Default format to print output.
   Accepts `"pretty"`, `"yaml"` or `"json"`.
 - `--repo "bolt"` String of the repository type.
-  Accepts `"bolt"` or `"legacy"`
+  Accepts `"bolt"` or `"legacy"`.
+  `"legacy"` is being removed at the release of
+  `0.7.0`.
 - `--repoPath ".worklog/my-database.db"` Path from
   the home directory to the database, unless an
   absolute path is used.
+
+The configure command will also perform any setup of the database
+to get to a state compatible with the current version.
 
 ### Example configure
 
