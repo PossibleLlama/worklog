@@ -14,7 +14,7 @@ func Create(resp http.ResponseWriter, req *http.Request) {
 
 	err := json.NewDecoder(req.Body).Decode(&body)
 	if err != nil {
-		helpers.LogError("error decoding body into work: "+err.Error(), "create")
+		helpers.LogError("error decoding body into work: "+err.Error(), "create - server")
 		resp.WriteHeader(http.StatusBadRequest)
 		return
 	}
