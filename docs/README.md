@@ -265,6 +265,28 @@ worklog print --today --json --tags "morning"
 worklog print "abc" "def"
 ```
 
+## Export
+
+``` bash
+worklog export
+```
+
+Export the existing repository's stored information to a file.
+
+The primary purpose of this functionality is to allow for
+backups and to allow for transfer of data between repository
+types.
+
+The flag `--path` flag allows for outputting the fileto a given
+path, although the format is always JSON.
+
+This is the only field specific to the export function.
+
+- `--path "path"` The path that the exported file will be created at.
+  If a relative path, this will be to the `${HOME}/.worklog/`
+  directory.
+  Will default to `${HOME}/.worklog/export-${DATETIME}.json`.
+
 ## Configuration
 
 ``` bash
