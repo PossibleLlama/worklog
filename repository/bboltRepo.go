@@ -152,7 +152,7 @@ func (*bboltRepo) GetAll() ([]*model.Work, error) {
 	return all, err
 }
 
-// Internal wrapped function to ensure all useages are aligned
+// Internal wrapped function to ensure all usages are aligned
 func openReadWrite() (*storm.DB, error) {
 	return storm.Open(filePath, storm.BoltOptions(0750, &bolt.Options{
 		Timeout:  1 * time.Second,
@@ -160,7 +160,7 @@ func openReadWrite() (*storm.DB, error) {
 	}))
 }
 
-// Internal wrapped function to ensure all useages are aligned
+// Internal wrapped function to ensure all usages are aligned
 func openReadOnly() (*storm.DB, error) {
 	if _, err := os.Stat(filePath); err == nil {
 		return storm.Open(filePath, storm.BoltOptions(0750, &bolt.Options{

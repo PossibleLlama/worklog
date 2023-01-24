@@ -7,10 +7,12 @@ tests:
   configure root:
     command: ./worklog configure
     stdout:
-      line-count: 3
+      line-count: 4
       lines:
         1: "Successfully configured"
-        3: "Successfully updated existing"
+        2: "found 0 items without epoch"
+        3: "failed to reindex database"
+        4: "Successfully updated existing"
     exit-code: 0
 
   change config to different but valid path:
@@ -106,10 +108,12 @@ tests:
   change default values - repo type bolt:
     command: ./worklog configure overrideDefaults --repo "bolt"
     stdout:
-      line-count: 3
+      line-count: 4
       lines:
         1: "Successfully configured"
-        3: "Successfully updated existing"
+        2: "found 0 items without epoch"
+        3: "failed to reindex database"
+        4: "Successfully updated existing"
     exit-code: 0
 
   change default values - repo type legacy:
@@ -143,8 +147,10 @@ tests:
   change default values - repo path relative:
     command: ./worklog configure overrideDefaults --repoPath "./e2e.db"
     stdout:
-      line-count: 3
+      line-count: 4
       lines:
         1: "Successfully configured"
-        3: "Successfully updated existing"
+        2: "found 0 items without epoch"
+        3: "failed to reindex database"
+        4: "Successfully updated existing"
     exit-code: 0
