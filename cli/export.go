@@ -26,11 +26,11 @@ to the given file.`,
 }
 
 // ExportArgs public method to validate arguments
-func ExportArgs(cmd *cobra.Command, args []string) error {
-	return exportArgs(args...)
+func ExportArgs(cmd *cobra.Command, _ []string) error {
+	return exportArgs()
 }
 
-func exportArgs(args ...string) error {
+func exportArgs() error {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		helpers.LogError(fmt.Sprintf("Unable to get home directory: %s", err.Error()), "export - startup")
@@ -61,7 +61,6 @@ func exportRun() error {
 func init() {
 	rootCmd.AddCommand(exportCmd)
 
-	// Dates
 	exportCmd.Flags().StringVar(
 		&exportPath,
 		"path",
