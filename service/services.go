@@ -12,4 +12,6 @@ type WorklogService interface {
 	EditWorklog(id string, newWl *model.Work) (*model.Work, int, error)
 	GetWorklogsBetween(start, end time.Time, filter *model.Work) ([]*model.Work, int, error)
 	GetWorklogsByID(filter *model.Work, ids ...string) ([]*model.Work, int, error)
+
+	ExportTo(path string) (int, error)
 }

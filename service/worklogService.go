@@ -117,3 +117,7 @@ func (*service) GetWorklogsByID(filter *model.Work, ids ...string) ([]*model.Wor
 	sort.Sort(worklogs)
 	return worklogs, http.StatusOK, nil
 }
+
+func (*service) ExportTo(path string) (int, error) {
+	return 0, nil
+}
