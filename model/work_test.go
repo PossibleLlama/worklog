@@ -93,6 +93,26 @@ func TestNewWork(t *testing.T) {
 				WhenQueryEpoch: validDate.Unix(),
 			},
 		},
+		{
+			name:         "Default/empty values are used",
+			wTitle:       "",
+			wDescription: "",
+			wAuthor:      "",
+			wDuration:    0,
+			wTags:        []string{},
+			wWhen:        time.Time{},
+			expected: &Work{
+				ID:             helpers.RandAlphabeticString(length),
+				Revision:       1,
+				Title:          "",
+				Description:    "",
+				Author:         "",
+				Duration:       0,
+				Tags:           []string{},
+				When:           validDate,
+				WhenQueryEpoch: validDate.Unix(),
+			},
+		},
 	}
 
 	for _, testItem := range tests {
@@ -108,6 +128,13 @@ func TestNewWork(t *testing.T) {
 
 			// Instead of mocking ID and time.Now(), just set the
 			// result of it to the expected value
+			if (testItem.wWhen == time.Time{}) {
+				assert.Equal(t, actual.When, actual.CreatedAt)
+				assert.Equal(t, actual.WhenQueryEpoch, actual.CreatedAt.Unix())
+
+				testItem.expected.When = actual.When
+				testItem.expected.WhenQueryEpoch = actual.When.Unix()
+			}
 			testItem.expected.ID = actual.ID
 			testItem.expected.CreatedAt = actual.CreatedAt
 
