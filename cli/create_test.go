@@ -297,27 +297,29 @@ func TestCreateRun(t *testing.T) {
 		var w *model.Work
 		if testItem.author == "" {
 			w = &model.Work{
-				ID:          id,
-				Revision:    1,
-				Title:       testItem.title,
-				Description: testItem.description,
-				Author:      defaultAuthor,
-				Duration:    testItem.duration,
-				Tags:        testItem.tags,
-				When:        now,
-				CreatedAt:   now,
+				ID:             id,
+				Revision:       1,
+				Title:          testItem.title,
+				Description:    testItem.description,
+				Author:         defaultAuthor,
+				Duration:       testItem.duration,
+				Tags:           testItem.tags,
+				When:           now,
+				WhenQueryEpoch: now.Unix(),
+				CreatedAt:      now,
 			}
 		} else {
 			w = &model.Work{
-				ID:          id,
-				Revision:    1,
-				Title:       testItem.title,
-				Description: testItem.description,
-				Author:      testItem.author,
-				Duration:    testItem.duration,
-				Tags:        testItem.tags,
-				When:        now,
-				CreatedAt:   now,
+				ID:             id,
+				Revision:       1,
+				Title:          testItem.title,
+				Description:    testItem.description,
+				Author:         testItem.author,
+				Duration:       testItem.duration,
+				Tags:           testItem.tags,
+				When:           now,
+				WhenQueryEpoch: now.Unix(),
+				CreatedAt:      now,
 			}
 		}
 		mockService := new(service.MockService)

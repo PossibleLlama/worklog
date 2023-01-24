@@ -18,15 +18,16 @@ const idLength = 20
 // stores information as to what
 // work was done by who and when.
 type Work struct {
-	ID          string    `json:"id" yaml:"id"`
-	Revision    int       `json:"revision" yaml:"revision" storm:"index"`
-	Title       string    `json:"title" yaml:"title"`
-	Description string    `json:"description,omitempty" yaml:"description,omitempty"`
-	Author      string    `json:"author,omitempty" yaml:"author,omitempty"`
-	Duration    int       `json:"duration" yaml:"duration"`
-	Tags        []string  `json:"tags,omitempty" yaml:"tags,omitempty"`
-	When        time.Time `json:"when" yaml:"when" storm:"index"`
-	CreatedAt   time.Time `json:"createdAt" yaml:"createdAt"`
+	ID             string    `json:"id" yaml:"id"`
+	Revision       int       `json:"revision" yaml:"revision" storm:"index"`
+	Title          string    `json:"title" yaml:"title"`
+	Description    string    `json:"description,omitempty" yaml:"description,omitempty"`
+	Author         string    `json:"author,omitempty" yaml:"author,omitempty"`
+	Duration       int       `json:"duration" yaml:"duration"`
+	Tags           []string  `json:"tags,omitempty" yaml:"tags,omitempty"`
+	When           time.Time `json:"when" yaml:"when"`
+	WhenQueryEpoch int64     `json:"whenEpoch" yaml:"whenEpoch" storm:"index"`
+	CreatedAt      time.Time `json:"createdAt" yaml:"createdAt"`
 }
 
 type prettyWork struct {
@@ -44,15 +45,16 @@ func NewWork(title, description, author string, duration int, tags []string, whe
 	now, _ := helpers.GetStringAsDateTime(helpers.TimeFormat(time.Now()))
 	sort.Strings(tags)
 	return &Work{
-		ID:          helpers.RandHexAlphaNumericString(idLength),
-		Revision:    1,
-		Title:       title,
-		Description: description,
-		Author:      author,
-		Duration:    duration,
-		Tags:        tags,
-		When:        when,
-		CreatedAt:   now,
+		ID:             helpers.RandHexAlphaNumericString(idLength),
+		Revision:       1,
+		Title:          title,
+		Description:    description,
+		Author:         author,
+		Duration:       duration,
+		Tags:           tags,
+		When:           when,
+		WhenQueryEpoch: when.Unix(),
+		CreatedAt:      now,
 	}
 }
 

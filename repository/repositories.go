@@ -9,6 +9,7 @@ import (
 // WorklogRepository defines what a repository
 // for worklogs should be capable of doing
 type WorklogRepository interface {
+	Init() error
 	Save(wl *model.Work) error
 
 	GetAllBetweenDates(startDate, endDate time.Time, filter *model.Work) ([]*model.Work, error)

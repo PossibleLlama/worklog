@@ -234,15 +234,16 @@ func TestEditWorklog(t *testing.T) {
 
 	for _, testItem := range tests {
 		expWl := model.Work{
-			ID:          wl.ID,
-			Revision:    wl.Revision + 1,
-			Title:       testItem.newWl.Title,
-			Description: testItem.newWl.Description,
-			Author:      testItem.newWl.Author,
-			Duration:    testItem.newWl.Duration,
-			Tags:        helpers.DeduplicateString(testItem.newWl.Tags),
-			When:        wl.When,
-			CreatedAt:   testItem.newWl.CreatedAt}
+			ID:             wl.ID,
+			Revision:       wl.Revision + 1,
+			Title:          testItem.newWl.Title,
+			Description:    testItem.newWl.Description,
+			Author:         testItem.newWl.Author,
+			Duration:       testItem.newWl.Duration,
+			Tags:           helpers.DeduplicateString(testItem.newWl.Tags),
+			When:           wl.When,
+			WhenQueryEpoch: wl.WhenQueryEpoch,
+			CreatedAt:      testItem.newWl.CreatedAt}
 
 		mockRepo := new(repository.MockRepo)
 		mockRepo.On("GetByID", id, &model.Work{}).

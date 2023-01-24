@@ -26,6 +26,39 @@ func NewBBoltRepo(path string) WorklogRepository {
 	return &bboltRepo{}
 }
 
+func (*bboltRepo) Init() error {
+	var foundWls []*model.Work
+
+	db, openErr := openReadWrite()
+	if openErr != nil {
+		helpers.LogError(fmt.Sprintf("Error opening file: %s", openErr.Error()), "read db error - bolt")
+		return openErr
+	}
+	defer db.Close()
+
+	viewErr := db.Select(
+		q.Eq("WhenQueryEpoch", 0)).Find(&foundWls)
+	if viewErr != nil && viewErr != storm.ErrNotFound {
+		return errors.New("failed to get from db")
+	}
+
+	helpers.LogDebug(fmt.Sprintf("found %d items without epoch", len(foundWls)), "update db error - bolt")
+	for _, el := range foundWls {
+		helpers.LogDebug(
+			fmt.Sprintf("ID %s, with when %s with epoch %d",
+				el.ID, helpers.TimeFormat(el.When), el.WhenQueryEpoch),
+			"update db - bolt")
+		err := db.UpdateField(&model.Work{ID: el.ID}, "WhenQueryEpoch", el.When.Unix())
+		if err != nil {
+			helpers.LogError(
+				fmt.Sprintf("failed to update element ID: %s's when epoch. error: %s", el.ID, err.Error()),
+				"update db error - bolt")
+		}
+	}
+
+	return nil
+}
+
 func (*bboltRepo) Save(wl *model.Work) error {
 	db, openErr := openReadWrite()
 	if openErr != nil {
@@ -54,11 +87,14 @@ func (*bboltRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *model
 	defer db.Close()
 
 	sel := q.And(
-		q.Gte("When", startDate),
-		q.Lt("When", endDate),
+		q.Gte("WhenQueryEpoch", startDate.Unix()),
+		q.Lt("WhenQueryEpoch", endDate.Unix()),
 		filterQuery(filter),
 	)
-	viewErr := db.Select(sel).OrderBy("When").Find(&foundWls)
+	viewErr := db.Select(sel).OrderBy("WhenQueryEpoch").Find(&foundWls)
+	if viewErr != nil && viewErr != storm.ErrNotFound {
+		return nil, errors.New("failed to get from db between dates")
+	}
 
 	for _, el := range foundWls {
 		if filterByTags(filter, el) {
