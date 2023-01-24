@@ -131,6 +131,8 @@ func (*service) ExportTo(path string) (int, error) {
 	if err != nil {
 		return http.StatusInternalServerError, fmt.Errorf("error encoding worklogs. %s", err.Error())
 	}
+	// #nosec G306 -- Not concerned that others on machine can access the exported values
+	// if the user wants to update permissions later, they can
 	err = ioutil.WriteFile(path, data, 0644)
 	if err != nil {
 		return http.StatusInternalServerError, fmt.Errorf("error saving file. %s", err.Error())
