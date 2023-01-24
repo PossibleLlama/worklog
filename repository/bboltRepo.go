@@ -136,6 +136,19 @@ func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
 	return foundWls[0], viewErr
 }
 
+func (*bboltRepo) GetAll() ([]*model.Work, error) {
+	var all []*model.Work
+	db, openErr := openReadOnly()
+	if openErr != nil {
+		helpers.LogError(fmt.Sprintf("Error opening file: %s", openErr.Error()), "read db error - bolt")
+		return nil, openErr
+	}
+	defer db.Close()
+
+	err := db.All(&all)
+	return all, err
+}
+
 // Internal wrapped function to ensure all useages are aligned
 func openReadWrite() (*storm.DB, error) {
 	return storm.Open(filePath, storm.BoltOptions(0750, &bolt.Options{
