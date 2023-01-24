@@ -55,6 +55,9 @@ func (*bboltRepo) Init() error {
 				"update db error - bolt")
 		}
 	}
+	if err := db.ReIndex(&model.Work{}); err != nil {
+		helpers.LogError("failed to reindex database", "update db - bolt")
+	}
 
 	return nil
 }
