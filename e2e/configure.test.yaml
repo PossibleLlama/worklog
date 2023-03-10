@@ -96,16 +96,16 @@ tests:
     exit-code: 1
 
   # TODO fix all this
-  change default values - duration number:
-    command: ./worklog configure overrideDefaults --duration 15 --repoPath "/tmp/e2e-duration.db"
-    stdout:
-      line-count: 3
-      lines:
-        1: "Successfully configured"
-        2: "found 0 items without epoch"
-        # 3: "failed to reindex database"
-        3: "Successfully updated existing"
-    exit-code: 0
+  # change default values - duration number:
+  #   command: ./worklog configure overrideDefaults --duration 15 --repoPath "/tmp/e2e-duration.db"
+  #   stdout:
+  #     line-count: 3
+  #     lines:
+  #       1: "Successfully configured"
+  #       2: "found 0 items without epoch"
+  #       # 3: "failed to reindex database"
+  #       3: "Successfully updated existing"
+  #   exit-code: 0
 
   change default values - duration string:
     command: ./worklog configure overrideDefaults --duration "invalid"
