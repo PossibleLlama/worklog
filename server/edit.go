@@ -20,6 +20,8 @@ func Edit(resp http.ResponseWriter, req *http.Request) {
 		resp.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	// #nosec CWE-703 -- From my understanding, IO errors can occur, which are potentially an issue during file IO.
+	// I haven't seen a similar example of harm to a network IO so will ignore for now.
 	defer req.Body.Close()
 
 	newWl := model.NewWork(

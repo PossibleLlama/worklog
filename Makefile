@@ -1,12 +1,12 @@
 BIN_NAME=worklog
 
 test:
-	@go clean -testcache ./...
+	@go clean -testcache
 	@make --no-print-directory test-unit
 	@make --no-print-directory test-e2e
 
 test-repeat:
-	@go clean -testcache ./...
+	@go clean -testcache
 	@make --no-print-directory test-unit ARGS="-count 50"
 	@make --no-print-directory test-e2e
 
@@ -62,4 +62,4 @@ deps:
 clean:
 	@echo "Cleaning"
 	@rm -rf dist/ ./e2e/$(BIN_NAME) ./e2e/$(BIN_NAME)-server
-	@rm -f /tmp/e2e.db /tmp/export-check.db $(HOME)/.worklog/export-* $(HOME)/.worklog/202*
+	@rm -f /tmp/config.yml /tmp/e2e* /tmp/export-check.db $(HOME)/.worklog/export-* $(HOME)/.worklog/202*
