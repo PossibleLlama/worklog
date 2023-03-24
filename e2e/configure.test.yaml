@@ -25,7 +25,7 @@ tests:
         3: "found 0 items without epoch"
         4: "failed to reindex database"
         5: "Successfully updated existing"
-      
+
     exit-code: 0
 
   change default values - stdout:

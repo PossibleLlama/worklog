@@ -1,7 +1,5 @@
 # Worklog
 
-![Build](https://github.com/PossibleLlama/worklog/workflows/Go/badge.svg)
-
 [![Go Report Card](https://goreportcard.com/badge/github.com/PossibleLlama/worklog)](https://goreportcard.com/report/github.com/PossibleLlama/worklog)
 
 > **When updating to version 0.6.11, any previous bolt database

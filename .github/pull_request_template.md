@@ -1,7 +1,5 @@
 # PR name
 
-Issue #(number)
-
 ## Fixed
 
 -
