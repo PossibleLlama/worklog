@@ -1,156 +1,105 @@
-name: "On commit to main"
+name: "On commit - Main"
 
 on:
-  workflow_run:
-    workflows: ["On commit"]
-    branches: [main]
-    types: [completed]
+  push:
+    branches:
+      - main
+
+permissions: read-all
 
 jobs:
-  binaries:
-    name: Generate binaries
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Set up Go 1.x
-      uses: actions/setup-go@v3
-      with:
-        go-version: ^1.20
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v3
-      with:
-          fetch-depth: 0
-
-    - name: Fetch all tags
-      run: git fetch --force --tags
-
-    - name: Get dependencies
-      run: make deps
-
-    - name: Get goreleaser
-      run: go install github.com/goreleaser/goreleaser@latest
-
-    - name: Generate binaries
-      run: make compile
-
-    - name: Archive test artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: test-binaries
-        path: dist
-
-  run-ubuntu:
-    name: Run-ubuntu
-    runs-on: ubuntu-latest
-    needs: [binaries]
-
+  binary:
+    name: Binary
     strategy:
+      fail-fast: false
       matrix:
-        binary:
-          - "amd64_v1"
+        goos:
+          - linux
+          - darwin
+          - windows
+        goarch:
+          - amd64
+          - arm64
+    uses: PossibleLlama/workflows/.github/workflows/golang-binary.yaml@v0.2.10
+    with:
+      source-path: "./exec/cli/main.go"
+      build-flags: "-ldflags=\"-w -s\""
+      os: ${{ matrix.goos }}
+      arch: ${{ matrix.goarch }}
+      binary-prefix: "Binaries-cli-"
+      retention-days: 30
 
-    steps:
-    - name: Download
-      uses: actions/download-artifact@v3
-      with:
-        name: test-binaries
-
-    - name: Permissions
-      run: "sudo chown -R $USER:$USER ./cli_linux_${{ matrix.binary }}/worklog && sudo chmod +x ./cli_linux_${{ matrix.binary }}/worklog"
-
-    - name: Test
-      run: "./cli_linux_${{ matrix.binary }}/worklog --version"
-
-  run-mac:
-    name: Run-mac
-    runs-on: macos-latest
-    needs: [binaries]
-
+  server:
+    name: Server
     strategy:
+      fail-fast: false
       matrix:
-        binary:
-          - "amd64_v1"
+        goos:
+          - linux
+          - darwin
+          - windows
+        goarch:
+          - amd64
+          - arm64
+    uses: PossibleLlama/workflows/.github/workflows/golang-binary.yaml@v0.2.10
+    with:
+      source-path: "./exec/server/main.go"
+      build-flags: "-ldflags=\"-w -s\""
+      os: ${{ matrix.goos }}
+      arch: ${{ matrix.goarch }}
+      binary-prefix: "Binaries-server-"
+      retention-days: 30
 
-    steps:
-    - name: Download
-      uses: actions/download-artifact@v3
-      with:
-        name: test-binaries
-
-    - name: Permissions
-      run: "sudo chown -R $USER ./cli_darwin_${{ matrix.binary }}/worklog && sudo chmod +x ./cli_darwin_${{ matrix.binary }}/worklog"
-
-    - name: Test
-      run: "./cli_darwin_${{ matrix.binary }}/worklog --version"
-
-  run-windows:
-    name: Run-windows
-    runs-on: windows-latest
-    needs: [binaries]
-
-    strategy:
-      matrix:
-        binary:
-          - "amd64_v1"
-
-    steps:
-    - name: Download
-      uses: actions/download-artifact@v3
-      with:
-        name: test-binaries
-
-    - name: Test
-      run: ".\\cli_windows_${{ matrix.binary }}\\worklog.exe --version"
-
-  remove-test-artifacts:
-    name: Remove test artifacts
-    runs-on: ubuntu-latest
-    needs:
-      - run-ubuntu
-      - run-mac
-      - run-windows
-
-    steps:
-    - name: Delete test artifacts
-      uses: geekyeggo/delete-artifact@v2
-      with:
-          name: test-binaries
+  security:
+    name: Security checks
+    permissions:
+      security-events: write
+    uses: PossibleLlama/workflows/.github/workflows/golang-security.yaml@v0.2.10
+    with:
+      upload-sarif: true
 
   release:
-    if: startsWith(github.ref, 'refs/tags/')
-    name: Generate release
+    name: Release
     runs-on: ubuntu-latest
     needs:
-      - run-ubuntu
-      - run-mac
-      - run-windows
-
+      - binary
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
     steps:
-    - name: Check out
-      uses: actions/checkout@v3
-      with:
-          fetch-depth: 0
 
-    - name: Fetch all tags
-      run: git fetch --force --tags
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v4
 
-    - name: Set up Go
-      uses: actions/setup-go@v3
+    - name: Setup Node
+      uses: actions/setup-node@v4
       with:
-        go-version: ^1.20
+        node-version: "lts/*"
 
-    - name: Run GoReleaser
-      uses: goreleaser/goreleaser-action@v3
+    - name: Download app
+      uses: actions/download-artifact@v4
       with:
-        distribution: goreleaser
-        version: latest
-        args: release --rm-dist
+        path: .
+
+    - name: Move binaries
+      run: |
+        mv ./Binaries-cli-darwin-amd64/* .
+        mv ./Binaries-cli-darwin-arm64/* .
+        mv ./Binaries-cli-linux-amd64/* .
+        mv ./Binaries-cli-linux-arm64/* .
+        mv ./Binaries-cli-windows-amd64/* .
+        mv ./Binaries-cli-windows-arm64/* .
+        mv ./Binaries-server-darwin-amd64/* .
+        mv ./Binaries-server-darwin-arm64/* .
+        mv ./Binaries-server-linux-amd64/* .
+        mv ./Binaries-server-linux-arm64/* .
+        mv ./Binaries-server-windows-amd64/* .
+        mv ./Binaries-server-windows-arm64/* .
+
+    - name: Semantic Release
+      run: |
+        npm i @semantic-release/commit-analyzer @semantic-release/git @semantic-release/changelog conventional-changelog-conventionalcommits
+        npx semantic-release@21
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Archive production artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: worklog-binaries
-        path: dist/*
