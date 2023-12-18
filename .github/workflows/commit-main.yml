@@ -20,7 +20,7 @@ jobs:
         goarch:
           - amd64
           - arm64
-    uses: PossibleLlama/workflows/.github/workflows/golang-binary.yaml@v0.2.7
+    uses: PossibleLlama/workflows/.github/workflows/golang-binary.yaml@v0.2.8
     with:
       source-path: "./exec/cli/main.go"
       build-flags: "-ldflags=\"-w -s\""
@@ -41,7 +41,7 @@ jobs:
         goarch:
           - amd64
           - arm64
-    uses: PossibleLlama/workflows/.github/workflows/golang-binary.yaml@v0.2.7
+    uses: PossibleLlama/workflows/.github/workflows/golang-binary.yaml@v0.2.8
     with:
       source-path: "./exec/server/main.go"
       build-flags: "-ldflags=\"-w -s\""
@@ -54,7 +54,7 @@ jobs:
     name: Security checks
     permissions:
       security-events: write
-    uses: PossibleLlama/workflows/.github/workflows/golang-security.yaml@v0.2.7
+    uses: PossibleLlama/workflows/.github/workflows/golang-security.yaml@v0.2.8
     with:
       upload-sarif: true
 

@@ -5,7 +5,7 @@ config:
 
 tests:
   root:
-    command: worklog
+    command: ./worklog
     stdout:
       line-count: 27
       contains:
@@ -28,7 +28,7 @@ tests:
     exit-code: 0
 
   version:
-    command: worklog --version
+    command: ./worklog --version
     stdout:
       line-count: 1
       contains:

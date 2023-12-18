@@ -5,7 +5,7 @@ config:
 
 tests:
   print root:
-    command: worklog print
+    command: ./worklog print
     stdout:
       line-count: 0
     stderr:
@@ -15,7 +15,7 @@ tests:
     exit-code: 1
 
   print today - long:
-    command: worklog print --repo "bolt" --repoPath "/tmp/e2e.db" --today
+    command: ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" --today
     stdout:
       contains:
         - "ID: "
@@ -25,7 +25,7 @@ tests:
     exit-code: 0
 
   print today - short:
-    command: worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -t
+    command: ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -t
     stdout:
       contains:
         - "ID: "
@@ -35,7 +35,7 @@ tests:
     exit-code: 0
 
   print week - long:
-    command: worklog print --repo "bolt" --repoPath "/tmp/e2e.db" --thisWeek
+    command: ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" --thisWeek
     stdout:
       contains:
         - "ID: "
@@ -45,7 +45,7 @@ tests:
     exit-code: 0
 
   print week - short:
-    command: worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -w
+    command: ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -w
     stdout:
       contains:
         - "ID: "
@@ -55,7 +55,7 @@ tests:
     exit-code: 0
 
   print startDate only:
-    command: worklog print --repo "bolt" --repoPath "/tmp/e2e.db" --startDate "$(date '+%Y-%m-%d')"
+    command: ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" --startDate "$(date '+%Y-%m-%d')"
     stdout:
       contains:
         - "ID: "
@@ -65,7 +65,7 @@ tests:
     exit-code: 0
 
   print startDate and endDate:
-    command: worklog print --repo "bolt" --repoPath "/tmp/e2e.db" --startDate "$(date '+%Y-%m-%d')" --endDate "$(date '+%Y-%m-%d')"
+    command: ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" --startDate "$(date '+%Y-%m-%d')" --endDate "$(date '+%Y-%m-%d')"
     stdout:
       contains:
         - "ID: "
@@ -75,7 +75,7 @@ tests:
     exit-code: 0
 
   print endDate only:
-    command: worklog print --repo "bolt" --repoPath "/tmp/e2e.db" --endDate "$(date '+%Y-%m-%d')"
+    command: ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" --endDate "$(date '+%Y-%m-%d')"
     stdout:
       line-count: 0
     stderr:
@@ -85,7 +85,7 @@ tests:
     exit-code: 1
 
   print single ID only:
-    command: worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -j $(worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) | jq length
+    command: ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -j $(./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) | jq length
     stdout:
       line-count: 1
       lines:
@@ -93,7 +93,7 @@ tests:
     exit-code: 0
 
   print multiple IDs only:
-    command: worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -j $(worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) $(worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tj | jq -r .[1].id) | jq length
+    command: ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -j $(./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tj | jq -r .[0].id) $(./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tj | jq -r .[1].id) | jq length
     stdout:
       line-count: 1
       lines:
@@ -101,7 +101,7 @@ tests:
     exit-code: 0
 
   print pretty - long:
-    command: worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -t --pretty
+    command: ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -t --pretty
     stdout:
       contains:
         - "ID: "
@@ -113,7 +113,7 @@ tests:
     exit-code: 0
 
   print pretty - short:
-    command: worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tp
+    command: ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tp
     stdout:
       contains:
         - "ID: "
@@ -125,19 +125,19 @@ tests:
     exit-code: 0
 
   print json - long:
-    command: worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -t --json
+    command: ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -t --json
     stdout:
       line-count: 1
     exit-code: 0
 
   print json - short:
-    command: worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tj
+    command: ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tj
     stdout:
       line-count: 1
     exit-code: 0
 
   print yaml - long:
-    command: worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -t --yaml
+    command: ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -t --yaml
     stdout:
       contains:
         - "- id: "
@@ -149,7 +149,7 @@ tests:
     exit-code: 0
 
   print yaml - short:
-    command: worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -ty
+    command: ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -ty
     stdout:
       contains:
         - "- id: "
@@ -161,7 +161,7 @@ tests:
     exit-code: 0
 
   print all - long:
-    command: worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tp --all
+    command: ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tp --all
     stdout:
       contains:
         - "ID: "
@@ -172,7 +172,7 @@ tests:
     exit-code: 0
 
   print all - short:
-    command: worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tap
+    command: ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -tap
     stdout:
       contains:
         - "ID: "
