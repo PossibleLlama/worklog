@@ -1,6 +1,10 @@
 name: "On commit"
 
-on: push
+on:
+  push:
+    branches:
+      - '**'
+      - '!main'
 
 jobs:
   binary:
