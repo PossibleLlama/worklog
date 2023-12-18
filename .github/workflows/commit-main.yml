@@ -11,10 +11,12 @@ jobs:
   binary:
     name: Binary
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         goos:
           - linux
+          - darwin
+          - windows
         goarch:
           - amd64
           - arm64
@@ -30,10 +32,12 @@ jobs:
   server:
     name: Server
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         goos:
           - linux
+          - darwin
+          - windows
         goarch:
           - amd64
           - arm64
