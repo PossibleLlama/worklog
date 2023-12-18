@@ -5,7 +5,7 @@ config:
 
 tests:
   create root:
-    command: ./worklog create
+    command: worklog create
     stdout:
       line-count: 0
     stderr:
@@ -15,7 +15,7 @@ tests:
     exit-code: 1
 
   create minimal:
-    command: ./worklog create --repo "bolt" --repoPath "/tmp/e2e.db" --title "foo"
+    command: worklog create --repo "bolt" --repoPath "/tmp/e2e.db" --title "foo"
     stdout:
       line-count: 2
       lines:
@@ -24,7 +24,7 @@ tests:
     exit-code: 0
 
   create all:
-    command: ./worklog create --repo "bolt" --repoPath "/tmp/e2e.db" --title "foo" --description "bar" --tags "bang, pop" --when "$(date '+%Y-%m-%d %H:%M')" --duration 10
+    command: worklog create --repo "bolt" --repoPath "/tmp/e2e.db" --title "foo" --description "bar" --tags "bang, pop" --when "$(date '+%Y-%m-%d %H:%M')" --duration 10
     stdout:
       line-count: 2
       lines:
@@ -33,7 +33,7 @@ tests:
     exit-code: 0
 
   create with html:
-    command: ./worklog create --repo "bolt" --repoPath "/tmp/e2e.db" --title "<a href="">foo<a>" && ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -jt | jq -r '. | last | .title'
+    command: worklog create --repo "bolt" --repoPath "/tmp/e2e.db" --title "<a href="">foo<a>" && worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -jt | jq -r '. | last | .title'
     stdout:
       line-count: 3
       lines:
@@ -43,7 +43,7 @@ tests:
     exit-code: 0
 
   create date:
-    command: ./worklog create --repo "bolt" --repoPath "/tmp/e2e.db" --title "foo" --when "$(date -d 'last Sunday - 1 day' '+%Y-%m-%d')"
+    command: worklog create --repo "bolt" --repoPath "/tmp/e2e.db" --title "foo" --when "$(date -d 'last Sunday - 1 day' '+%Y-%m-%d')"
     stdout:
       line-count: 2
       lines:
@@ -52,7 +52,7 @@ tests:
     exit-code: 0
 
   create with xss capable html:
-    command: ./worklog create --repo "bolt" --repoPath "/tmp/e2e.db" --title "<a href=\"javascript:alert('XSS1')\" onmouseover=\"alert('XSS2')\">bar<a>" --when "$(date -d 'last Sunday - 2 day' '+%Y-%m-%d')" && ./worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -j --startDate "$(date -d 'last Sunday - 2 day' '+%Y-%m-%d')" --endDate "$(date -d 'last Sunday - 2 day' '+%Y-%m-%d')" | jq -r '. | last | .title'
+    command: worklog create --repo "bolt" --repoPath "/tmp/e2e.db" --title "<a href=\"javascript:alert('XSS1')\" onmouseover=\"alert('XSS2')\">bar<a>" --when "$(date -d 'last Sunday - 2 day' '+%Y-%m-%d')" && worklog print --repo "bolt" --repoPath "/tmp/e2e.db" -j --startDate "$(date -d 'last Sunday - 2 day' '+%Y-%m-%d')" --endDate "$(date -d 'last Sunday - 2 day' '+%Y-%m-%d')" | jq -r '. | last | .title'
     stdout:
       line-count: 3
       lines:
