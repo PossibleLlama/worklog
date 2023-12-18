@@ -13,29 +13,48 @@ jobs:
         goarch:
           - amd64
           - arm64
-    uses: PossibleLlama/workflows/.github/workflows/golang-binary.yaml@v0.2.3
+    uses: PossibleLlama/workflows/.github/workflows/golang-binary.yaml@v0.2.4
     with:
       source-path: "./exec/cli/main.go"
-      build-flags: "-ldflags=\"-w -s -X 'main.VERSION=$(git rev-list -1 HEAD)'\""
+      build-flags: "-ldflags=\"-w -s\""
       os: ${{ matrix.goos }}
       arch: ${{ matrix.goarch }}
+      binary-prefix: "Binaries-cli-"
+
+  server:
+    name: Server
+    strategy:
+      fail-fast: true
+      matrix:
+        goos:
+          - linux
+        goarch:
+          - amd64
+          - arm64
+    uses: PossibleLlama/workflows/.github/workflows/golang-binary.yaml@v0.2.4
+    with:
+      source-path: "./exec/server/main.go"
+      build-flags: "-ldflags=\"-w -s\""
+      os: ${{ matrix.goos }}
+      arch: ${{ matrix.goarch }}
+      binary-prefix: "Binaries-server-"
 
   linting:
     name: Linting
-    uses: PossibleLlama/workflows/.github/workflows/golang-linting.yaml@v0.2.3
+    uses: PossibleLlama/workflows/.github/workflows/golang-linting.yaml@v0.2.4
     with:
       source-path: "./exec/cli/main.go"
 
   test-small:
     name: Test small
-    uses: PossibleLlama/workflows/.github/workflows/golang-testing-small.yaml@v0.2.3
+    uses: PossibleLlama/workflows/.github/workflows/golang-testing-small.yaml@v0.2.4
     with:
       enable-performance: true
       enable-fuzz: false
 
   test-medium:
     name: Test medium
-    uses: PossibleLlama/workflows/.github/workflows/binary-testing-medium.yaml@v0.2.3
+    uses: PossibleLlama/workflows/.github/workflows/binary-testing-medium.yaml@v0.2.4
     needs:
       - binary
       - test-small
