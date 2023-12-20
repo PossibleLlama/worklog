@@ -7,7 +7,7 @@ require (
 	github.com/asdine/storm/v3 v3.2.1
 	github.com/microcosm-cc/bluemonday v1.0.26
 	github.com/spf13/cobra v1.8.0
-	github.com/spf13/viper v1.18.1
+	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.8.4
 	go.etcd.io/bbolt v1.3.8
 	golang.org/x/sys v0.15.0 // indirect
