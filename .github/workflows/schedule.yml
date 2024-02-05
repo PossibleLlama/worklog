@@ -10,6 +10,6 @@ jobs:
     name: Security checks
     permissions:
       security-events: write
-    uses: PossibleLlama/workflows/.github/workflows/golang-security.yaml@v0.2.11
+    uses: PossibleLlama/workflows/.github/workflows/golang-security.yaml@v0.2.13
     with:
       upload-sarif: true
