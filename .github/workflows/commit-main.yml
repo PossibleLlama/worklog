@@ -8,8 +8,8 @@ on:
 permissions: read-all
 
 jobs:
-  binary:
-    name: Binary
+  cli:
+    name: Binary-CLI
     strategy:
       fail-fast: false
       matrix:
@@ -30,7 +30,7 @@ jobs:
       retention-days: 30
 
   server:
-    name: Server
+    name: Binary-Server
     strategy:
       fail-fast: false
       matrix:
@@ -62,7 +62,8 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     needs:
-      - binary
+      - cli
+      - server
     permissions:
       contents: write
       issues: write
