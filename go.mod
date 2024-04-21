@@ -1,6 +1,6 @@
 module github.com/PossibleLlama/worklog
 
-go 1.22.1
+go 1.22.2
 
 require (
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
