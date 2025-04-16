@@ -1,6 +1,7 @@
 module github.com/PossibleLlama/worklog
 
 go 1.23
+toolchain go1.24.1
 
 require (
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
@@ -10,7 +11,7 @@ require (
 	github.com/spf13/viper v1.20.0
 	github.com/stretchr/testify v1.10.0
 	go.etcd.io/bbolt v1.4.0
-	golang.org/x/sys v0.29.0 // indirect
+	golang.org/x/sys v0.31.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 )
 
@@ -29,8 +30,8 @@ require (
 	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
-	golang.org/x/net v0.33.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/net v0.38.0 // indirect
+	golang.org/x/text v0.23.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
