@@ -198,12 +198,12 @@ func init() {
 // verifySingleFormat ensures that there is only 1 output format used.
 func verifySingleFormat() {
 	if !printOutputPretty && !printOutputYAML && !printOutputJSON {
-		defaultFormat := viper.GetString("default.format")
-		if defaultFormat == "yaml" || defaultFormat == "yml" {
+		switch viper.GetString("default.format") {
+		case "yaml", "yml":
 			printOutputYAML = true
-		} else if defaultFormat == "json" {
+		case "json":
 			printOutputJSON = true
-		} else {
+		default:
 			printOutputPretty = true
 		}
 	} else {

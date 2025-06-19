@@ -3,7 +3,6 @@ package repository
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
@@ -281,7 +280,7 @@ func getFileByID(ID string) (string, error) {
 }
 
 func parseFileToWork(filePath string) (*model.Work, error) {
-	yamlFile, err := ioutil.ReadFile(filepath.Clean(filePath))
+	yamlFile, err := os.ReadFile(filepath.Clean(filePath))
 	if err != nil {
 		return nil, fmt.Errorf("%s %s. %e", e.RepoGetFilesRead, filePath, err)
 	}
