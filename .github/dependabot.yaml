@@ -6,8 +6,6 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    assignees:
-      - "possiblellama"
     labels:
       - "dependencies"
     groups:
@@ -18,8 +16,6 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    assignees:
-      - "possiblellama"
     labels:
       - "dependencies"
     groups:
