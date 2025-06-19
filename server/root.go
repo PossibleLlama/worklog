@@ -31,7 +31,6 @@ var (
 	httpRouter *mux.Router = mux.NewRouter().StrictSlash(true)
 	wlService  service.WorklogService
 	wlRepo     repository.WorklogRepository
-	wlConfig   repository.ConfigRepository
 )
 
 var (
@@ -110,8 +109,8 @@ func interruptAndExit(server *http.Server) {
 	helpers.LogInfo("server stopping...", "shutdown")
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
-	// #nosec G104 -- There could be an error while shutting down, but its during shutdown
-	server.Shutdown(ctx)
+
+	_ = server.Shutdown(ctx)
 }
 
 func InitCobra() {
@@ -175,7 +174,5 @@ func InitConfig() {
 		os.Exit(e.StartupErrors)
 	}
 
-	wlConfig = repository.NewYamlConfig(
-		filepath.Dir(cfgFile))
 	wlService = service.NewWorklogService(wlRepo)
 }

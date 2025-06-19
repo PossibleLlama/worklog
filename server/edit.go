@@ -22,7 +22,9 @@ func Edit(resp http.ResponseWriter, req *http.Request) {
 	}
 	// #nosec CWE-703 -- From my understanding, IO errors can occur, which are potentially an issue during file IO.
 	// I haven't seen a similar example of harm to a network IO so will ignore for now.
-	defer req.Body.Close()
+	defer func() {
+		_ = req.Body.Close()
+	}()
 
 	newWl := model.NewWork(
 		body.Title,

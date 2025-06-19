@@ -43,7 +43,7 @@ type prettyWork struct {
 // NewWork is the generator for work.
 func NewWork(title, description, author string, duration int, tags []string, when time.Time) *Work {
 	now, _ := helpers.GetStringAsDateTime(helpers.TimeFormat(time.Now()))
-	if (when == time.Time{}) {
+	if (when.Equal(time.Time{})) {
 		when = now
 	}
 	sort.Strings(tags)

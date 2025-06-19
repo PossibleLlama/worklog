@@ -34,7 +34,9 @@ func (*bboltRepo) Init() error {
 		helpers.LogError(fmt.Sprintf("Error opening file: %s", openErr.Error()), "read db error - bolt")
 		return openErr
 	}
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	viewErr := db.Select(
 		q.Eq("WhenQueryEpoch", 0)).Find(&foundWls)
@@ -68,7 +70,9 @@ func (*bboltRepo) Save(wl *model.Work) error {
 		helpers.LogError(fmt.Sprintf("Error opening file: %s", openErr.Error()), "read db error - bolt")
 		return openErr
 	}
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	helpers.LogDebug("Saving file...", "save model - bolt")
 	if err := db.Save(wl); err != nil {
@@ -87,7 +91,9 @@ func (*bboltRepo) GetAllBetweenDates(startDate, endDate time.Time, filter *model
 		helpers.LogError(fmt.Sprintf("Error opening file: %s", openErr.Error()), "read db error - bolt")
 		return nil, openErr
 	}
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	sel := q.And(
 		q.Gte("WhenQueryEpoch", startDate.Unix()),
@@ -119,7 +125,9 @@ func (*bboltRepo) GetByID(ID string, filter *model.Work) (*model.Work, error) {
 		helpers.LogError(fmt.Sprintf("Error opening file: %s", openErr.Error()), "read db error - bolt")
 		return nil, openErr
 	}
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	sel := q.And(
 		q.Re("ID", helpers.RegexCaseInsensitive+ID),
@@ -146,7 +154,9 @@ func (*bboltRepo) GetAll() ([]*model.Work, error) {
 		helpers.LogError(fmt.Sprintf("Error opening file: %s", openErr.Error()), "read db error - bolt")
 		return nil, openErr
 	}
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	err := db.All(&all)
 	return all, err

@@ -123,7 +123,7 @@ func TestEditArgs(t *testing.T) {
 		t.Run(testItem.name, func(t *testing.T) {
 			if testItem.provided != nil {
 				var whenString string
-				if (testItem.provided.When == time.Time{}) {
+				if (testItem.provided.When.Equal(time.Time{})) {
 					whenString = helpers.TimeFormat(time.Now())
 				} else {
 					whenString = helpers.TimeFormat(testItem.provided.When)

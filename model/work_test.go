@@ -128,7 +128,7 @@ func TestNewWork(t *testing.T) {
 
 			// Instead of mocking ID and time.Now(), just set the
 			// result of it to the expected value
-			if (testItem.wWhen == time.Time{}) {
+			if (testItem.wWhen.Equal(time.Time{})) {
 				assert.Equal(t, actual.When, actual.CreatedAt)
 				assert.Equal(t, actual.WhenQueryEpoch, actual.CreatedAt.Unix())
 

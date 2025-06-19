@@ -3,8 +3,8 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"sort"
 	"strings"
 	"time"
@@ -83,7 +83,7 @@ func (*service) GetWorklogsBetween(start, end time.Time, filter *model.Work) ([]
 	var worklogs model.WorkList
 	var err error
 
-	if (end == time.Time{}) {
+	if (end.Equal(time.Time{})) {
 		end = time.Date(3000, time.January, 1, 0, 0, 0, 0, time.Now().Location())
 	}
 
@@ -133,7 +133,7 @@ func (*service) ExportTo(path string) (int, error) {
 	}
 	// #nosec G306 -- Not concerned that others on machine can access the exported values
 	// if the user wants to update permissions later, they can
-	err = ioutil.WriteFile(path, data, 0644)
+	err = os.WriteFile(path, data, 0644)
 	if err != nil {
 		return http.StatusInternalServerError, fmt.Errorf("error saving file. %s", err.Error())
 	}
