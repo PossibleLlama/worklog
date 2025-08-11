@@ -17,7 +17,7 @@ jobs:
         goarch:
           - amd64
           - arm64
-    uses: PossibleLlama/workflows/.github/workflows/golang-binary.yaml@v0.2.18
+    uses: PossibleLlama/workflows/.github/workflows/golang-binary.yaml@v0.2.19
     with:
       source-path: "./exec/cli/main.go"
       build-flags: "-ldflags=\"-w -s\""
@@ -35,7 +35,7 @@ jobs:
         goarch:
           - amd64
           - arm64
-    uses: PossibleLlama/workflows/.github/workflows/golang-binary.yaml@v0.2.18
+    uses: PossibleLlama/workflows/.github/workflows/golang-binary.yaml@v0.2.19
     with:
       source-path: "./exec/server/main.go"
       build-flags: "-ldflags=\"-w -s\""
@@ -45,13 +45,13 @@ jobs:
 
   linting:
     name: Linting
-    uses: PossibleLlama/workflows/.github/workflows/golang-linting.yaml@v0.2.18
+    uses: PossibleLlama/workflows/.github/workflows/golang-linting.yaml@v0.2.19
     with:
       source-path: "./exec/cli/main.go"
 
   test-small:
     name: Test small
-    uses: PossibleLlama/workflows/.github/workflows/golang-testing-small.yaml@v0.2.18
+    uses: PossibleLlama/workflows/.github/workflows/golang-testing-small.yaml@v0.2.19
     with:
       enable-performance: true
       enable-fuzz: false
