@@ -8,8 +8,8 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
-	github.com/stretchr/testify v1.10.0
-	go.etcd.io/bbolt v1.4.2
+	github.com/stretchr/testify v1.11.0
+	go.etcd.io/bbolt v1.4.3
 	golang.org/x/sys v0.35.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 )
@@ -38,5 +38,4 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect
 	github.com/sagikazarmark/locafero v0.10.0 // indirect
 	github.com/sourcegraph/conc v0.3.1-0.20240121214520-5f936abd7ae8 // indirect
-	go.uber.org/multierr v1.11.0 // indirect
 )
