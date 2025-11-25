@@ -71,7 +71,7 @@ jobs:
     steps:
 
     - name: Check out code into the Go module directory
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: Setup Node
       uses: actions/setup-node@v6
