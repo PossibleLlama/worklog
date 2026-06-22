@@ -1,6 +1,6 @@
 module github.com/PossibleLlama/worklog
 
-go 1.24
+go 1.25.0
 
 require (
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
@@ -9,8 +9,8 @@ require (
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
-	go.etcd.io/bbolt v1.4.3
-	golang.org/x/sys v0.35.0 // indirect
+	go.etcd.io/bbolt v1.5.0
+	golang.org/x/sys v0.45.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 )
 
